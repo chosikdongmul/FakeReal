@@ -616,17 +616,35 @@ const DEFAULT_DATA = {
 
 const ADMIN_PW = 'ODOD2025';
 
+async function showAdmin() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('admin-ui').style.display = 'block';
+  // 로컬스토리지 없으면 배포된 data.js에서 로드
+  if (!localStorage.getItem('odod_data')) {
+    try {
+      const resp = await fetch('../js/data.js?_=' + Date.now());
+      if (resp.ok) {
+        const text = await resp.text();
+        DATA = new Function(text + '; return DEFAULT_DATA;')();
+      }
+    } catch(e) {}
+  }
+  initAdmin();
+}
+
 function tryAuth() {
   const pw = document.getElementById('pw-input').value;
   if (pw === ADMIN_PW) {
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('admin-ui').style.display = 'block';
-    initAdmin();
+    sessionStorage.setItem('odod_auth', '1');
+    showAdmin();
   } else {
     document.getElementById('auth-error').style.display = 'block';
   }
 }
 document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryAuth(); });
+
+// 새로고침해도 이미 인증됐으면 바로 진입
+if (sessionStorage.getItem('odod_auth') === '1') { showAdmin(); }
 
 function loadData() {
   try { const s = localStorage.getItem('odod_data'); return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DATA)); }
@@ -637,18 +655,6 @@ let DATA = loadData();
 
 // 배포된 data.js를 fetch해서 로컬스토리지와 병합
 // → 어드민이 항상 배포 최신 데이터를 기반으로 시작
-(async function syncFromDeployedData() {
-  if (localStorage.getItem('odod_data')) return; // 이미 로컬 저장 데이터 있으면 스킵
-  try {
-    const resp = await fetch('../js/data.js?_=' + Date.now());
-    if (!resp.ok) return;
-    const text = await resp.text();
-    const fn = new Function(text + '; return DEFAULT_DATA;');
-    const deployed = fn();
-    DATA = deployed;
-    initAdmin();
-  } catch(e) { /* 오프라인이거나 로컬파일 환경 → 무시 */ }
-})();
 
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.remove('active'));
