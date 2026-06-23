@@ -102,6 +102,79 @@
       transition: border-color 0.2s, color 0.2s;
     }
     .admin-reset-btn:hover { border-color: var(--text-muted); color: var(--text); }
+    .admin-export-btn {
+      background: transparent;
+      border: 0.5px solid var(--orange);
+      color: var(--orange);
+      padding: 10px 20px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-right: 8px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .admin-export-btn:hover { background: var(--orange); color: #fff; }
+
+    /* Export modal */
+    #export-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(14,12,8,0.92);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+    #export-modal.open { display: flex; }
+    .export-box {
+      background: var(--bg2);
+      border: 0.5px solid var(--border-light);
+      width: 90%;
+      max-width: 700px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      padding: 32px;
+      gap: 16px;
+    }
+    .export-box h2 { font-size: 14px; font-weight: 800; }
+    .export-box p { font-size: 11px; color: var(--text-muted); line-height: 1.7; }
+    .export-box ol { font-size: 11px; color: var(--text-muted); line-height: 2; padding-left: 18px; }
+    .export-box ol code { background: var(--bg3); padding: 1px 6px; font-size: 10px; color: var(--text); }
+    .export-textarea {
+      flex: 1;
+      min-height: 200px;
+      background: var(--bg3);
+      border: 0.5px solid var(--border);
+      color: var(--text);
+      font-size: 10px;
+      font-family: monospace;
+      padding: 12px;
+      resize: none;
+      outline: none;
+    }
+    .export-btns { display: flex; gap: 8px; justify-content: flex-end; }
+    .export-copy-btn {
+      background: var(--orange);
+      border: none;
+      color: #fff;
+      padding: 10px 24px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .export-close-btn {
+      background: transparent;
+      border: 0.5px solid var(--border-light);
+      color: var(--text-muted);
+      padding: 10px 20px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
 
     /* TABS */
     .tabs {
@@ -363,7 +436,25 @@
     <div class="admin-nav-brand">ODOD <span>Admin</span></div>
     <div>
       <button class="admin-reset-btn" onclick="resetData()">초기화</button>
+      <button class="admin-export-btn" onclick="openExport()">↑ 배포용 내보내기</button>
       <button class="admin-save-btn" onclick="saveData()">저장 & 적용</button>
+    </div>
+  </div>
+
+  <!-- EXPORT MODAL -->
+  <div id="export-modal">
+    <div class="export-box">
+      <h2>배포용 데이터 내보내기</h2>
+      <ol>
+        <li>아래 코드를 전체 복사</li>
+        <li><code>odod/js/main.js</code> 파일을 열고 <code>const DEFAULT_DATA = {'{'}...{'}'}</code> 전체를 아래 내용으로 교체</li>
+        <li>저장 후 GitHub에 push → 모든 방문자에게 반영</li>
+      </ol>
+      <textarea class="export-textarea" id="export-textarea" readonly></textarea>
+      <div class="export-btns">
+        <button class="export-close-btn" onclick="closeExport()">닫기</button>
+        <button class="export-copy-btn" onclick="copyExport()">전체 복사</button>
+      </div>
     </div>
   </div>
 
@@ -1037,6 +1128,24 @@ function saveData() {
   const toast = document.getElementById('toast');
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+function openExport() {
+  collectData();
+  const code = 'const DEFAULT_DATA = ' + JSON.stringify(DATA, null, 2) + ';';
+  document.getElementById('export-textarea').value = code;
+  document.getElementById('export-modal').classList.add('open');
+}
+function closeExport() {
+  document.getElementById('export-modal').classList.remove('open');
+}
+function copyExport() {
+  const ta = document.getElementById('export-textarea');
+  ta.select();
+  document.execCommand('copy');
+  const btn = document.querySelector('.export-copy-btn');
+  btn.textContent = '✓ 복사됨';
+  setTimeout(() => btn.textContent = '전체 복사', 2000);
 }
 
 function resetData() {
