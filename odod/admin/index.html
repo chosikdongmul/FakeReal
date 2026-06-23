@@ -248,24 +248,6 @@
       margin-top: 2px;
     }
 
-    /* File picker */
-    .file-input-row { display: flex; gap: 6px; align-items: stretch; }
-    .file-input-row .form-input { flex: 1; min-width: 0; }
-    .file-pick-btn {
-      background: var(--bg3);
-      border: 0.5px solid var(--border-light);
-      color: var(--text-muted);
-      padding: 0 14px;
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .file-pick-btn:hover { border-color: var(--orange); color: var(--orange); }
-    /* data URL인 경우 텍스트 숨기기 */
-    .form-input.has-file { color: var(--bg2); }
     .file-badge {
       font-size: 10px;
       color: var(--orange);
@@ -711,7 +693,6 @@ function buildPlayersEditor() {
             <span class="field-hint">권장: 세로형 2:3 비율 · 최소 600×900px · JPG/PNG<br>저장 경로: assets/images/players/닉네임.jpg</span>
             <div class="file-input-row" style="margin-top:4px;">
               <input class="form-input" id="p-photo-${pi}" data-p="${pi}" data-f="photo" value="${p.photo||''}" />
-              <button class="file-pick-btn" onclick="pickFile('p-photo-${pi}',null,'image/*')">📁 파일 선택</button>
             </div>
           </div>
         </div>
@@ -737,7 +718,6 @@ function buildPlayersEditor() {
           <div class="file-input-row" style="margin-top:4px;">
             <input class="form-input" id="p-thumb-${pi}" data-p="${pi}" data-f="photoThumb" value="${p.photoThumb||''}"
               oninput="previewThumb(this, 'thumb-prev-${pi}')" />
-            <button class="file-pick-btn" onclick="pickFile('p-thumb-${pi}','thumb-prev-${pi}','image/*')">📁 파일 선택</button>
           </div>
           <div class="thumb-preview-wrap ${p.photoThumb ? 'show' : ''}" id="thumb-prev-${pi}">
             ${p.photoThumb ? `<img src="${p.photoThumb}" />` : ''}
@@ -793,50 +773,6 @@ function buildPlayersEditor() {
   });
 }
 
-// ── FILE PICKER ────────────────────────────────────
-function pickFile(inputId, previewId, accept) {
-  const picker = document.createElement('input');
-  picker.type = 'file';
-  picker.accept = accept || 'image/*';
-  picker.onchange = function() {
-    const file = this.files[0];
-    if (!file) return;
-
-    // 3MB 초과 경고
-    if (file.size > 3 * 1024 * 1024) {
-      alert(`파일이 너무 큽니다 (${(file.size/1024/1024).toFixed(1)}MB).\n3MB 이하 이미지를 권장합니다. 큰 파일은 저장에 실패할 수 있습니다.`);
-    }
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const dataUrl = e.target.result;
-      const inp = document.getElementById(inputId);
-      if (inp) {
-        inp.value = dataUrl;
-        inp.classList.add('has-file');
-        // 파일명 표시 배지
-        let badge = inp.closest('.file-input-row') && inp.closest('.file-input-row').parentNode.querySelector('.file-badge');
-        if (!badge) {
-          badge = document.createElement('div');
-          badge.className = 'file-badge';
-          const row = inp.closest('.file-input-row') || inp.parentNode;
-          row.parentNode.insertBefore(badge, row.nextSibling);
-        }
-        badge.textContent = '✓  ' + file.name;
-        inp.dispatchEvent(new Event('input'));
-      }
-      if (previewId) {
-        const wrap = document.getElementById(previewId);
-        if (wrap) {
-          wrap.classList.add('show');
-          wrap.innerHTML = `<img src="${dataUrl}" /><span class='preview-label'>미리보기</span>`;
-        }
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-  picker.click();
-}
 
 // ── IMAGE PREVIEW ──────────────────────────────────
 function previewImg(input, previewId) {
@@ -905,7 +841,6 @@ function buildStaffEditor() {
             <span class="field-hint">권장: 세로형 2:3 · 최소 600×900px · JPG/PNG<br>저장 경로: assets/images/staff/닉네임.jpg</span>
             <div class="file-input-row" style="margin-top:4px;">
               <input class="form-input" id="s-photo-${si}" data-si="${si}" data-sf="photo" value="${s.photo||''}" />
-              <button class="file-pick-btn" onclick="pickFile('s-photo-${si}',null,'image/*')">📁 파일 선택</button>
             </div>
           </div>
         </div>
@@ -1017,11 +952,10 @@ function buildBannersEditor() {
       </div>
       <div class="form-group" style="margin-bottom:12px;">
         <label>이미지 경로 또는 URL (이미지 배너)</label>
-        <span class="field-hint" style="margin-bottom:4px;display:block;">권장: 1920×1080px · 16:9 · JPG &nbsp;·&nbsp; 파일 선택 또는 assets/images/banners/01.jpg · https://... 입력</span>
+        <span class="field-hint" style="margin-bottom:4px;display:block;">권장: 1920×1080px · 16:9 · JPG &nbsp;·&nbsp; 이미지를 odod/assets/images/ 폴더에 넣은 후 경로 입력 (예: assets/images/banner1.jpg) 또는 https://... 외부 URL</span>
         <div class="file-input-row" style="margin-top:4px;">
           <input class="form-input" id="bnr-img-${i}" data-bi="${i}" data-bf="image" value="${b.image||''}"
             oninput="previewBannerImg(this, 'bprev-${i}')" placeholder="assets/images/banners/01.jpg  또는  https://..." />
-          <button class="file-pick-btn" onclick="pickFile('bnr-img-${i}','bprev-${i}','image/*')">📁 파일 선택</button>
         </div>
         <div class="img-preview-wrap ${b.image ? 'show' : ''}" id="bprev-${i}" style="margin-top:8px;">
           ${b.image ? `<img src="${b.image}" onerror="this.parentNode.innerHTML='<div class=\\'preview-error\\'>이미지를 불러올 수 없습니다</div>'" /><span class='preview-label'>이미지 미리보기</span>` : ''}
