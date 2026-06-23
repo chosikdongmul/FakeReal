@@ -1,3 +1,7 @@
+/* ════════════════════════════════════════════════
+   ODOD — main.js
+   ════════════════════════════════════════════════ */
+
 const DEFAULT_DATA = {
   "team": {
     "name": "ODOD",
@@ -103,7 +107,7 @@ const DEFAULT_DATA = {
       "position": "Top",
       "positionKo": "탑",
       "number": 1,
-      "nickname": "Ironwall",
+      "nickname": "덕지",
       "realName": "Jang Minjun",
       "realNameKo": "장민준",
       "age": 22,
