@@ -543,7 +543,7 @@ const DEFAULT_DATA = {
       "caption": ""
     },
     {
-      "image": "assets/images/bannertest.png",
+      "image": "assets/images/Bannertest.jpg",
       "video": "",
       "caption": ""
     }
