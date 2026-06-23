@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ODOD — OverDrive Outlaw Dogs</title>
+  <meta name="description" content="We don't follow the meta. We break it." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav id="nav">
+    <a href="./index.html" class="nav-logo">
+      <div class="nav-logo-main" id="nav-name">ODOD</div>
+      <div class="nav-logo-sub" id="nav-fullname">OverDrive Outlaw Dogs</div>
+    </a>
+    <div class="nav-links">
+      <a href="#roster">Roster</a>
+      <a href="#results">Results</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#media">Media</a>
+      <a href="#partners">Partners</a>
+    </div>
+    <div id="nav-social" style="display:flex;gap:20px;align-items:center;"></div>
+    <button class="nav-follow">Follow</button>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <!-- Rolling banner slides (injected by JS) -->
+    <div class="hero-banner" id="hero-banner"></div>
+
+    <!-- Gradient overlays -->
+    <div class="hero-overlay-left"></div>
+    <div class="hero-overlay-bottom"></div>
+
+    <!-- Content -->
+    <div class="hero-content">
+      <span class="hero-tag">LCK · Seoul · 2022</span>
+      <h1 class="hero-title">ODOD</h1>
+      <p class="hero-slogan" id="hero-slogan"></p>
+    </div>
+
+    <!-- Staff strip -->
+    <div class="hero-staff-strip" id="hero-staff"></div>
+
+    <!-- Banner nav -->
+    <div class="hero-banner-nav">
+      <div class="hero-banner-player-info">
+        <span class="hbn-pos" id="hbn-pos"></span>
+        <span class="hbn-nick" id="hbn-nick"></span>
+      </div>
+      <div class="hero-banner-dots" id="hero-banner-dots"></div>
+    </div>
+  </section>
+
+  <!-- ── STAT BAR ── -->
+  <div id="stats">
+    <div class="stat-item reveal">
+      <div class="stat-value" id="stat-standing">—</div>
+      <div class="stat-label">순위</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-value" id="stat-record">—</div>
+      <div class="stat-label">전적</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-value" id="stat-winrate">—</div>
+      <div class="stat-label">승률</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-value" id="stat-worlds">—</div>
+      <div class="stat-label">월드챔피언십</div>
+    </div>
+  </div>
+
+  <!-- ── ROSTER ── -->
+  <section id="roster" class="section">
+    <div class="section-head reveal">
+      <span class="section-title">Roster</span>
+      <span class="section-sub" id="roster-season-sub">— Season</span>
+    </div>
+    <div class="roster-grid reveal" id="roster-grid"></div>
+
+    <!-- Staff sub-section -->
+    <div class="staff-section reveal">
+      <div class="staff-section-label">Coaching Staff</div>
+      <div class="staff-row" id="roster-staff-row"></div>
+    </div>
+  </section>
+
+  <!-- ── RESULTS ── -->
+  <section id="results" class="section" style="padding-top:0">
+    <div class="section-head reveal">
+      <span class="section-title">Results</span>
+      <span class="section-sub">Recent Matches</span>
+    </div>
+    <table class="results-table reveal">
+      <tbody id="results-tbody"></tbody>
+    </table>
+  </section>
+
+  <!-- ── SCHEDULE ── -->
+  <section id="schedule" class="section" style="padding-top:0">
+    <div class="section-head reveal">
+      <span class="section-title">Schedule</span>
+      <span class="section-sub">Upcoming</span>
+    </div>
+    <div class="schedule-list reveal" id="schedule-list"></div>
+  </section>
+
+  <!-- ── MEDIA ── -->
+  <section id="media" class="section" style="padding-top:0">
+    <div class="section-head reveal">
+      <span class="section-title">Media</span>
+      <span class="section-sub">Gallery</span>
+    </div>
+    <div class="gallery-grid reveal" id="gallery-grid"></div>
+  </section>
+
+  <!-- ── PARTNERS ── -->
+  <section id="partners" class="section" style="padding-top:0;padding-bottom:0">
+    <div class="section-head reveal">
+      <span class="section-title">Partners</span>
+    </div>
+    <div class="sponsors-row reveal" id="sponsors-row"></div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer id="footer">
+    <div class="footer-left">
+      <div class="footer-brand">ODOD</div>
+      <div class="footer-league">LCK · Seoul · Est. 2022</div>
+      <div class="footer-slogan" id="footer-slogan"></div>
+    </div>
+    <div class="footer-links" id="footer-social"></div>
+    <div class="footer-copy">© 2025 ODOD Esports</div>
+  </footer>
+
+  <!-- ── POPUP ── -->
+  <div id="popup-overlay">
+    <div class="popup" id="popup">
+      <button class="popup-close" id="popup-close">✕</button>
+
+      <!-- Left: media -->
+      <div class="popup-left">
+        <div class="popup-video" id="popup-video">
+          <div id="popup-video-inner" style="width:100%;height:100%;"></div>
+          <button class="popup-mute-btn" id="popup-mute-btn" title="음소거 토글" style="display:none">🔇</button>
+        </div>
+        <div class="popup-photo" id="popup-photo"></div>
+      </div>
+
+      <!-- Right: info -->
+      <div class="popup-right">
+        <div class="popup-header">
+          <div class="popup-thumb" id="popup-thumb"></div>
+          <div class="popup-header-text">
+            <div class="popup-pos" id="popup-pos"></div>
+            <div class="popup-nick" id="popup-nick"></div>
+            <div class="popup-realname" id="popup-realname"></div>
+          </div>
+        </div>
+
+        <hr class="popup-divider" />
+
+        <div class="popup-meta-grid" id="popup-meta"></div>
+
+        <hr class="popup-divider" />
+
+        <div class="popup-stats-grid" id="popup-stats"></div>
+
+        <hr class="popup-divider" />
+
+        <!-- Philosophy (staff only) -->
+        <p class="popup-philosophy" id="popup-philosophy" style="display:none;margin-bottom:24px;"></p>
+
+        <!-- Champions (player only) -->
+        <div id="popup-champs-section">
+          <p class="popup-section-title" style="margin-bottom:12px;">주 챔피언</p>
+          <div class="popup-champs" id="popup-champs"></div>
+          <hr class="popup-divider" />
+        </div>
+
+        <p class="popup-section-title">커리어</p>
+        <ul class="popup-career-list" id="popup-career"></ul>
+
+        <div id="popup-awards-section" style="margin-top:24px;">
+          <hr class="popup-divider" />
+          <p class="popup-section-title">수상</p>
+          <ul class="popup-award-list" id="popup-awards"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ADMIN BAR ── -->
+  <div id="admin-bar">
+    <span>Admin mode</span>
+    <a href="admin/index.html">어드민 페이지 열기 →</a>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

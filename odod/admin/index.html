@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ODOD Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0e0c08;
+      --bg2: #151210;
+      --bg3: #1c1914;
+      --orange: #c8601a;
+      --text: #f0ebe4;
+      --text-muted: #7a7066;
+      --text-dim: #3a3530;
+      --border: rgba(240,235,228,0.08);
+      --border-light: rgba(240,235,228,0.14);
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+
+    /* AUTH SCREEN */
+    #auth-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-box {
+      border: 0.5px solid var(--border-light);
+      padding: 48px;
+      min-width: 320px;
+      text-align: center;
+    }
+    .auth-box h2 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+    .auth-box p { font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; margin-bottom: 32px; }
+    .auth-input {
+      width: 100%;
+      background: var(--bg2);
+      border: 0.5px solid var(--border-light);
+      color: var(--text);
+      padding: 12px 16px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      outline: none;
+      margin-bottom: 16px;
+    }
+    .auth-input:focus { border-color: var(--orange); }
+    .auth-btn {
+      width: 100%;
+      background: var(--orange);
+      border: none;
+      color: #fff;
+      padding: 12px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .auth-btn:hover { opacity: 0.85; }
+    .auth-error { color: var(--orange); font-size: 11px; margin-top: 12px; display: none; }
+
+    /* ADMIN UI */
+    #admin-ui { display: none; }
+
+    .admin-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 0.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+    }
+    .admin-nav-brand { font-size: 14px; font-weight: 800; letter-spacing: 0.04em; }
+    .admin-nav-brand span { color: var(--orange); }
+    .admin-save-btn {
+      background: var(--orange);
+      border: none;
+      color: #fff;
+      padding: 10px 24px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .admin-save-btn:hover { opacity: 0.85; }
+    .admin-reset-btn {
+      background: transparent;
+      border: 0.5px solid var(--border-light);
+      color: var(--text-muted);
+      padding: 10px 20px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-right: 8px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .admin-reset-btn:hover { border-color: var(--text-muted); color: var(--text); }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      border-bottom: 0.5px solid var(--border);
+      padding: 0 32px;
+      gap: 0;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      padding: 16px 20px;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--text); border-bottom-color: var(--orange); }
+
+    /* PANELS */
+    .tab-panel { display: none; padding: 32px; max-width: 900px; }
+    .tab-panel.active { display: block; }
+
+    /* FORM ELEMENTS */
+    .form-section { margin-bottom: 40px; }
+    .form-section-title {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label {
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .form-input, .form-textarea {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--border-light); }
+    .form-textarea { min-height: 80px; resize: vertical; }
+
+    .field-hint {
+      font-size: 10px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      margin-top: 2px;
+    }
+
+    /* File picker */
+    .file-input-row { display: flex; gap: 6px; align-items: stretch; }
+    .file-input-row .form-input { flex: 1; min-width: 0; }
+    .file-pick-btn {
+      background: var(--bg3);
+      border: 0.5px solid var(--border-light);
+      color: var(--text-muted);
+      padding: 0 14px;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .file-pick-btn:hover { border-color: var(--orange); color: var(--orange); }
+    /* data URL인 경우 텍스트 숨기기 */
+    .form-input.has-file { color: var(--bg2); }
+    .file-badge {
+      font-size: 10px;
+      color: var(--orange);
+      margin-top: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .img-preview-wrap {
+      margin-top: 6px;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--bg3);
+      border: 0.5px solid var(--border);
+      display: none;
+      overflow: hidden;
+      position: relative;
+    }
+    .img-preview-wrap.show { display: block; }
+    .img-preview-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .img-preview-wrap .preview-label {
+      position: absolute;
+      bottom: 6px;
+      left: 8px;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: rgba(14,12,8,0.75);
+      padding: 3px 7px;
+    }
+    .img-preview-wrap .preview-error {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--orange);
+      letter-spacing: 0.08em;
+    }
+
+    .thumb-preview-wrap {
+      margin-top: 6px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--bg3);
+      border: 0.5px solid var(--border);
+      display: none;
+      overflow: hidden;
+    }
+    .thumb-preview-wrap.show { display: block; }
+    .thumb-preview-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* LIST EDITOR */
+    .list-editor { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .list-item {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .list-item input, .list-item select {
+      background: var(--bg3);
+      border: 0.5px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      font-size: 11px;
+      flex: 1;
+      min-width: 80px;
+      outline: none;
+    }
+    .list-item input:focus { border-color: var(--border-light); }
+    .remove-btn {
+      background: none;
+      border: 0.5px solid var(--border);
+      color: var(--text-dim);
+      padding: 8px 12px;
+      font-size: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .remove-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .add-btn {
+      background: none;
+      border: 0.5px solid var(--border-light);
+      color: var(--text-muted);
+      padding: 10px 20px;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      align-self: flex-start;
+    }
+    .add-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* Player accordion */
+    .player-accordion { border: 0.5px solid var(--border); margin-bottom: 8px; }
+    .player-acc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      cursor: pointer;
+      background: var(--bg2);
+      transition: background 0.2s;
+    }
+    .player-acc-header:hover { background: var(--bg3); }
+    .player-acc-header h3 { font-size: 13px; font-weight: 700; }
+    .player-acc-header .pos-badge {
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+    .player-acc-body { display: none; padding: 20px; border-top: 0.5px solid var(--border); }
+    .player-acc-body.open { display: block; }
+    .chevron { transition: transform 0.25s; }
+    .chevron.open { transform: rotate(180deg); }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 32px; right: 32px;
+      background: var(--orange);
+      color: #fff;
+      padding: 14px 24px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; }
+
+    a { color: var(--text-muted); font-size: 11px; }
+  </style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <h2>ODOD Admin</h2>
+    <p>비밀번호를 입력하세요</p>
+    <input type="password" class="auth-input" id="pw-input" placeholder="Password" />
+    <button class="auth-btn" onclick="tryAuth()">Enter</button>
+    <p class="auth-error" id="auth-error">비밀번호가 틀렸습니다.</p>
+  </div>
+</div>
+
+<!-- ADMIN UI -->
+<div id="admin-ui">
+
+  <div class="admin-nav">
+    <div class="admin-nav-brand">ODOD <span>Admin</span></div>
+    <div>
+      <button class="admin-reset-btn" onclick="resetData()">초기화</button>
+      <button class="admin-save-btn" onclick="saveData()">저장 & 적용</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('team')">팀 정보</button>
+    <button class="tab-btn" onclick="switchTab('players')">선수</button>
+    <button class="tab-btn" onclick="switchTab('staff')">스태프</button>
+    <button class="tab-btn" onclick="switchTab('results')">전적</button>
+    <button class="tab-btn" onclick="switchTab('schedule')">일정</button>
+    <button class="tab-btn" onclick="switchTab('gallery')">갤러리</button>
+    <button class="tab-btn" onclick="switchTab('sponsors')">스폰서</button>
+    <button class="tab-btn" onclick="switchTab('banners')">메인 배너</button>
+  </div>
+
+  <!-- TEAM -->
+  <div class="tab-panel active" id="panel-team">
+    <div class="form-section">
+      <div class="form-section-title">기본 정보</div>
+      <div class="form-row">
+        <div class="form-group"><label>팀명</label><span class="field-hint">약칭 — 예: ODOD, T1, GEN</span><input class="form-input" id="t-name" /></div>
+        <div class="form-group"><label>풀 네임</label><span class="field-hint">팀 풀네임 — 예: OverDrive Outlaw Dogs</span><input class="form-input" id="t-fullname" /></div>
+        <div class="form-group"><label>리그</label><span class="field-hint">소속 리그 — 예: LCK, LPL, LEC</span><input class="form-input" id="t-league" /></div>
+        <div class="form-group"><label>창단</label><span class="field-hint">창단 연도 — 예: 2022</span><input class="form-input" id="t-founded" /></div>
+        <div class="form-group"><label>도시</label><span class="field-hint">연고지 — 예: Seoul</span><input class="form-input" id="t-city" /></div>
+        <div class="form-group"><label>시즌</label><span class="field-hint">현재 시즌 — 예: 2025</span><input class="form-input" id="t-season" /></div>
+      </div>
+      <div class="form-group" style="margin-bottom:16px">
+        <label>슬로건</label>
+        <span class="field-hint">히어로 및 푸터에 표시. 팀 정체성을 한 문장으로</span>
+        <input class="form-input" id="t-slogan" style="margin-top:4px" />
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">시즌 스탯</div>
+      <div class="form-row">
+        <div class="form-group"><label>순위</label><span class="field-hint">현재 순위 (숫자)</span><input class="form-input" type="number" id="t-standing" /></div>
+        <div class="form-group"><label>승</label><span class="field-hint">시즌 총 승 수</span><input class="form-input" type="number" id="t-wins" /></div>
+        <div class="form-group"><label>패</label><span class="field-hint">시즌 총 패 수</span><input class="form-input" type="number" id="t-losses" /></div>
+        <div class="form-group"><label>승률 (%)</label><span class="field-hint">소수점 한 자리 — 예: 66.7</span><input class="form-input" type="number" step="0.1" id="t-winrate" /></div>
+        <div class="form-group"><label>월즈 출전</label><span class="field-hint">월드챔피언십 출전 횟수</span><input class="form-input" type="number" id="t-worlds" /></div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">SNS</div>
+      <div class="form-row">
+        <div class="form-group"><label>Twitter</label><span class="field-hint">https://twitter.com/계정명</span><input class="form-input" id="t-twitter" /></div>
+        <div class="form-group"><label>Instagram</label><span class="field-hint">https://instagram.com/계정명</span><input class="form-input" id="t-instagram" /></div>
+        <div class="form-group"><label>YouTube</label><span class="field-hint">https://youtube.com/@채널명</span><input class="form-input" id="t-youtube" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAYERS -->
+  <div class="tab-panel" id="panel-players">
+    <div id="players-editor"></div>
+  </div>
+
+  <!-- STAFF -->
+  <div class="tab-panel" id="panel-staff">
+    <div id="staff-editor"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="tab-panel" id="panel-results">
+    <p style="font-size:11px;color:var(--text-muted);margin-bottom:20px;line-height:1.7;">
+      날짜: <code style="background:var(--bg3);padding:2px 6px;font-size:10px;">YYYY-MM-DD</code> 형식 &nbsp;·&nbsp;
+      스코어: <code style="background:var(--bg3);padding:2px 6px;font-size:10px;">2-1</code> 형식 &nbsp;·&nbsp;
+      최신 경기가 위에 오도록 정렬 권장
+    </p>
+    <div class="list-editor" id="results-editor"></div>
+    <button class="add-btn" onclick="addResult()">+ 전적 추가</button>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div class="tab-panel" id="panel-schedule">
+    <p style="font-size:11px;color:var(--text-muted);margin-bottom:20px;line-height:1.7;">
+      날짜: <code style="background:var(--bg3);padding:2px 6px;font-size:10px;">YYYY-MM-DD</code> 형식 &nbsp;·&nbsp;
+      시간: <code style="background:var(--bg3);padding:2px 6px;font-size:10px;">17:00</code> 24시간 형식 &nbsp;·&nbsp;
+      가까운 일정이 위에 오도록 정렬 권장
+    </p>
+    <div class="list-editor" id="schedule-editor"></div>
+    <button class="add-btn" onclick="addSchedule()">+ 일정 추가</button>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="tab-panel" id="panel-gallery">
+    <p style="font-size:11px;color:var(--text-muted);margin-bottom:20px;line-height:1.7;">
+      이미지 경로: <code style="background:var(--bg3);padding:2px 6px;font-size:10px;">assets/images/gallery/01.jpg</code> 또는 외부 URL<br>
+      권장 규격: 가로 1200px 이상 · JPG/PNG · 비율 자유 (그리드에서 자동 크롭)
+    </p>
+    <div class="list-editor" id="gallery-editor"></div>
+    <button class="add-btn" onclick="addGallery()">+ 사진 추가</button>
+  </div>
+
+  <!-- SPONSORS -->
+  <div class="tab-panel" id="panel-sponsors">
+    <p style="font-size:11px;color:var(--text-muted);margin-bottom:20px;line-height:1.7;">
+      로고 이미지: <code style="background:var(--bg3);padding:2px 6px;font-size:10px;">assets/images/sponsors/이름.png</code> 또는 외부 URL<br>
+      권장 규격: 투명 배경 PNG · 가로 400px 이상 · 배경색 없이 로고만 &nbsp;·&nbsp; URL은 스폰서 공식 홈페이지
+    </p>
+    <div class="list-editor" id="sponsors-editor"></div>
+    <button class="add-btn" onclick="addSponsor()">+ 스폰서 추가</button>
+  </div>
+
+  <!-- BANNERS -->
+  <div class="tab-panel" id="panel-banners">
+    <p style="font-size:11px;color:var(--text-muted);margin-bottom:24px;line-height:1.7;">
+      히어로 섹션 롤링 배너 이미지를 관리합니다. 선수 데이터와 완전히 독립된 배너입니다.<br><br>
+      <strong style="color:var(--text);font-weight:600;">권장 규격</strong><br>
+      — 비율: 가로형 <strong style="color:var(--text);">16:9</strong> 또는 더 넓은 와이드<br>
+      — 크기: 최소 <strong style="color:var(--text);">1920×1080px</strong> (고화질 권장)<br>
+      — 파일: <strong style="color:var(--text);">JPG</strong> (사진), <strong style="color:var(--text);">PNG</strong> (투명 필요 시)<br>
+      — 저장: <code style="background:var(--bg3);padding:2px 6px;font-size:10px;">assets/images/banners/01.jpg</code> 형식으로 저장 후 경로 입력<br>
+      — 또는 외부 이미지 URL(<code style="background:var(--bg3);padding:2px 6px;font-size:10px;">https://...</code>) 바로 붙여넣기<br><br>
+      이미지가 등록된 슬롯만 슬라이드에 포함됩니다. 순서대로 5초 간격으로 자동 전환됩니다.
+    </p>
+    <div class="list-editor" id="banners-editor"></div>
+    <button class="add-btn" onclick="addBanner()">+ 배너 추가</button>
+  </div>
+
+</div>
+
+<div id="toast">저장되었습니다.</div>
+
+<script>
+// ── DEFAULT DATA (same as main.js) ──────────────────
+const DEFAULT_DATA = {
+  team: {
+    name:"ODOD", fullName:"OverDrive Outlaw Dogs", league:"LCK",
+    founded:"2022", city:"Seoul",
+    slogan:"We don't follow the meta. We break it.",
+    season:"2025", standing:3, record:{wins:18,losses:9},
+    winRate:66.7, worldsAppearances:1,
+    social:{twitter:"https://twitter.com/ODOD_LCK", instagram:"https://instagram.com/odod_lck", youtube:"https://youtube.com/@ODOD"}
+  },
+  staff:[
+    {id:"vortex",role:"Head Coach",roleKo:"감독",nickname:"Vortex",realName:"Kim Dohyun",realNameKo:"김도현",age:34,nationality:"KR",joinYear:2022,photo:"assets/images/staff/vortex.jpg",philosophy:"읽히는 순간 지는 거다.",career:[{year:"2017–2019",org:"APEX Force",role:"Analyst"},{year:"2019–2021",org:"Nova Esports",role:"Assistant Coach"},{year:"2022–",org:"ODOD",role:"Head Coach"}]},
+    {id:"reaper",role:"Coach",roleKo:"코치",nickname:"Reaper",realName:"Choi Junho",realNameKo:"최준호",age:28,nationality:"KR",joinYear:2023,photo:"assets/images/staff/reaper.jpg",philosophy:"드래프트는 이미 게임의 절반이다.",career:[{year:"2018–2022",org:"KT Bullet",role:"Pro Player (Mid)"},{year:"2023–",org:"ODOD",role:"Coach"}]},
+    {id:"circuit",role:"Analyst",roleKo:"애널리스트",nickname:"Circuit",realName:"Park Seungwoo",realNameKo:"박승우",age:25,nationality:"KR",joinYear:2022,photo:"assets/images/staff/circuit.jpg",philosophy:"숫자가 거짓말을 하면 더 많은 숫자로 잡는다.",career:[{year:"2022–",org:"ODOD",role:"Analyst"}]}
+  ],
+  players:[
+    {id:"ironwall",position:"Top",positionKo:"탑",number:1,nickname:"Ironwall",realName:"Jang Minjun",realNameKo:"장민준",age:22,birthdate:"2003-04-11",nationality:"KR",joinYear:2023,games:87,photo:"assets/images/players/ironwall.jpg",highlight:"",stats:{kda:3.2,winRate:62.1,csPerMin:8.4,kills:2.8,deaths:2.1,assists:5.7},champions:[{name:"Garen",image:"assets/images/champions/garen.jpg",winRate:71,kda:4.1,games:21},{name:"Renekton",image:"assets/images/champions/renekton.jpg",winRate:64,kda:3.4,games:14},{name:"Camille",image:"assets/images/champions/camille.jpg",winRate:60,kda:2.9,games:10}],career:[{year:"2022",org:"ODOD Academy",role:"Top"},{year:"2023–",org:"ODOD",role:"Top"}],awards:["2024 LCK Summer All-Pro Team (3rd)"],social:{}},
+    {id:"feral",position:"Jungle",positionKo:"정글",number:2,nickname:"Feral",realName:"Lee Taehwan",realNameKo:"이태환",age:21,birthdate:"2004-08-29",nationality:"KR",joinYear:2024,games:54,photo:"assets/images/players/feral.jpg",highlight:"",stats:{kda:4.1,winRate:68.5,csPerMin:5.9,kills:3.5,deaths:1.8,assists:8.2},champions:[{name:"Vi",image:"assets/images/champions/vi.jpg",winRate:75,kda:5.2,games:16},{name:"Jarvan IV",image:"assets/images/champions/jarvaniv.jpg",winRate:70,kda:4.0,games:10},{name:"Hecarim",image:"assets/images/champions/hecarim.jpg",winRate:62,kda:3.8,games:8}],career:[{year:"2023",org:"Storm Wings (Challenger)",role:"Jungle"},{year:"2024–",org:"ODOD",role:"Jungle"}],awards:[],social:{}},
+    {id:"overdrive",position:"Mid",positionKo:"미드",number:3,nickname:"Overdrive",realName:"Han Seojun",realNameKo:"한서준",age:20,birthdate:"2005-01-17",nationality:"KR",joinYear:2022,games:134,isAce:true,photo:"assets/images/players/overdrive.jpg",highlight:"",stats:{kda:5.8,winRate:70.1,csPerMin:9.7,kills:5.2,deaths:1.6,assists:7.3},champions:[{name:"Azir",image:"assets/images/champions/azir.jpg",winRate:78,kda:7.1,games:29},{name:"Zed",image:"assets/images/champions/zed.jpg",winRate:72,kda:6.2,games:18},{name:"Orianna",image:"assets/images/champions/orianna.jpg",winRate:68,kda:5.4,games:15}],career:[{year:"2022–",org:"ODOD",role:"Mid"}],awards:["2023 LCK Summer MVP","2024 LCK Spring All-Pro Team (1st)","2024 Worlds Quarterfinals"],social:{}},
+    {id:"buckshot",position:"Bot",positionKo:"원딜",number:4,nickname:"Buckshot",realName:"Oh Yoongi",realNameKo:"오윤기",age:23,birthdate:"2002-11-03",nationality:"KR",joinYear:2022,games:112,photo:"assets/images/players/buckshot.jpg",highlight:"",stats:{kda:4.4,winRate:65.2,csPerMin:9.1,kills:4.8,deaths:2.0,assists:6.0},champions:[{name:"Jhin",image:"assets/images/champions/jhin.jpg",winRate:74,kda:5.5,games:27},{name:"Kai'Sa",image:"assets/images/champions/kaisa.jpg",winRate:66,kda:4.2,games:19},{name:"Caitlyn",image:"assets/images/champions/caitlyn.jpg",winRate:61,kda:3.9,games:12}],career:[{year:"2021",org:"Red Storm (Challenger)",role:"Bot"},{year:"2022–",org:"ODOD",role:"Bot"}],awards:["2024 LCK Spring All-Pro Team (2nd)"],social:{}},
+    {id:"shackle",position:"Support",positionKo:"서포터",number:5,nickname:"Shackle",realName:"Yoo Chanho",realNameKo:"유찬호",age:24,birthdate:"2001-06-22",nationality:"KR",joinYear:2022,games:134,photo:"assets/images/players/shackle.jpg",highlight:"",stats:{kda:6.2,winRate:66.4,csPerMin:1.8,kills:1.1,deaths:1.9,assists:12.7},champions:[{name:"Thresh",image:"assets/images/champions/thresh.jpg",winRate:72,kda:7.8,games:31},{name:"Nautilus",image:"assets/images/champions/nautilus.jpg",winRate:68,kda:6.5,games:20},{name:"Lulu",image:"assets/images/champions/lulu.jpg",winRate:64,kda:5.9,games:13}],career:[{year:"2020–2021",org:"Phoenix Wings",role:"Support"},{year:"2022–",org:"ODOD",role:"Support"}],awards:["2023 LCK Summer All-Pro Team (2nd)","2024 LCK Summer All-Pro Team (1st)"],social:{}}
+  ],
+  results:[
+    {date:"2025-06-14",opponent:"T1",score:"2-1",result:"W",stage:"LCK Summer"},
+    {date:"2025-06-10",opponent:"Gen.G",score:"1-2",result:"L",stage:"LCK Summer"},
+    {date:"2025-06-07",opponent:"KT Rolster",score:"2-0",result:"W",stage:"LCK Summer"},
+    {date:"2025-05-31",opponent:"DRX",score:"2-1",result:"W",stage:"LCK Summer"},
+    {date:"2025-05-27",opponent:"Hanwha Life",score:"2-0",result:"W",stage:"LCK Summer"}
+  ],
+  schedule:[
+    {date:"2025-06-28",opponent:"Dplus KIA",time:"17:00",stage:"LCK Summer"},
+    {date:"2025-07-02",opponent:"Nongshim RedForce",time:"19:00",stage:"LCK Summer"},
+    {date:"2025-07-05",opponent:"T1",time:"17:00",stage:"LCK Summer"},
+    {date:"2025-07-09",opponent:"BNK FearX",time:"19:00",stage:"LCK Summer"}
+  ],
+  gallery:[
+    {src:"assets/images/gallery/01.jpg",caption:"2025 LCK Summer 개막전"},
+    {src:"assets/images/gallery/02.jpg",caption:"팀 트레이닝 세션"},
+    {src:"assets/images/gallery/03.jpg",caption:"Overdrive 솔로킬 클립"},
+    {src:"assets/images/gallery/04.jpg",caption:"월드챔피언십 8강"},
+    {src:"assets/images/gallery/05.jpg",caption:"미디어데이"},
+    {src:"assets/images/gallery/06.jpg",caption:"팬미팅 2025"}
+  ],
+  sponsors:[
+    {name:"APEX Gaming Chairs",logo:"assets/images/sponsors/apex.png",url:"#"},
+    {name:"RedBull",logo:"assets/images/sponsors/redbull.png",url:"#"},
+    {name:"Logitech G",logo:"assets/images/sponsors/logitechg.png",url:"#"},
+    {name:"Samsung",logo:"assets/images/sponsors/samsung.png",url:"#"}
+  ]
+};
+
+const ADMIN_PW = 'ODOD2025';
+
+function tryAuth() {
+  const pw = document.getElementById('pw-input').value;
+  if (pw === ADMIN_PW) {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('admin-ui').style.display = 'block';
+    initAdmin();
+  } else {
+    document.getElementById('auth-error').style.display = 'block';
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryAuth(); });
+
+function loadData() {
+  try { const s = localStorage.getItem('odod_data'); return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+  catch { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+}
+
+let DATA = loadData();
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const tabs = ['team','players','staff','results','schedule','gallery','sponsors','banners'];
+  document.querySelectorAll('.tab-btn')[tabs.indexOf(name)].classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+function v(id) { return document.getElementById(id).value; }
+function sv(id, val) { document.getElementById(id).value = val ?? ''; }
+
+function initAdmin() {
+  const t = DATA.team;
+  sv('t-name', t.name); sv('t-fullname', t.fullName); sv('t-league', t.league);
+  sv('t-founded', t.founded); sv('t-city', t.city); sv('t-season', t.season);
+  sv('t-slogan', t.slogan); sv('t-standing', t.standing);
+  sv('t-wins', t.record.wins); sv('t-losses', t.record.losses);
+  sv('t-winrate', t.winRate); sv('t-worlds', t.worldsAppearances);
+  sv('t-twitter', t.social.twitter); sv('t-instagram', t.social.instagram); sv('t-youtube', t.social.youtube);
+
+  buildPlayersEditor();
+  buildStaffEditor();
+  buildResultsEditor();
+  buildScheduleEditor();
+  buildGalleryEditor();
+  buildSponsorsEditor();
+  buildBannersEditor();
+}
+
+// ── PLAYERS ────────────────────────────────────────
+function buildPlayersEditor() {
+  const el = document.getElementById('players-editor');
+  el.innerHTML = '';
+  DATA.players.forEach((p, pi) => {
+    const acc = document.createElement('div');
+    acc.className = 'player-accordion';
+    acc.innerHTML = `
+      <div class="player-acc-header" onclick="toggleAcc(this)">
+        <div><span class="pos-badge">${p.positionKo}</span> <h3>${p.nickname}</h3></div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="player-acc-body" id="p-body-${pi}">
+        <div class="form-row">
+          <div class="form-group"><label>닉네임</label><input class="form-input" data-p="${pi}" data-f="nickname" value="${p.nickname||''}" /></div>
+          <div class="form-group"><label>실명 (영)</label><input class="form-input" data-p="${pi}" data-f="realName" value="${p.realName||''}" /></div>
+          <div class="form-group"><label>실명 (한)</label><input class="form-input" data-p="${pi}" data-f="realNameKo" value="${p.realNameKo||''}" /></div>
+          <div class="form-group"><label>포지션</label><input class="form-input" data-p="${pi}" data-f="position" value="${p.position||''}" /></div>
+          <div class="form-group"><label>포지션(한)</label><input class="form-input" data-p="${pi}" data-f="positionKo" value="${p.positionKo||''}" /></div>
+          <div class="form-group"><label>등번호</label><input class="form-input" type="number" data-p="${pi}" data-f="number" value="${p.number||''}" /></div>
+          <div class="form-group"><label>나이</label><input class="form-input" type="number" data-p="${pi}" data-f="age" value="${p.age||''}" /></div>
+          <div class="form-group"><label>생년월일</label><input class="form-input" data-p="${pi}" data-f="birthdate" value="${p.birthdate||''}" /></div>
+          <div class="form-group"><label>합류</label><input class="form-input" type="number" data-p="${pi}" data-f="joinYear" value="${p.joinYear||''}" /></div>
+          <div class="form-group"><label>총 경기</label><input class="form-input" type="number" data-p="${pi}" data-f="games" value="${p.games||''}" /></div>
+          <div class="form-group">
+            <label>사진 경로 (로스터 카드 + 팝업 좌측)</label>
+            <span class="field-hint">권장: 세로형 2:3 비율 · 최소 600×900px · JPG/PNG<br>저장 경로: assets/images/players/닉네임.jpg</span>
+            <div class="file-input-row" style="margin-top:4px;">
+              <input class="form-input" id="p-photo-${pi}" data-p="${pi}" data-f="photo" value="${p.photo||''}" />
+              <button class="file-pick-btn" onclick="pickFile('p-photo-${pi}',null,'image/*')">📁 파일 선택</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 미디어 섹션 ── -->
+        <div style="margin-bottom:8px;margin-top:8px"><div class="form-section-title">미디어</div></div>
+
+        <div class="form-group" style="margin-bottom:16px">
+          <label>메인 롤링 배너 이미지 (개인 배너, 예비 필드)</label>
+          <span class="field-hint">※ 현재 메인 배너는 「메인 배너」 탭에서 별도 관리됩니다. 이 필드는 예비용입니다.<br>권장: 가로형 16:9 · 최소 1920×1080px · JPG<br>저장 경로: assets/images/players/닉네임_banner.jpg · 또는 외부 https://... URL</span>
+          <input class="form-input" data-p="${pi}" data-f="bannerImage" value="${p.bannerImage||''}"
+            oninput="previewImg(this, 'banner-prev-${pi}')" style="margin-top:4px" />
+          <div class="img-preview-wrap ${p.bannerImage ? 'show' : ''}" id="banner-prev-${pi}">
+            ${p.bannerImage
+              ? `<img src="${p.bannerImage}" onerror="this.parentNode.innerHTML='<div class=\\'preview-error\\'>이미지를 불러올 수 없습니다</div>'" /><span class='preview-label'>배너 미리보기</span>`
+              : ''}
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px">
+          <label>프로필 썸네일 (팝업 헤더 원형 아이콘)</label>
+          <span class="field-hint">권장: 정사각형 1:1 · 최소 200×200px · JPG/PNG · 얼굴 중심 크롭<br>저장 경로: assets/images/players/닉네임_thumb.jpg</span>
+          <div class="file-input-row" style="margin-top:4px;">
+            <input class="form-input" id="p-thumb-${pi}" data-p="${pi}" data-f="photoThumb" value="${p.photoThumb||''}"
+              oninput="previewThumb(this, 'thumb-prev-${pi}')" />
+            <button class="file-pick-btn" onclick="pickFile('p-thumb-${pi}','thumb-prev-${pi}','image/*')">📁 파일 선택</button>
+          </div>
+          <div class="thumb-preview-wrap ${p.photoThumb ? 'show' : ''}" id="thumb-prev-${pi}">
+            ${p.photoThumb ? `<img src="${p.photoThumb}" />` : ''}
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px">
+          <label>하이라이트 영상 URL (팝업 좌측 풀패널 재생)</label>
+          <span class="field-hint">유튜브 URL 그대로 붙여넣기 — embed로 자동 변환됩니다<br>예: https://www.youtube.com/watch?v=XXXXXXX<br>예: https://youtu.be/XXXXXXX<br>비어있으면 좌측 패널이 검은 화면으로 표시됩니다</span>
+          <input class="form-input" data-p="${pi}" data-f="highlight" value="${p.highlight||''}" style="margin-top:4px" />
+        </div>
+
+        <div style="margin-bottom:8px;margin-top:8px"><div class="form-section-title">스탯</div></div>
+        <div class="form-row">
+          <div class="form-group"><label>KDA</label><input class="form-input" type="number" step="0.1" data-p="${pi}" data-s="kda" value="${p.stats.kda}" /></div>
+          <div class="form-group"><label>승률%</label><input class="form-input" type="number" step="0.1" data-p="${pi}" data-s="winRate" value="${p.stats.winRate}" /></div>
+          <div class="form-group"><label>CS/분</label><input class="form-input" type="number" step="0.1" data-p="${pi}" data-s="csPerMin" value="${p.stats.csPerMin}" /></div>
+          <div class="form-group"><label>킬</label><input class="form-input" type="number" step="0.1" data-p="${pi}" data-s="kills" value="${p.stats.kills}" /></div>
+          <div class="form-group"><label>데스</label><input class="form-input" type="number" step="0.1" data-p="${pi}" data-s="deaths" value="${p.stats.deaths}" /></div>
+          <div class="form-group"><label>어시스트</label><input class="form-input" type="number" step="0.1" data-p="${pi}" data-s="assists" value="${p.stats.assists}" /></div>
+        </div>
+        <div style="margin-bottom:8px;margin-top:8px"><div class="form-section-title">주 챔피언</div></div>
+        <p class="field-hint" style="margin-bottom:12px;">최대 3개 권장 · 챔피언 이미지: 1:1 정사각형 · 최소 80×80px · 저장 경로: assets/images/champions/챔피언명.jpg</p>
+        <div id="p-champs-${pi}" class="list-editor">${p.champions.map((c,ci)=>`
+          <div class="list-item">
+            <input placeholder="챔피언명 (영어)" data-p="${pi}" data-ci="${ci}" data-cf="name" value="${c.name}" />
+            <input placeholder="이미지 경로 — assets/images/champions/이름.jpg" data-p="${pi}" data-ci="${ci}" data-cf="image" value="${c.image}" />
+            <input type="number" placeholder="승률%" data-p="${pi}" data-ci="${ci}" data-cf="winRate" value="${c.winRate}" style="max-width:70px" />
+            <input type="number" step="0.1" placeholder="KDA" data-p="${pi}" data-ci="${ci}" data-cf="kda" value="${c.kda}" style="max-width:60px" />
+            <input type="number" placeholder="게임수" data-p="${pi}" data-ci="${ci}" data-cf="games" value="${c.games}" style="max-width:70px" />
+            <button class="remove-btn" onclick="removeChamp(${pi},${ci})">✕</button>
+          </div>`).join('')}</div>
+        <button class="add-btn" style="margin-bottom:16px" onclick="addChamp(${pi})">+ 챔피언 추가</button>
+        <div style="margin-bottom:8px"><div class="form-section-title">커리어</div></div>
+        <div id="p-career-${pi}" class="list-editor">${p.career.map((c,ci)=>`
+          <div class="list-item">
+            <input placeholder="기간" data-p="${pi}" data-ci="${ci}" data-cc="year" value="${c.year}" style="max-width:120px" />
+            <input placeholder="팀/조직" data-p="${pi}" data-ci="${ci}" data-cc="org" value="${c.org}" />
+            <input placeholder="역할" data-p="${pi}" data-ci="${ci}" data-cc="role" value="${c.role}" style="max-width:140px" />
+            <button class="remove-btn" onclick="removeCareer('players',${pi},${ci})">✕</button>
+          </div>`).join('')}</div>
+        <button class="add-btn" style="margin-bottom:16px" onclick="addCareer('players',${pi})">+ 커리어 추가</button>
+        <div style="margin-bottom:8px"><div class="form-section-title">수상</div></div>
+        <div id="p-awards-${pi}" class="list-editor">${(p.awards||[]).map((a,ai)=>`
+          <div class="list-item">
+            <input data-p="${pi}" data-ai="${ai}" value="${a}" />
+            <button class="remove-btn" onclick="removeAward(${pi},${ai})">✕</button>
+          </div>`).join('')}</div>
+        <button class="add-btn" onclick="addAward(${pi})">+ 수상 추가</button>
+      </div>
+    `;
+    el.appendChild(acc);
+  });
+}
+
+// ── FILE PICKER ────────────────────────────────────
+function pickFile(inputId, previewId, accept) {
+  const picker = document.createElement('input');
+  picker.type = 'file';
+  picker.accept = accept || 'image/*';
+  picker.onchange = function() {
+    const file = this.files[0];
+    if (!file) return;
+
+    // 3MB 초과 경고
+    if (file.size > 3 * 1024 * 1024) {
+      alert(`파일이 너무 큽니다 (${(file.size/1024/1024).toFixed(1)}MB).\n3MB 이하 이미지를 권장합니다. 큰 파일은 저장에 실패할 수 있습니다.`);
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const dataUrl = e.target.result;
+      const inp = document.getElementById(inputId);
+      if (inp) {
+        inp.value = dataUrl;
+        inp.classList.add('has-file');
+        // 파일명 표시 배지
+        let badge = inp.closest('.file-input-row') && inp.closest('.file-input-row').parentNode.querySelector('.file-badge');
+        if (!badge) {
+          badge = document.createElement('div');
+          badge.className = 'file-badge';
+          const row = inp.closest('.file-input-row') || inp.parentNode;
+          row.parentNode.insertBefore(badge, row.nextSibling);
+        }
+        badge.textContent = '✓  ' + file.name;
+        inp.dispatchEvent(new Event('input'));
+      }
+      if (previewId) {
+        const wrap = document.getElementById(previewId);
+        if (wrap) {
+          wrap.classList.add('show');
+          wrap.innerHTML = `<img src="${dataUrl}" /><span class='preview-label'>미리보기</span>`;
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+  picker.click();
+}
+
+// ── IMAGE PREVIEW ──────────────────────────────────
+function previewImg(input, previewId) {
+  const wrap = document.getElementById(previewId);
+  if (!wrap) return;
+  const url = input.value.trim();
+  if (!url) {
+    wrap.classList.remove('show');
+    wrap.innerHTML = '';
+    return;
+  }
+  wrap.classList.add('show');
+  wrap.innerHTML = `<img src="${url}" onerror="this.parentNode.innerHTML='<div class=\\'preview-error\\'>이미지를 불러올 수 없습니다</div>'" /><span class='preview-label'>배너 미리보기</span>`;
+}
+
+function previewThumb(input, previewId) {
+  const wrap = document.getElementById(previewId);
+  if (!wrap) return;
+  const url = input.value.trim();
+  if (!url) {
+    wrap.classList.remove('show');
+    wrap.innerHTML = '';
+    return;
+  }
+  wrap.classList.add('show');
+  wrap.innerHTML = `<img src="${url}" onerror="this.style.display='none'" />`;
+}
+
+function toggleAcc(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+function removeChamp(pi, ci) { DATA.players[pi].champions.splice(ci,1); buildPlayersEditor(); }
+function addChamp(pi) { DATA.players[pi].champions.push({name:'',image:'',winRate:0,kda:0,games:0}); buildPlayersEditor(); }
+function removeCareer(type, pi, ci) { DATA[type][pi].career.splice(ci,1); type==='players'?buildPlayersEditor():buildStaffEditor(); }
+function addCareer(type, pi) { DATA[type][pi].career.push({year:'',org:'',role:''}); type==='players'?buildPlayersEditor():buildStaffEditor(); }
+function removeAward(pi, ai) { DATA.players[pi].awards.splice(ai,1); buildPlayersEditor(); }
+function addAward(pi) { DATA.players[pi].awards.push(''); buildPlayersEditor(); }
+
+// ── STAFF ──────────────────────────────────────────
+function buildStaffEditor() {
+  const el = document.getElementById('staff-editor');
+  el.innerHTML = '';
+  DATA.staff.forEach((s, si) => {
+    const acc = document.createElement('div');
+    acc.className = 'player-accordion';
+    acc.innerHTML = `
+      <div class="player-acc-header" onclick="toggleAcc(this)">
+        <div><span class="pos-badge">${s.roleKo}</span> <h3>${s.nickname}</h3></div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="player-acc-body">
+        <div class="form-row">
+          <div class="form-group"><label>닉네임</label><input class="form-input" data-si="${si}" data-sf="nickname" value="${s.nickname||''}" /></div>
+          <div class="form-group"><label>역할 (영)</label><input class="form-input" data-si="${si}" data-sf="role" value="${s.role||''}" /></div>
+          <div class="form-group"><label>역할 (한)</label><input class="form-input" data-si="${si}" data-sf="roleKo" value="${s.roleKo||''}" /></div>
+          <div class="form-group"><label>실명 (영)</label><input class="form-input" data-si="${si}" data-sf="realName" value="${s.realName||''}" /></div>
+          <div class="form-group"><label>실명 (한)</label><input class="form-input" data-si="${si}" data-sf="realNameKo" value="${s.realNameKo||''}" /></div>
+          <div class="form-group"><label>나이</label><input class="form-input" type="number" data-si="${si}" data-sf="age" value="${s.age||''}" /></div>
+          <div class="form-group"><label>합류</label><span class="field-hint">합류 연도 — 예: 2022</span><input class="form-input" type="number" data-si="${si}" data-sf="joinYear" value="${s.joinYear||''}" /></div>
+          <div class="form-group">
+            <label>사진 경로 (팝업 좌측)</label>
+            <span class="field-hint">권장: 세로형 2:3 · 최소 600×900px · JPG/PNG<br>저장 경로: assets/images/staff/닉네임.jpg</span>
+            <div class="file-input-row" style="margin-top:4px;">
+              <input class="form-input" id="s-photo-${si}" data-si="${si}" data-sf="photo" value="${s.photo||''}" />
+              <button class="file-pick-btn" onclick="pickFile('s-photo-${si}',null,'image/*')">📁 파일 선택</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label>지도 철학</label>
+          <span class="field-hint">팝업에 표시되는 한 마디. 짧고 강렬하게</span>
+          <textarea class="form-textarea" data-si="${si}" data-sf="philosophy" style="margin-top:4px">${s.philosophy||''}</textarea>
+        </div>
+        <div style="margin-bottom:8px"><div class="form-section-title">커리어</div></div>
+        <div id="s-career-${si}" class="list-editor">${s.career.map((c,ci)=>`
+          <div class="list-item">
+            <input placeholder="기간" data-si="${si}" data-ci="${ci}" data-sc="year" value="${c.year}" style="max-width:120px" />
+            <input placeholder="팀/조직" data-si="${si}" data-ci="${ci}" data-sc="org" value="${c.org}" />
+            <input placeholder="역할" data-si="${si}" data-ci="${ci}" data-sc="role" value="${c.role}" style="max-width:140px" />
+            <button class="remove-btn" onclick="removeCareer('staff',${si},${ci})">✕</button>
+          </div>`).join('')}</div>
+        <button class="add-btn" onclick="addCareer('staff',${si})">+ 커리어 추가</button>
+      </div>`;
+    el.appendChild(acc);
+  });
+}
+
+// ── RESULTS ────────────────────────────────────────
+function buildResultsEditor() {
+  const el = document.getElementById('results-editor');
+  el.innerHTML = '';
+  DATA.results.forEach((r,i) => {
+    el.innerHTML += `<div class="list-item">
+      <input placeholder="날짜" data-ri="${i}" data-rf="date" value="${r.date}" style="max-width:110px" />
+      <input placeholder="상대팀" data-ri="${i}" data-rf="opponent" value="${r.opponent}" />
+      <input placeholder="스코어" data-ri="${i}" data-rf="score" value="${r.score}" style="max-width:70px" />
+      <select data-ri="${i}" data-rf="result" style="background:var(--bg3);border:0.5px solid var(--border);color:var(--text);padding:8px;">
+        <option value="W" ${r.result==='W'?'selected':''}>W</option>
+        <option value="L" ${r.result==='L'?'selected':''}>L</option>
+      </select>
+      <input placeholder="스테이지" data-ri="${i}" data-rf="stage" value="${r.stage||''}" />
+      <button class="remove-btn" onclick="removeItem('results',${i})">✕</button>
+    </div>`;
+  });
+}
+
+function addResult() { DATA.results.unshift({date:'',opponent:'',score:'',result:'W',stage:'LCK Summer'}); buildResultsEditor(); }
+
+// ── SCHEDULE ───────────────────────────────────────
+function buildScheduleEditor() {
+  const el = document.getElementById('schedule-editor');
+  el.innerHTML = '';
+  DATA.schedule.forEach((s,i) => {
+    el.innerHTML += `<div class="list-item">
+      <input placeholder="날짜" data-sci="${i}" data-scf="date" value="${s.date}" style="max-width:110px" />
+      <input placeholder="상대팀" data-sci="${i}" data-scf="opponent" value="${s.opponent}" />
+      <input placeholder="시간" data-sci="${i}" data-scf="time" value="${s.time}" style="max-width:80px" />
+      <input placeholder="스테이지" data-sci="${i}" data-scf="stage" value="${s.stage||''}" />
+      <button class="remove-btn" onclick="removeItem('schedule',${i})">✕</button>
+    </div>`;
+  });
+}
+
+function addSchedule() { DATA.schedule.push({date:'',opponent:'',time:'',stage:'LCK Summer'}); buildScheduleEditor(); }
+
+// ── GALLERY ────────────────────────────────────────
+function buildGalleryEditor() {
+  const el = document.getElementById('gallery-editor');
+  el.innerHTML = '';
+  DATA.gallery.forEach((g,i) => {
+    el.innerHTML += `<div class="list-item">
+      <input placeholder="이미지 경로" data-gi="${i}" data-gf="src" value="${g.src}" />
+      <input placeholder="캡션" data-gi="${i}" data-gf="caption" value="${g.caption}" />
+      <button class="remove-btn" onclick="removeItem('gallery',${i})">✕</button>
+    </div>`;
+  });
+}
+
+function addGallery() { DATA.gallery.push({src:'',caption:''}); buildGalleryEditor(); }
+
+// ── SPONSORS ───────────────────────────────────────
+function buildSponsorsEditor() {
+  const el = document.getElementById('sponsors-editor');
+  el.innerHTML = '';
+  DATA.sponsors.forEach((s,i) => {
+    el.innerHTML += `<div class="list-item">
+      <input placeholder="스폰서명" data-spi="${i}" data-spf="name" value="${s.name}" />
+      <input placeholder="로고 경로" data-spi="${i}" data-spf="logo" value="${s.logo||''}" />
+      <input placeholder="URL" data-spi="${i}" data-spf="url" value="${s.url||''}" />
+      <button class="remove-btn" onclick="removeItem('sponsors',${i})">✕</button>
+    </div>`;
+  });
+}
+
+function addSponsor() { DATA.sponsors.push({name:'',logo:'',url:'#'}); buildSponsorsEditor(); }
+
+// ── BANNERS ────────────────────────────────────────
+function buildBannersEditor() {
+  if (!DATA.banners) DATA.banners = [];
+  const el = document.getElementById('banners-editor');
+  el.innerHTML = '';
+  DATA.banners.forEach((b, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'margin-bottom:20px;background:var(--bg2);border:0.5px solid var(--border);padding:16px;';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <span style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);">배너 ${i + 1}</span>
+        <button class="remove-btn" onclick="removeBanner(${i})">✕ 삭제</button>
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>유튜브 영상 URL (영상 배너)</label>
+        <span class="field-hint" style="margin-bottom:4px;display:block;">유튜브 공유 → 퍼가기 iframe 코드 전체 붙여넣기 가능 · 또는 단순 URL도 가능<br>예: https://youtu.be/XXXXXXX &nbsp;·&nbsp; 자동재생·음소거·반복으로 배경 재생됩니다<br>영상과 이미지를 둘 다 입력한 경우 영상이 우선 표시됩니다</span>
+        <input class="form-input" data-bi="${i}" data-bf="video" value="${b.video||''}" placeholder="https://youtu.be/... 또는 iframe 코드 전체" />
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>이미지 경로 또는 URL (이미지 배너)</label>
+        <span class="field-hint" style="margin-bottom:4px;display:block;">권장: 1920×1080px · 16:9 · JPG &nbsp;·&nbsp; 파일 선택 또는 assets/images/banners/01.jpg · https://... 입력</span>
+        <div class="file-input-row" style="margin-top:4px;">
+          <input class="form-input" id="bnr-img-${i}" data-bi="${i}" data-bf="image" value="${b.image||''}"
+            oninput="previewBannerImg(this, 'bprev-${i}')" placeholder="assets/images/banners/01.jpg  또는  https://..." />
+          <button class="file-pick-btn" onclick="pickFile('bnr-img-${i}','bprev-${i}','image/*')">📁 파일 선택</button>
+        </div>
+        <div class="img-preview-wrap ${b.image ? 'show' : ''}" id="bprev-${i}" style="margin-top:8px;">
+          ${b.image ? `<img src="${b.image}" onerror="this.parentNode.innerHTML='<div class=\\'preview-error\\'>이미지를 불러올 수 없습니다</div>'" /><span class='preview-label'>이미지 미리보기</span>` : ''}
+        </div>
+      </div>
+      <div class="form-group">
+        <label>캡션 (선택)</label>
+        <input class="form-input" data-bi="${i}" data-bf="caption" value="${b.caption||''}" placeholder="배너 하단에 표시될 텍스트" style="margin-top:4px;" />
+      </div>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function previewBannerImg(input, previewId) {
+  const wrap = document.getElementById(previewId);
+  if (!wrap) return;
+  const url = input.value.trim();
+  if (!url) { wrap.classList.remove('show'); wrap.innerHTML = ''; return; }
+  wrap.classList.add('show');
+  wrap.innerHTML = `<img src="${url}" onerror="this.parentNode.innerHTML='<div class=\\'preview-error\\'>이미지를 불러올 수 없습니다</div>'" /><span class='preview-label'>배너 미리보기</span>`;
+}
+
+function addBanner() {
+  if (!DATA.banners) DATA.banners = [];
+  DATA.banners.push({ image: '', video: '', caption: '' });
+  buildBannersEditor();
+}
+
+function removeBanner(idx) {
+  DATA.banners.splice(idx, 1);
+  buildBannersEditor();
+}
+
+function removeItem(type, idx) { DATA[type].splice(idx,1); ({results:buildResultsEditor,schedule:buildScheduleEditor,gallery:buildGalleryEditor,sponsors:buildSponsorsEditor,banners:buildBannersEditor})[type](); }
+
+// ── COLLECT DATA ───────────────────────────────────
+function collectData() {
+  // Team
+  DATA.team.name = v('t-name'); DATA.team.fullName = v('t-fullname');
+  DATA.team.league = v('t-league'); DATA.team.founded = v('t-founded');
+  DATA.team.city = v('t-city'); DATA.team.season = v('t-season');
+  DATA.team.slogan = v('t-slogan'); DATA.team.standing = +v('t-standing');
+  DATA.team.record.wins = +v('t-wins'); DATA.team.record.losses = +v('t-losses');
+  DATA.team.winRate = +v('t-winrate'); DATA.team.worldsAppearances = +v('t-worlds');
+  DATA.team.social.twitter = v('t-twitter'); DATA.team.social.instagram = v('t-instagram'); DATA.team.social.youtube = v('t-youtube');
+
+  // Players
+  document.querySelectorAll('[data-p][data-f]').forEach(el => {
+    const pi = +el.dataset.p, f = el.dataset.f;
+    DATA.players[pi][f] = ['number','age','joinYear','games'].includes(f) ? +el.value : el.value;
+  });
+  document.querySelectorAll('[data-p][data-s]').forEach(el => {
+    DATA.players[+el.dataset.p].stats[el.dataset.s] = +el.value;
+  });
+  document.querySelectorAll('[data-p][data-ci][data-cf]').forEach(el => {
+    const p=+el.dataset.p,ci=+el.dataset.ci,f=el.dataset.cf;
+    if(DATA.players[p].champions[ci]) DATA.players[p].champions[ci][f] = ['winRate','kda','games'].includes(f)?+el.value:el.value;
+  });
+  document.querySelectorAll('[data-p][data-ci][data-cc]').forEach(el => {
+    const p=+el.dataset.p,ci=+el.dataset.ci,f=el.dataset.cc;
+    if(DATA.players[p].career[ci]) DATA.players[p].career[ci][f] = el.value;
+  });
+  document.querySelectorAll('[data-p][data-ai]').forEach(el => {
+    const p=+el.dataset.p,ai=+el.dataset.ai;
+    if(DATA.players[p].awards[ai]!==undefined) DATA.players[p].awards[ai] = el.value;
+  });
+
+  // Staff
+  document.querySelectorAll('[data-si][data-sf]').forEach(el => {
+    const si=+el.dataset.si,f=el.dataset.sf;
+    DATA.staff[si][f] = ['age','joinYear'].includes(f)?+el.value:el.value;
+  });
+  document.querySelectorAll('[data-si][data-ci][data-sc]').forEach(el => {
+    const si=+el.dataset.si,ci=+el.dataset.ci,f=el.dataset.sc;
+    if(DATA.staff[si].career[ci]) DATA.staff[si].career[ci][f]=el.value;
+  });
+
+  // Results
+  document.querySelectorAll('[data-ri][data-rf]').forEach(el => {
+    if(DATA.results[+el.dataset.ri]) DATA.results[+el.dataset.ri][el.dataset.rf]=el.value;
+  });
+  // Schedule
+  document.querySelectorAll('[data-sci][data-scf]').forEach(el => {
+    if(DATA.schedule[+el.dataset.sci]) DATA.schedule[+el.dataset.sci][el.dataset.scf]=el.value;
+  });
+  // Gallery
+  document.querySelectorAll('[data-gi][data-gf]').forEach(el => {
+    if(DATA.gallery[+el.dataset.gi]) DATA.gallery[+el.dataset.gi][el.dataset.gf]=el.value;
+  });
+  // Sponsors
+  document.querySelectorAll('[data-spi][data-spf]').forEach(el => {
+    if(DATA.sponsors[+el.dataset.spi]) DATA.sponsors[+el.dataset.spi][el.dataset.spf]=el.value;
+  });
+  // Banners
+  document.querySelectorAll('[data-bi][data-bf]').forEach(el => {
+    if(DATA.banners[+el.dataset.bi]) DATA.banners[+el.dataset.bi][el.dataset.bf]=el.value;
+  });
+}
+
+function saveData() {
+  collectData();
+  localStorage.setItem('odod_data', JSON.stringify(DATA));
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+function resetData() {
+  if (!confirm('모든 데이터를 기본값으로 초기화하시겠습니까?')) return;
+  localStorage.removeItem('odod_data');
+  DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  initAdmin();
+}
+</script>
+</body>
+</html>
