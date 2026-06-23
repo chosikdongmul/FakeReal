@@ -1,7 +1,3 @@
-/* ════════════════════════════════════════════════
-   ODOD — main.js
-   ════════════════════════════════════════════════ */
-
 const DEFAULT_DATA = {
   "team": {
     "name": "ODOD",
@@ -543,7 +539,7 @@ const DEFAULT_DATA = {
       "caption": ""
     },
     {
-      "image": "",
+      "image": "assets/images/bannertest.png",
       "video": "",
       "caption": ""
     }
