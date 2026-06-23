@@ -1,3 +1,7 @@
+
+/* ⚠️ 경고: 영상 배너 1개가 이미지 없이 등록됨.
+   YouTube 퍼가기 차단 시 다른 사람 화면에 빈 슬라이드로 표시됩니다.
+   이미지 배너와 함께 사용하거나, 직접 올린 YouTube 영상만 사용하세요. */
 const DEFAULT_DATA = {
   "team": {
     "name": "ODOD",
@@ -112,8 +116,6 @@ const DEFAULT_DATA = {
       "joinYear": 2023,
       "games": 87,
       "photo": "assets/images/players/ironwall.jpg",
-      "photoThumb": "assets/images/players/ironwall_thumb.jpg",
-      "bannerImage": "assets/images/players/ironwall_banner.jpg",
       "highlight": "",
       "stats": {
         "kda": 3.2,
@@ -161,7 +163,9 @@ const DEFAULT_DATA = {
       "awards": [
         "2024 LCK Summer All-Pro Team (3rd)"
       ],
-      "social": {}
+      "social": {},
+      "bannerImage": "",
+      "photoThumb": ""
     },
     {
       "id": "feral",
@@ -177,8 +181,6 @@ const DEFAULT_DATA = {
       "joinYear": 2024,
       "games": 54,
       "photo": "assets/images/players/feral.jpg",
-      "photoThumb": "assets/images/players/feral_thumb.jpg",
-      "bannerImage": "assets/images/players/feral_banner.jpg",
       "highlight": "",
       "stats": {
         "kda": 4.1,
@@ -224,7 +226,9 @@ const DEFAULT_DATA = {
         }
       ],
       "awards": [],
-      "social": {}
+      "social": {},
+      "bannerImage": "",
+      "photoThumb": ""
     },
     {
       "id": "overdrive",
@@ -241,8 +245,6 @@ const DEFAULT_DATA = {
       "games": 134,
       "isAce": true,
       "photo": "assets/images/players/overdrive.jpg",
-      "photoThumb": "assets/images/players/overdrive_thumb.jpg",
-      "bannerImage": "assets/images/players/overdrive_banner.jpg",
       "highlight": "",
       "stats": {
         "kda": 5.8,
@@ -287,7 +289,9 @@ const DEFAULT_DATA = {
         "2024 LCK Spring All-Pro Team (1st)",
         "2024 Worlds Quarterfinals"
       ],
-      "social": {}
+      "social": {},
+      "bannerImage": "",
+      "photoThumb": ""
     },
     {
       "id": "buckshot",
@@ -303,8 +307,6 @@ const DEFAULT_DATA = {
       "joinYear": 2022,
       "games": 112,
       "photo": "assets/images/players/buckshot.jpg",
-      "photoThumb": "assets/images/players/buckshot_thumb.jpg",
-      "bannerImage": "assets/images/players/buckshot_banner.jpg",
       "highlight": "",
       "stats": {
         "kda": 4.4,
@@ -352,7 +354,9 @@ const DEFAULT_DATA = {
       "awards": [
         "2024 LCK Spring All-Pro Team (2nd)"
       ],
-      "social": {}
+      "social": {},
+      "bannerImage": "",
+      "photoThumb": ""
     },
     {
       "id": "shackle",
@@ -368,8 +372,6 @@ const DEFAULT_DATA = {
       "joinYear": 2022,
       "games": 134,
       "photo": "assets/images/players/shackle.jpg",
-      "photoThumb": "assets/images/players/shackle_thumb.jpg",
-      "bannerImage": "assets/images/players/shackle_banner.jpg",
       "highlight": "",
       "stats": {
         "kda": 6.2,
@@ -418,7 +420,9 @@ const DEFAULT_DATA = {
         "2023 LCK Summer All-Pro Team (2nd)",
         "2024 LCK Summer All-Pro Team (1st)"
       ],
-      "social": {}
+      "social": {},
+      "bannerImage": "",
+      "photoThumb": ""
     }
   ],
   "results": [
@@ -533,6 +537,11 @@ const DEFAULT_DATA = {
     }
   ],
   "banners": [
+    {
+      "image": "",
+      "video": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/hL2AHOehBy4?si=q3pFUyFwfg5X1aRK\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+      "caption": ""
+    },
     {
       "image": "assets/images/bannertest.png",
       "video": "",

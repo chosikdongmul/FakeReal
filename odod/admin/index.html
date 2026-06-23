@@ -635,6 +635,21 @@ function loadData() {
 
 let DATA = loadData();
 
+// 배포된 data.js를 fetch해서 로컬스토리지와 병합
+// → 어드민이 항상 배포 최신 데이터를 기반으로 시작
+(async function syncFromDeployedData() {
+  if (localStorage.getItem('odod_data')) return; // 이미 로컬 저장 데이터 있으면 스킵
+  try {
+    const resp = await fetch('../js/data.js?_=' + Date.now());
+    if (!resp.ok) return;
+    const text = await resp.text();
+    const fn = new Function(text + '; return DEFAULT_DATA;');
+    const deployed = fn();
+    DATA = deployed;
+    initAdmin();
+  } catch(e) { /* 오프라인이거나 로컬파일 환경 → 무시 */ }
+})();
+
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -948,25 +963,30 @@ function buildBannersEditor() {
       <div class="form-group" style="margin-bottom:12px;">
         <label>유튜브 영상 URL (영상 배너)</label>
         <span class="field-hint" style="margin-bottom:4px;display:block;">유튜브 공유 → 퍼가기 iframe 코드 전체 붙여넣기 가능 · 또는 단순 URL도 가능<br>예: https://youtu.be/XXXXXXX &nbsp;·&nbsp; 자동재생·음소거·반복으로 배경 재생됩니다<br>영상과 이미지를 둘 다 입력한 경우 영상이 우선 표시됩니다</span>
-        <input class="form-input" data-bi="${i}" data-bf="video" value="${b.video||''}" placeholder="https://youtu.be/... 또는 iframe 코드 전체" />
+        <input class="form-input" id="bnr-vid-${i}" data-bi="${i}" data-bf="video" placeholder="https://youtu.be/... 또는 iframe 코드 전체" />
       </div>
       <div class="form-group" style="margin-bottom:12px;">
         <label>이미지 경로 또는 URL (이미지 배너)</label>
         <span class="field-hint" style="margin-bottom:4px;display:block;">권장: 1920×1080px · 16:9 · JPG &nbsp;·&nbsp; 이미지를 odod/assets/images/ 폴더에 넣은 후 경로 입력 (예: assets/images/banner1.jpg) 또는 https://... 외부 URL</span>
         <div class="file-input-row" style="margin-top:4px;">
-          <input class="form-input" id="bnr-img-${i}" data-bi="${i}" data-bf="image" value="${b.image||''}"
+          <input class="form-input" id="bnr-img-${i}" data-bi="${i}" data-bf="image"
             oninput="previewBannerImg(this, 'bprev-${i}')" placeholder="assets/images/banners/01.jpg  또는  https://..." />
         </div>
-        <div class="img-preview-wrap ${b.image ? 'show' : ''}" id="bprev-${i}" style="margin-top:8px;">
-          ${b.image ? `<img src="${b.image}" onerror="this.parentNode.innerHTML='<div class=\\'preview-error\\'>이미지를 불러올 수 없습니다</div>'" /><span class='preview-label'>이미지 미리보기</span>` : ''}
-        </div>
+        <div class="img-preview-wrap" id="bprev-${i}" style="margin-top:8px;"></div>
       </div>
       <div class="form-group">
         <label>캡션 (선택)</label>
-        <input class="form-input" data-bi="${i}" data-bf="caption" value="${b.caption||''}" placeholder="배너 하단에 표시될 텍스트" style="margin-top:4px;" />
+        <input class="form-input" id="bnr-cap-${i}" data-bi="${i}" data-bf="caption" placeholder="배너 하단에 표시될 텍스트" style="margin-top:4px;" />
       </div>
     `;
     el.appendChild(row);
+
+    // 값은 DOM으로 직접 주입 (iframe 등 특수문자 안전하게)
+    row.querySelector(`#bnr-vid-${i}`).value = b.video || '';
+    const imgInp = row.querySelector(`#bnr-img-${i}`);
+    imgInp.value = b.image || '';
+    if (b.image) { imgInp.dispatchEvent(new Event('input')); }
+    row.querySelector(`#bnr-cap-${i}`).value = b.caption || '';
   });
 }
 
