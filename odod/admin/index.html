@@ -1064,9 +1064,29 @@ function saveData() {
   setTimeout(() => toast.classList.remove('show'), 2200);
 }
 
+function normalizeExportData(obj) {
+  if (typeof obj === 'string') return obj.replace(/\\/g, '/');
+  if (Array.isArray(obj)) return obj.map(normalizeExportData);
+  if (obj && typeof obj === 'object') {
+    const out = {};
+    for (const k in obj) out[k] = normalizeExportData(obj[k]);
+    return out;
+  }
+  return obj;
+}
+
 function openExport() {
   collectData();
-  const code = 'const DEFAULT_DATA = ' + JSON.stringify(DATA, null, 2) + ';';
+  const clean = normalizeExportData(DATA);
+
+  // video-only 배너 경고
+  const videoOnlyBanners = (clean.banners || []).filter(b => b.video && !b.image);
+  let warning = '';
+  if (videoOnlyBanners.length > 0) {
+    warning = `\n/* ⚠️ 경고: 영상 배너 ${videoOnlyBanners.length}개가 이미지 없이 등록됨.\n   YouTube 퍼가기 차단 시 다른 사람 화면에 빈 슬라이드로 표시됩니다.\n   이미지 배너와 함께 사용하거나, 직접 올린 YouTube 영상만 사용하세요. */\n`;
+  }
+
+  const code = warning + 'const DEFAULT_DATA = ' + JSON.stringify(clean, null, 2) + ';';
   document.getElementById('export-textarea').value = code;
   document.getElementById('export-modal').classList.add('open');
 }
