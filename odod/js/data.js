@@ -245,7 +245,7 @@ const DEFAULT_DATA = {
       "games": 134,
       "isAce": true,
       "photo": "assets/images/players/midplayer.jpg",
-      "highlight": "<iframe width=",
+      "highlight": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/PBkoTpaAiQY?si=mrcEUFsJrkaVG5s7\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
       "stats": {
         "kda": 5.8,
         "winRate": 70.1,
