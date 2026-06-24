@@ -46,10 +46,4 @@ GitHub Pages — `Settings → Pages → Deploy from branch (main)`
 
 배포 후 URL: `https://{username}.github.io/{repo-name}/`
 
-## 어드민 접근
 
-```
-{사이트URL}/odod/?admin=ODOD2025
-```
-
-하단 바 클릭 → 비밀번호 `ODOD2025`
