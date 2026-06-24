@@ -327,7 +327,7 @@ const DEFAULT_DATA = {
         },
         {
           "name": "KaiSa",
-          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/KaiSa.png",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Kaisa.png",
           "winRate": 66,
           "kda": 4.2,
           "games": 19
