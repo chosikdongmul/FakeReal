@@ -452,6 +452,8 @@
     <button class="tab-btn" onclick="switchTab('banners')">메인 배너</button>
     <button class="tab-btn" onclick="switchTab('mediakit')">미디어 킷</button>
     <button class="tab-btn" onclick="switchTab('sponsorship')">스폰서십 패키지</button>
+    <button class="tab-btn" onclick="switchTab('announcement')">공지 배너</button>
+    <button class="tab-btn" onclick="switchTab('goods')">굿즈 스토어</button>
     <button class="tab-btn" onclick="switchTab('live')" style="color:#e84545;border-bottom-color:transparent;" id="tab-live-btn">⬤ LIVE</button>
   </div>
 
@@ -600,12 +602,80 @@
 
   <!-- SPONSORSHIP TIERS -->
   <div class="tab-panel" id="panel-sponsorship">
+    <div class="form-section" style="margin-bottom:32px;">
+      <div class="form-section-title">소개 문구</div>
+      <div class="form-group">
+        <label>섹션 상단에 표시되는 파트너십 소개 텍스트</label>
+        <textarea class="form-input" id="sp-intro" rows="3" style="resize:vertical;"
+          placeholder="ODOD는 LCK 무대에서 성장하는 팀입니다..."></textarea>
+      </div>
+    </div>
+    <div class="form-section-title" style="margin-bottom:16px;">패키지 티어</div>
     <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.7;">
-      스폰서십 패키지 티어를 관리합니다. 순서대로 표시됩니다.<br>
-      마지막 티어가 Title 티어(주황 하이라이트)로 강조됩니다.
+      순서대로 표시됩니다. 마지막 티어가 Title(주황 하이라이트)로 강조됩니다.
     </p>
     <div id="sp-tiers-editor"></div>
     <button class="add-btn" onclick="addSpTier()">+ 티어 추가</button>
+  </div>
+
+  <!-- ANNOUNCEMENT -->
+  <div class="tab-panel" id="panel-announcement">
+    <div class="form-section">
+      <div class="form-section-title">공지사항 상단 배너</div>
+      <div class="form-row" style="align-items:center;margin-bottom:24px;">
+        <div class="form-group" style="flex-direction:row;align-items:center;gap:12px;">
+          <label style="white-space:nowrap;margin:0;">배너 활성화</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;">
+            <input type="checkbox" id="ann-active" style="width:18px;height:18px;accent-color:var(--orange);">
+            <span class="field-hint" style="margin:0;">켜면 페이지 최상단에 오렌지 배너가 표시됩니다</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>공지 메시지</label>
+          <input class="form-input" id="ann-message" type="text" placeholder="2026 LCK Summer 플레이오프 진출 확정! 응원해주세요 🔥">
+          <span class="field-hint">방문자가 ✕ 를 누르면 같은 메시지는 다시 표시되지 않습니다. 메시지가 바뀌면 자동 재표시됩니다.</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>링크 URL (선택)</label>
+          <input class="form-input" id="ann-link" type="text" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>링크 텍스트 (선택)</label>
+          <input class="form-input" id="ann-linkText" type="text" placeholder="자세히 보기">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOODS STORE -->
+  <div class="tab-panel" id="panel-goods">
+    <div class="form-section">
+      <div class="form-section-title">굿즈 스토어 설정</div>
+      <div class="form-row" style="align-items:center;margin-bottom:24px;">
+        <div class="form-group" style="flex-direction:row;align-items:center;gap:12px;">
+          <label style="white-space:nowrap;margin:0;">섹션 표시</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;">
+            <input type="checkbox" id="goods-active" style="width:18px;height:18px;accent-color:var(--orange);">
+            <span class="field-hint" style="margin:0;">켜면 미디어 킷 아래에 굿즈 스토어 섹션이 표시됩니다</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>공식 스토어 전체보기 URL</label>
+          <input class="form-input" id="goods-storeUrl" type="text" placeholder="https://shop.odod.gg">
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">상품 목록</div>
+      <div id="goods-editor"></div>
+      <button class="add-btn" onclick="addGoodsItem()">+ 상품 추가</button>
+    </div>
   </div>
 
   <!-- LIVE -->
@@ -770,7 +840,7 @@ let DATA = loadData();
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const tabs = ['team','players','staff','results','schedule','gallery','sponsors','banners','mediakit','sponsorship','live'];
+  const tabs = ['team','players','staff','results','schedule','gallery','sponsors','banners','mediakit','sponsorship','announcement','goods','live'];
   const idx = tabs.indexOf(name);
   if (idx !== -1) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
   const panel = document.getElementById('panel-' + name);
@@ -799,6 +869,8 @@ function initAdmin() {
   buildBannersEditor();
   buildMediakitEditor();
   buildSponsorshipTiersEditor();
+  buildAnnouncementEditor();
+  buildGoodsEditor();
   buildLiveEditor();
 }
 
@@ -868,6 +940,7 @@ function autoFillChampImg(nameInput) {
 }
 
 function buildSponsorshipTiersEditor() {
+  sv('sp-intro', DATA.sponsorshipIntro || '');
   if (!DATA.sponsorshipTiers) DATA.sponsorshipTiers = [];
   const el = document.getElementById('sp-tiers-editor');
   if (!el) return;
@@ -951,6 +1024,85 @@ function resetMvpVotes() {
   toast.textContent = 'MVP 투표가 초기화되었습니다.';
   toast.classList.add('show');
   setTimeout(() => { toast.classList.remove('show'); toast.textContent = prev; }, 2200);
+}
+
+function buildGoodsEditor() {
+  const store = DATA.goodsStore || {};
+  const activeEl = document.getElementById('goods-active');
+  if (activeEl) activeEl.checked = !!store.active;
+  sv('goods-storeUrl', store.storeUrl || '');
+
+  const el = document.getElementById('goods-editor');
+  if (!el) return;
+  el.innerHTML = '';
+  (store.items || []).forEach((item, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'margin-bottom:20px;background:var(--bg2);border:0.5px solid var(--border);padding:16px;';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <span style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);">상품 ${i + 1}</span>
+        <button class="remove-btn" onclick="removeGoodsItem(${i})">✕ 삭제</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>상품명</label>
+          <input class="form-input" data-gi="${i}" data-gf="name" placeholder="2026 홈 저지" value="${escHtml(item.name||'')}">
+        </div>
+        <div class="form-group">
+          <label>가격 (숫자만, ₩ 자동)</label>
+          <input class="form-input" data-gi="${i}" data-gf="price" placeholder="89,000" value="${escHtml(item.price||'')}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>설명</label>
+          <input class="form-input" data-gi="${i}" data-gf="desc" placeholder="공식 경기 유니폼 · 선수 넘버 커스텀 가능" value="${escHtml(item.desc||'')}">
+        </div>
+        <div class="form-group">
+          <label>뱃지 (NEW / SOLD OUT / 빈칸)</label>
+          <input class="form-input" data-gi="${i}" data-gf="badge" placeholder="NEW" value="${escHtml(item.badge||'')}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>이미지 경로 또는 URL</label>
+          <input class="form-input" data-gi="${i}" data-gf="image" placeholder="assets/images/goods/jersey.jpg" value="${escHtml(item.image||'')}">
+        </div>
+        <div class="form-group">
+          <label>상품 링크 URL</label>
+          <input class="form-input" data-gi="${i}" data-gf="url" placeholder="https://shop.odod.gg/jersey" value="${escHtml(item.url||'')}">
+        </div>
+      </div>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function addGoodsItem() {
+  if (!DATA.goodsStore) DATA.goodsStore = { active: true, storeUrl: '', items: [] };
+  if (!DATA.goodsStore.items) DATA.goodsStore.items = [];
+  DATA.goodsStore.items.push({ id: 'item-' + Date.now(), name: '', desc: '', price: '', badge: '', image: '', url: '#' });
+  buildGoodsEditor();
+}
+
+function removeGoodsItem(idx) {
+  if (DATA.goodsStore && DATA.goodsStore.items) {
+    DATA.goodsStore.items.splice(idx, 1);
+    buildGoodsEditor();
+  }
+}
+
+function buildAnnouncementEditor() {
+  const ann = DATA.announcement || {};
+  const activeEl = document.getElementById('ann-active');
+  if (activeEl) activeEl.checked = !!ann.active;
+  sv('ann-message',  ann.message  || '');
+  sv('ann-link',     ann.link     || '');
+  sv('ann-linkText', ann.linkText || '');
 }
 
 function buildLiveEditor() {
@@ -1363,7 +1515,8 @@ function collectData() {
   document.querySelectorAll('[data-bi][data-bf]').forEach(el => {
     if(DATA.banners[+el.dataset.bi]) DATA.banners[+el.dataset.bi][el.dataset.bf]=el.value;
   });
-  // Sponsorship Tiers
+  // Sponsorship intro + Tiers
+  DATA.sponsorshipIntro = v('sp-intro');
   if (DATA.sponsorshipTiers) {
     document.querySelectorAll('[data-ti][data-spf]').forEach(el => {
       const ti = +el.dataset.ti, f = el.dataset.spf;
@@ -1382,6 +1535,22 @@ function collectData() {
     if (!DATA.mediakit[k]) DATA.mediakit[k] = {};
     DATA.mediakit[k].file = v('mk-' + k);
   });
+  // Goods store
+  if (!DATA.goodsStore) DATA.goodsStore = { active: false, storeUrl: '', items: [] };
+  DATA.goodsStore.active   = document.getElementById('goods-active')?.checked || false;
+  DATA.goodsStore.storeUrl = v('goods-storeUrl');
+  document.querySelectorAll('[data-gi][data-gf]').forEach(el => {
+    const gi = +el.dataset.gi, f = el.dataset.gf;
+    if (DATA.goodsStore.items[gi]) DATA.goodsStore.items[gi][f] = el.value;
+  });
+
+  // Announcement
+  if (!DATA.announcement) DATA.announcement = {};
+  DATA.announcement.active   = document.getElementById('ann-active')?.checked || false;
+  DATA.announcement.message  = v('ann-message');
+  DATA.announcement.link     = v('ann-link');
+  DATA.announcement.linkText = v('ann-linkText');
+
   // Live
   if (!DATA.live) DATA.live = {};
   DATA.live.active     = document.getElementById('live-active')?.checked || false;

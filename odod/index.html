@@ -12,6 +12,9 @@
 </head>
 <body>
 
+  <!-- ── ANNOUNCEMENT BAR ── -->
+  <div id="announcement-bar" class="hidden"></div>
+
   <!-- ── NAV ── -->
   <nav id="nav">
     <a href="./index.html" class="nav-logo">
@@ -204,6 +207,18 @@
     <div class="mk-grid reveal" id="mk-grid"></div>
   </section>
 
+  <!-- ── GOODS STORE ── -->
+  <section id="goods" class="section section-divided" style="display:none;">
+    <div class="section-head reveal">
+      <span class="section-title">Store</span>
+      <span class="section-sub">팬 굿즈</span>
+    </div>
+    <div class="goods-grid reveal" id="goods-grid"></div>
+    <div class="goods-cta reveal">
+      <a class="goods-cta-btn" id="goods-store-link" href="#" target="_blank" rel="noopener">공식 스토어 전체보기 →</a>
+    </div>
+  </section>
+
   <!-- ── FOOTER ── -->
   <footer id="footer">
     <div class="footer-left">
@@ -251,6 +266,10 @@
         <hr class="popup-divider" />
 
         <div class="popup-stats-grid" id="popup-stats"></div>
+
+        <div id="popup-radar-wrap">
+          <canvas id="popup-radar" width="260" height="200"></canvas>
+        </div>
 
         <hr class="popup-divider" />
 

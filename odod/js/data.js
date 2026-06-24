@@ -577,6 +577,7 @@ const DEFAULT_DATA = {
       "url": "#"
     }
   ],
+  "sponsorshipIntro": "ODOD는 LCK 무대에서 성장하는 팀입니다. 저희와 함께하는 파트너사는 경기 중계, SNS, 유니폼, 공식 채널 등 다양한 노출 기회를 얻게 됩니다.",
   "sponsorshipTiers": [
     {
       "id": "bronze",
@@ -671,5 +672,53 @@ const DEFAULT_DATA = {
       "video": "",
       "caption": ""
     }
-  ]
+  ],
+  "goodsStore": {
+    "active": true,
+    "storeUrl": "#",
+    "items": [
+      {
+        "id": "jersey-2026",
+        "name": "2026 홈 저지",
+        "desc": "공식 경기 유니폼 · 선수 넘버 커스텀 가능",
+        "price": "89,000",
+        "badge": "NEW",
+        "image": "",
+        "url": "#"
+      },
+      {
+        "id": "hoodie",
+        "name": "ODOD 팀 후드",
+        "desc": "오버사이즈 · 오렌지 로고 자수",
+        "price": "69,000",
+        "badge": "",
+        "image": "",
+        "url": "#"
+      },
+      {
+        "id": "mousepad",
+        "name": "팀 마우스패드 XL",
+        "desc": "900×400mm · 선수 사인 프린트",
+        "price": "32,000",
+        "badge": "SOLD OUT",
+        "image": "",
+        "url": "#"
+      },
+      {
+        "id": "cap",
+        "name": "스냅백 캡",
+        "desc": "조절 가능 · 자수 로고",
+        "price": "39,000",
+        "badge": "",
+        "image": "",
+        "url": "#"
+      }
+    ]
+  },
+  "announcement": {
+    "active": true,
+    "message": "2026 LCK Summer 플레이오프 진출 확정! 응원해주세요 🔥",
+    "link": "",
+    "linkText": ""
+  }
 };

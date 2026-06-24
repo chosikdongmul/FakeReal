@@ -809,7 +809,7 @@ function renderSponsorship() {
 
   const introEl = document.getElementById('sp-intro-text');
   if (introEl) {
-    introEl.textContent = `${t.name}는 ${t.league} 무대에서 성장하는 팀입니다. 저희와 함께하는 파트너사는 경기 중계, SNS, 유니폼, 공식 채널 등 다양한 노출 기회를 얻게 됩니다.`;
+    introEl.textContent = DATA.sponsorshipIntro || `${t.name}는 ${t.league} 무대에서 성장하는 팀입니다.`;
   }
 
   const tiers = DATA.sponsorshipTiers || [];
@@ -1036,6 +1036,10 @@ function openPlayerPopup(p, idx) {
     <div class="popup-stat"><div class="popup-stat-val">${s.assists}</div><div class="popup-stat-lbl">어시스트</div></div>
   `;
 
+  // Radar chart
+  const radarCanvas = document.getElementById('popup-radar');
+  if (radarCanvas) drawRadarChart(radarCanvas, s);
+
   const champsEl = document.getElementById('popup-champs');
   champsEl.innerHTML = '';
   (p.champions || []).forEach(c => {
@@ -1097,6 +1101,101 @@ function openPlayerPopup(p, idx) {
 
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
+}
+
+// ── RADAR CHART ────────────────────────────────────────
+function drawRadarChart(canvas, stats) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const colorGrid   = isDark ? 'rgba(245,240,232,0.07)' : 'rgba(26,22,16,0.08)';
+  const colorLabel  = isDark ? 'rgba(245,240,232,0.45)' : 'rgba(26,22,16,0.45)';
+  const colorFill   = 'rgba(212,113,78,0.18)';
+  const colorStroke = 'rgba(212,113,78,0.85)';
+  const colorDot    = '#d4714e';
+
+  const labels = ['KDA', '승률', 'CS/분', '킬', '데스↓', '어시'];
+  const maxes  = [6, 100, 10, 8, 8, 12];
+  const vals   = [
+    stats.kda      || 0,
+    stats.winRate  || 0,
+    stats.csPerMin || 0,
+    stats.kills    || 0,
+    stats.deaths   || 0,
+    stats.assists  || 0,
+  ];
+
+  // Normalize 0→1; deaths is inverted (lower = better)
+  const norm = vals.map((v, i) => {
+    const n = Math.min(v / maxes[i], 1);
+    return i === 4 ? Math.max(0, 1 - n) : n;
+  });
+
+  const N = labels.length;
+  const cx = W / 2, cy = H / 2 + 4;
+  const R = Math.min(W, H) * 0.34;
+  const RINGS = 4;
+
+  function pt(i, r) {
+    const a = (Math.PI * 2 * i / N) - Math.PI / 2;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  }
+
+  // Grid rings
+  ctx.strokeStyle = colorGrid;
+  ctx.lineWidth = 0.5;
+  for (let ring = 1; ring <= RINGS; ring++) {
+    ctx.beginPath();
+    for (let i = 0; i < N; i++) {
+      const [x, y] = pt(i, R * ring / RINGS);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  // Spokes
+  for (let i = 0; i < N; i++) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    const [x, y] = pt(i, R);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
+
+  // Filled polygon
+  ctx.beginPath();
+  norm.forEach((v, i) => {
+    const [x, y] = pt(i, R * v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = colorFill;
+  ctx.fill();
+  ctx.strokeStyle = colorStroke;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Dots
+  norm.forEach((v, i) => {
+    const [x, y] = pt(i, R * v);
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = colorDot;
+    ctx.fill();
+  });
+
+  // Labels
+  ctx.fillStyle = colorLabel;
+  ctx.font = '9px "Helvetica Neue", Helvetica, Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  labels.forEach((lbl, i) => {
+    const [x, y] = pt(i, R + 18);
+    ctx.fillText(lbl, x, y);
+  });
 }
 
 // ── POPUP: STAFF ───────────────────────────────────────
@@ -1220,11 +1319,97 @@ function toggleTheme() {
   applyTheme(current === 'dark' ? 'light' : 'dark');
 }
 
+// ── GOODS STORE ────────────────────────────────────────
+function renderGoodsStore() {
+  const store = DATA.goodsStore;
+  const section = document.getElementById('goods');
+  if (!section) return;
+  if (!store || !store.active) { section.style.display = 'none'; return; }
+  section.style.display = '';
+
+  const storeLink = document.getElementById('goods-store-link');
+  if (storeLink) storeLink.href = store.storeUrl || '#';
+
+  const grid = document.getElementById('goods-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  (store.items || []).forEach(item => {
+    const card = document.createElement('a');
+    card.className = 'goods-card';
+    card.href = item.url || '#';
+    if (item.url && item.url !== '#') { card.target = '_blank'; card.rel = 'noopener'; }
+
+    const badgeHtml = item.badge
+      ? `<span class="goods-card-badge ${item.badge === 'NEW' ? 'goods-badge-new' : 'goods-badge-soldout'}">${item.badge}</span>`
+      : '';
+
+    let imgHtml;
+    if (item.image) {
+      imgHtml = `<div class="goods-img-wrap"><img src="${item.image}" alt="${item.name}" onerror="this.parentNode.innerHTML='<div class=\\'goods-img-placeholder\\'><span>${item.name.charAt(0)}</span></div>'"></div>`;
+    } else {
+      imgHtml = `<div class="goods-img-wrap"><div class="goods-img-placeholder"><span>${item.name.charAt(0)}</span></div></div>`;
+    }
+
+    card.innerHTML = `
+      ${badgeHtml}
+      ${imgHtml}
+      <div class="goods-info">
+        <div class="goods-name">${item.name}</div>
+        <div class="goods-desc">${item.desc}</div>
+        <div class="goods-price">₩${item.price}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ── ANNOUNCEMENT BAR ───────────────────────────────────
+function renderAnnouncementBar() {
+  const bar = document.getElementById('announcement-bar');
+  if (!bar) return;
+  const ann = DATA.announcement;
+  if (!ann || !ann.active || !ann.message) {
+    bar.classList.add('hidden');
+    document.body.classList.remove('has-announcement');
+    return;
+  }
+
+  // Dismiss key based on message content
+  const dismissKey = 'odod_ann_' + btoa(unescape(encodeURIComponent(ann.message))).slice(0, 16);
+  if (localStorage.getItem(dismissKey) === '1') {
+    bar.classList.add('hidden');
+    document.body.classList.remove('has-announcement');
+    return;
+  }
+
+  const linkHtml = ann.link && ann.linkText
+    ? ` <a class="ann-link" href="${ann.link}" target="_blank" rel="noopener">${ann.linkText} →</a>`
+    : '';
+
+  bar.innerHTML = `
+    <span class="ann-message">${ann.message}${linkHtml}</span>
+    <button class="ann-dismiss" aria-label="닫기" onclick="dismissAnnouncement('${dismissKey}')">✕</button>
+  `;
+
+  bar.classList.remove('hidden');
+  bar.classList.add('bar-visible');
+  document.body.classList.add('has-announcement');
+}
+
+function dismissAnnouncement(key) {
+  localStorage.setItem(key, '1');
+  const bar = document.getElementById('announcement-bar');
+  if (bar) { bar.classList.add('hidden'); bar.classList.remove('bar-visible'); }
+  document.body.classList.remove('has-announcement');
+}
+
 // ── INIT ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // 저장된 테마 적용 (깜빡임 방지용 — HTML에 인라인 스크립트가 없어서 DOMContentLoaded에서 처리)
   applyTheme(localStorage.getItem('odod_theme') || 'dark');
 
+  renderAnnouncementBar();
   renderNav();
   renderLive();
   renderHero();
@@ -1239,6 +1424,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSponsors();
   renderSponsorship();
   renderMediaKit();
+  renderGoodsStore();
   renderFooter();
   initScrollEffects();
   checkAdmin();
