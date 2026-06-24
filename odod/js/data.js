@@ -245,7 +245,7 @@ const DEFAULT_DATA = {
       "games": 134,
       "isAce": true,
       "photo": "assets/images/players/midplayer.jpg",
-      "highlight": "",
+      "highlight": "https://youtube.com/shorts/105YX7hWSAs?si=2Xo4JgfEZO_kXpUF",
       "stats": {
         "kda": 5.8,
         "winRate": 70.1,
