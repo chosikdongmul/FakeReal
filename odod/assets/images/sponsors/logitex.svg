@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 80" width="260" height="80">
+  <rect width="260" height="80" fill="none"/>
+  <!-- lozenge mark -->
+  <polygon points="10,40 28,16 46,40 28,64" fill="#e8e0d4"/>
+  <text x="58" y="52" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="30" font-weight="300" fill="#e8e0d4" letter-spacing="-0.5">logitex</text>
+  <rect x="208" y="22" width="36" height="36" rx="4" fill="#c8601a"/>
+  <text x="214" y="48" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="22" font-weight="900" fill="#fff">G</text>
+</svg>

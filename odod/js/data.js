@@ -517,23 +517,23 @@ const DEFAULT_DATA = {
   ],
   "sponsors": [
     {
-      "name": "APEX Gaming Chairs",
-      "logo": "assets/images/sponsors/apex.png",
+      "name": "AXPEX Gaming",
+      "logo": "assets/images/sponsors/axpex.svg",
       "url": "#"
     },
     {
-      "name": "RedBull",
-      "logo": "assets/images/sponsors/redbull.png",
+      "name": "Red Wulf",
+      "logo": "assets/images/sponsors/redwulf.svg",
       "url": "#"
     },
     {
-      "name": "Logitech G",
-      "logo": "assets/images/sponsors/logitechg.png",
+      "name": "Logitex G",
+      "logo": "assets/images/sponsors/logitex.svg",
       "url": "#"
     },
     {
-      "name": "Samsung",
-      "logo": "assets/images/sponsors/samsung.png",
+      "name": "Sunsung",
+      "logo": "assets/images/sponsors/sunsung.svg",
       "url": "#"
     }
   ],
