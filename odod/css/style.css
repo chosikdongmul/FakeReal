@@ -1075,7 +1075,7 @@ a { color: inherit; text-decoration: none; }
 .popup-right {
   flex: 1;
   overflow-y: auto;
-  padding: 36px 32px;
+  padding: 40px 36px;
   scrollbar-width: thin;
   scrollbar-color: var(--border-light) transparent;
 }
@@ -1089,7 +1089,7 @@ a { color: inherit; text-decoration: none; }
 
 .popup-thumb {
   flex-shrink: 0;
-  width: 56px;
+  width: 68px;
   height: 56px;
   border-radius: 50%;
   overflow: hidden;
@@ -1119,15 +1119,15 @@ a { color: inherit; text-decoration: none; }
 
 /* Popup info */
 .popup-pos {
-  font-size: 10px;
-  letter-spacing: 0.2em;
+  font-size: 12px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--orange);
   margin-bottom: 8px;
 }
 
 .popup-nick {
-  font-size: 28px;
+  font-size: 34px;
   font-weight: 900;
   letter-spacing: -0.02em;
   color: var(--text);
@@ -1135,9 +1135,9 @@ a { color: inherit; text-decoration: none; }
 }
 
 .popup-realname {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .popup-divider {
@@ -1149,19 +1149,19 @@ a { color: inherit; text-decoration: none; }
 .popup-meta-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 20px;
 }
 
 .popup-meta-item {}
 .popup-meta-label {
-  font-size: 9px;
-  letter-spacing: 0.18em;
+  font-size: 11px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-dim);
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 .popup-meta-value {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text);
 }
 
@@ -1181,18 +1181,18 @@ a { color: inherit; text-decoration: none; }
 }
 
 .popup-stat-val {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text);
 }
 
 .popup-stat-lbl {
-  font-size: 9px;
-  letter-spacing: 0.14em;
+  font-size: 11px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-dim);
-  margin-top: 4px;
+  margin-top: 5px;
 }
 
 /* Champions */
@@ -1219,25 +1219,25 @@ a { color: inherit; text-decoration: none; }
 }
 
 .popup-champ-name {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text);
 }
 
 .popup-champ-stats {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: 5px;
   line-height: 1.6;
 }
 
 /* Career / Awards */
 .popup-section-title {
-  font-size: 9px;
-  letter-spacing: 0.2em;
+  font-size: 11px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-dim);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .popup-career-list, .popup-award-list {
