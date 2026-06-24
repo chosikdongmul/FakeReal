@@ -204,14 +204,18 @@ function renderHero() {
     if (prevBtn) prevBtn.onclick = () => goToSlide((_bannerIndex - 1 + banners.length) % banners.length);
     if (nextBtn) nextBtn.onclick = () => goToSlide((_bannerIndex + 1) % banners.length);
 
-    // 배너가 1개면 화살표 숨김
+    // 배너가 1개면 화살표 + 프로그레스 바 숨김
+    const pb = document.getElementById('banner-progress');
     if (banners.length <= 1) {
       if (prevBtn) prevBtn.style.display = 'none';
       if (nextBtn) nextBtn.style.display = 'none';
+      if (pb) pb.style.display = 'none';
     }
 
     if (_bannerTimer) clearInterval(_bannerTimer);
     if (banners.length > 1) {
+      resetProgressBar(); // 타이머와 동시에 시작
+
       _bannerTimer = setInterval(() => {
         goToSlide((_bannerIndex + 1) % banners.length);
       }, 7000);
@@ -225,6 +229,7 @@ function renderHero() {
         });
         heroEl.addEventListener('mouseleave', () => {
           if (_bannerTimer) clearInterval(_bannerTimer);
+          resetProgressBar(); // 타이머 재시작과 동시에 바도 재시작
           _bannerTimer = setInterval(() => {
             goToSlide((_bannerIndex + 1) % banners.length);
           }, 7000);
@@ -515,7 +520,7 @@ function resetProgressBar() {
   if (!pb) return;
   pb.style.animation = 'none';
   pb.offsetHeight; // force reflow
-  pb.style.animation = '';
+  pb.style.animation = 'bannerProgressAnim 7s linear forwards';
 }
 
 // ── GALLERY LIGHTBOX ───────────────────────────────────
