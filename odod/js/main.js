@@ -115,6 +115,10 @@ let _bannerTimer = null;
 
 function renderHero() {
   const t = DATA.team;
+  const tagEl = document.getElementById('hero-tag');
+  if (tagEl) tagEl.textContent = [t.league, t.city, t.founded].filter(Boolean).join(' · ');
+  const titleEl = document.getElementById('hero-title');
+  if (titleEl) titleEl.textContent = t.name;
   document.getElementById('hero-slogan').textContent = `"${t.slogan}"`;
 
   // ── Rolling banner (독립 banners 배열) ──────────────
