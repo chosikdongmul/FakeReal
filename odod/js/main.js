@@ -661,20 +661,25 @@ function renderMvpVote() {
   const voted = localStorage.getItem('odod_mvp_voted');
   const votedKey = localStorage.getItem('odod_mvp_voted_key');
 
-  // 가짜 투표 사전 시딩 (처음 로드 시 한 번만)
+  // 가짜 투표 사전 시딩 — 총 투표수가 500 미만이면 언제든 재시딩
   const countKey = 'odod_mvp_counts_' + matchKey;
-  if (!localStorage.getItem(countKey) && players.length > 0) {
+  const existingRaw = localStorage.getItem(countKey);
+  const existingCounts = existingRaw ? JSON.parse(existingRaw) : {};
+  const existingTotal = Object.values(existingCounts).reduce((s, v) => s + v, 0);
+
+  if (existingTotal < 500 && players.length > 0) {
     const seed = {};
-    // 각 선수별 시드값: KDA × 게임수 기반으로 현실적인 분포 생성
     const base = players.reduce((s, p) => s + (p.stats?.kda || 3) * (p.games || 50), 0);
     players.forEach(p => {
       const weight = (p.stats?.kda || 3) * (p.games || 50);
-      const raw = Math.round((weight / base) * 2800) + Math.floor(Math.random() * 180 + 20);
-      seed[p.id] = raw;
+      // 이미 투표된 수 보존 + 시드값 추가
+      const prev = existingCounts[p.id] || 0;
+      const seedVal = Math.round((weight / base) * 4200) + Math.floor(Math.random() * 300 + 80);
+      seed[p.id] = prev + seedVal;
     });
     // Ace 플레이어 보너스
     const ace = players.find(p => p.isAce);
-    if (ace) seed[ace.id] = Math.round(seed[ace.id] * 1.35);
+    if (ace) seed[ace.id] = Math.round(seed[ace.id] * 1.4);
     localStorage.setItem(countKey, JSON.stringify(seed));
   }
 
