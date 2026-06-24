@@ -809,7 +809,8 @@ function renderSponsorship() {
 
   const introEl = document.getElementById('sp-intro-text');
   if (introEl) {
-    introEl.textContent = DATA.sponsorshipIntro || `${t.name}는 ${t.league} 무대에서 성장하는 팀입니다.`;
+    const raw = DATA.sponsorshipIntro || `${t.name}는 ${t.league} 무대에서 성장하는 팀입니다.`;
+    introEl.innerHTML = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
   }
 
   const tiers = DATA.sponsorshipTiers || [];

@@ -492,19 +492,43 @@ const DEFAULT_DATA = {
   "gallery": [
     {
       "src": "assets/images/gallery/01.jpg",
-      "caption": "2025 LCK Summer 개막전"
+      "caption": "2025 LCK Summer 개막전",
+      "name": "2026 홈 저지",
+      "price": "89,000",
+      "desc": "공식 경기 유니폼 · 선수 넘버 커스텀 가능",
+      "badge": "NEW",
+      "image": "",
+      "url": "#"
     },
     {
       "src": "assets/images/gallery/02.jpg",
-      "caption": "팀 트레이닝 세션"
+      "caption": "팀 트레이닝 세션",
+      "name": "ODOD 팀 후드",
+      "price": "69,000",
+      "desc": "오버사이즈 · 오렌지 로고 자수",
+      "badge": "",
+      "image": "",
+      "url": "#"
     },
     {
       "src": "assets/images/gallery/03.jpg",
-      "caption": "Overdrive 솔로킬 클립"
+      "caption": "Overdrive 솔로킬 클립",
+      "name": "팀 마우스패드 XL",
+      "price": "32,000",
+      "desc": "900×400mm · 선수 사인 프린트",
+      "badge": "SOLD OUT",
+      "image": "",
+      "url": "#"
     },
     {
       "src": "assets/images/gallery/04.jpg",
-      "caption": "월드챔피언십 8강"
+      "caption": "월드챔피언십 8강",
+      "name": "스냅백 캡",
+      "price": "39,000",
+      "desc": "조절 가능 · 자수 로고",
+      "badge": "",
+      "image": "",
+      "url": "#"
     },
     {
       "src": "assets/images/gallery/05.jpg",
@@ -577,7 +601,7 @@ const DEFAULT_DATA = {
       "url": "#"
     }
   ],
-  "sponsorshipIntro": "ODOD는 LCK 무대에서 성장하는 팀입니다. 저희와 함께하는 파트너사는 경기 중계, SNS, 유니폼, 공식 채널 등 다양한 노출 기회를 얻게 됩니다.",
+  "sponsorshipIntro": "ODOD는 국내 최대 리그 오브 레전드 대회, LCK 무대에서 성장하는 팀입니다. \n저희와 함께하는 파트너사는 경기 중계, SNS, 유니폼, 공식 채널 등 다양한 노출 기회를 얻게 됩니다.",
   "sponsorshipTiers": [
     {
       "id": "bronze",
@@ -684,7 +708,9 @@ const DEFAULT_DATA = {
         "price": "89,000",
         "badge": "NEW",
         "image": "",
-        "url": "#"
+        "url": "#",
+        "src": "assets/images/gallery/01.jpg",
+        "caption": "2025 LCK Summer 개막전"
       },
       {
         "id": "hoodie",
@@ -693,7 +719,9 @@ const DEFAULT_DATA = {
         "price": "69,000",
         "badge": "",
         "image": "",
-        "url": "#"
+        "url": "#",
+        "src": "assets/images/gallery/02.jpg",
+        "caption": "팀 트레이닝 세션"
       },
       {
         "id": "mousepad",
@@ -702,7 +730,9 @@ const DEFAULT_DATA = {
         "price": "32,000",
         "badge": "SOLD OUT",
         "image": "",
-        "url": "#"
+        "url": "#",
+        "src": "assets/images/gallery/03.jpg",
+        "caption": "Overdrive 솔로킬 클립"
       },
       {
         "id": "cap",
@@ -711,7 +741,9 @@ const DEFAULT_DATA = {
         "price": "39,000",
         "badge": "",
         "image": "",
-        "url": "#"
+        "url": "#",
+        "src": "assets/images/gallery/04.jpg",
+        "caption": "월드챔피언십 8강"
       }
     ]
   },
