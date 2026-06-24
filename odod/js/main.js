@@ -518,6 +518,8 @@ function buildYoutubeUrl(url, muted) {
   const params = new URLSearchParams({
     autoplay: 1,
     mute: muted ? 1 : 0,
+    loop: 1,
+    playlist: videoId,
     rel: 0,
     modestbranding: 1,
     enablejsapi: 1,
