@@ -10,6 +10,61 @@ function loadData() {
 
 const DATA = loadData();
 
+// ── YOUTUBE IFRAME API ─────────────────────────────────
+// Load API script once; queue players until API is ready
+window._ytPendingPlayers = [];
+window._ytApiReady = false;
+
+window.onYouTubeIframeAPIReady = function () {
+  window._ytApiReady = true;
+  window._ytPendingPlayers.forEach(_createYtPlayer);
+  window._ytPendingPlayers = [];
+};
+
+function _loadYtApi() {
+  if (document.getElementById('yt-api-script')) return;
+  const s = document.createElement('script');
+  s.id = 'yt-api-script';
+  s.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(s);
+}
+
+function _createYtPlayer({ elementId, videoId, overlay }) {
+  // eslint-disable-next-line no-undef
+  new YT.Player(elementId, {
+    videoId,
+    playerVars: {
+      autoplay: 1, mute: 1, loop: 1, playlist: videoId,
+      controls: 0, rel: 0, modestbranding: 1,
+      playsinline: 1, disablekb: 1, iv_load_policy: 3,
+    },
+    events: {
+      onStateChange(e) {
+        // 1 = PLAYING — video actually started, remove overlay immediately
+        if (e.data === 1 && overlay) {
+          overlay.style.transition = 'opacity 0.5s ease';
+          overlay.style.opacity = '0';
+        }
+      },
+    },
+  });
+}
+
+function queueYtPlayer(config) {
+  _loadYtApi();
+  if (window._ytApiReady) _createYtPlayer(config);
+  else window._ytPendingPlayers.push(config);
+}
+
+function extractYouTubeId(input) {
+  if (!input) return '';
+  const srcMatch = input.match(/src=["']([^"']+)/);
+  const url = srcMatch ? srcMatch[1] : input;
+  const m1 = url.match(/youtube\.com\/embed\/([^?&"'\s]+)/);
+  const m2 = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?"\s]+)/);
+  return (m1 || m2 || [])[1] || '';
+}
+
 // ── IMG HELPER ─────────────────────────────────────────
 function imgOrPlaceholder(src, alt, cls = '') {
   const img = document.createElement('img');
@@ -100,22 +155,26 @@ function renderHero() {
           vid.setAttribute('playsinline', '');
           wrap.appendChild(vid);
         } else {
-          // YouTube embed
-          const embedUrl = buildYoutubeEmbedForBanner(b.video);
+          // YouTube embed — use IFrame API so we can detect PLAYING state
+          const videoId = extractYouTubeId(b.video);
+          const iframeId = 'yt-banner-' + i;
+          // Pre-create iframe so existing CSS sizing rules apply
           const iframe = document.createElement('iframe');
-          iframe.src = embedUrl;
+          iframe.id = iframeId;
           iframe.setAttribute('allow', 'autoplay; encrypted-media');
           iframe.setAttribute('allowfullscreen', '');
           wrap.appendChild(iframe);
-          // Shield: blocks mouse hover from reaching iframe permanently
+          // Shield: blocks mouse hover → YouTube controls never appear
           const shield = document.createElement('div');
           shield.className = 'yt-shield';
           wrap.appendChild(shield);
-          // Load overlay: covers YouTube player UI during initial load (JS-controlled, more reliable than CSS animation)
+          // Load overlay: removed by YT API exactly when video starts playing
           const loadOverlay = document.createElement('div');
           loadOverlay.className = 'yt-load-overlay';
           wrap.appendChild(loadOverlay);
           slide._ytLoadOverlay = loadOverlay;
+          // Queue player creation (waits for API if needed)
+          queueYtPlayer({ elementId: iframeId, videoId, overlay: loadOverlay });
         }
         slide.appendChild(wrap);
       } else {
@@ -141,10 +200,6 @@ function renderHero() {
     });
 
     updateBannerInfo(0);
-
-    // 첫 슬라이드 YouTube overlay 시작
-    const firstSlideEl = banner.querySelector('.hero-slide');
-    if (firstSlideEl) showYtOverlay(firstSlideEl);
 
     // 화살표 버튼 연결
     const prevBtn = document.getElementById('banner-prev');
@@ -208,23 +263,6 @@ function renderHero() {
   });
 }
 
-let _overlayTimer = null;
-
-function showYtOverlay(slide) {
-  const ov = slide._ytLoadOverlay;
-  if (!ov) return;
-  // Reset to opaque
-  ov.style.transition = 'none';
-  ov.style.opacity = '1';
-  // Clear any pending hide
-  if (_overlayTimer) clearTimeout(_overlayTimer);
-  // Fade out after 2s (just long enough to hide YouTube's initial player UI)
-  _overlayTimer = setTimeout(() => {
-    ov.style.transition = 'opacity 1s ease';
-    ov.style.opacity = '0';
-  }, 2000);
-}
-
 function goToSlide(idx) {
   const slides = document.querySelectorAll('.hero-slide');
   const dots = document.querySelectorAll('.banner-dot');
@@ -239,8 +277,9 @@ function goToSlide(idx) {
   dots[_bannerIndex].classList.add('active');
   updateBannerInfo(_bannerIndex);
 
-  // Re-show overlay when switching to a YouTube slide
-  showYtOverlay(slides[_bannerIndex]);
+  // Re-show overlay if switching to a YouTube slide (will be hidden when PLAYING fires)
+  const ov = slides[_bannerIndex]._ytLoadOverlay;
+  if (ov) { ov.style.transition = 'none'; ov.style.opacity = '1'; }
 }
 
 function updateBannerInfo(idx) {
