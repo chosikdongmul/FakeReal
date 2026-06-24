@@ -107,15 +107,15 @@ const DEFAULT_DATA = {
       "position": "Top",
       "positionKo": "탑",
       "number": 1,
-      "nickname": "Ironwall",
+      "nickname": "덕지",
       "realName": "Jang Minjun",
       "realNameKo": "장민준",
       "age": 22,
       "birthdate": "2003-04-11",
       "nationality": "KR",
-      "joinYear": 2023,
+      "joinYear": 2026,
       "games": 87,
-      "photo": "assets/images/players/ironwall.jpg",
+      "photo": "assets/images/players/topplayer.jpg",
       "highlight": "",
       "stats": {
         "kda": 3.2,
@@ -151,11 +151,11 @@ const DEFAULT_DATA = {
       "career": [
         {
           "year": "2022",
-          "org": "ODOD Academy",
+          "org": "T1 Academy",
           "role": "Top"
         },
         {
-          "year": "2023–",
+          "year": "2026–",
           "org": "ODOD",
           "role": "Top"
         }
@@ -165,14 +165,14 @@ const DEFAULT_DATA = {
       ],
       "social": {},
       "bannerImage": "",
-      "photoThumb": ""
+      "photoThumb": "assets/images/players/topplayer_small.jpg"
     },
     {
       "id": "feral",
       "position": "Jungle",
       "positionKo": "정글",
       "number": 2,
-      "nickname": "Feral",
+      "nickname": "DONG",
       "realName": "Lee Taehwan",
       "realNameKo": "이태환",
       "age": 21,
@@ -180,7 +180,7 @@ const DEFAULT_DATA = {
       "nationality": "KR",
       "joinYear": 2024,
       "games": 54,
-      "photo": "assets/images/players/feral.jpg",
+      "photo": "assets/images/players/jgplayer.jpg",
       "highlight": "",
       "stats": {
         "kda": 4.1,
