@@ -23,7 +23,19 @@
       <a href="#partners">Partners</a>
     </div>
     <div id="nav-social" style="display:flex;gap:20px;align-items:center;"></div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <!-- Mobile menu drawer -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#roster" class="mobile-menu-link">Roster</a>
+    <a href="#results" class="mobile-menu-link">Results</a>
+    <a href="#schedule" class="mobile-menu-link">Schedule</a>
+    <a href="#media" class="mobile-menu-link">Media</a>
+    <a href="#partners" class="mobile-menu-link">Partners</a>
+  </div>
 
   <!-- ── HERO ── -->
   <section id="hero">
@@ -47,6 +59,9 @@
     <!-- Banner arrows -->
     <button class="banner-arrow banner-arrow-prev" id="banner-prev" aria-label="이전 배너">&#8592;</button>
     <button class="banner-arrow banner-arrow-next" id="banner-next" aria-label="다음 배너">&#8594;</button>
+
+    <!-- Progress bar -->
+    <div class="banner-progress" id="banner-progress"></div>
 
     <!-- Banner nav -->
     <div class="hero-banner-nav">
@@ -155,6 +170,10 @@
         <div class="popup-photo" id="popup-photo"></div>
       </div>
 
+      <!-- Player nav -->
+      <button class="popup-player-nav popup-player-prev" id="popup-player-prev" aria-label="이전 선수">&#8592;</button>
+      <button class="popup-player-nav popup-player-next" id="popup-player-next" aria-label="다음 선수">&#8594;</button>
+
       <!-- Right: info -->
       <div class="popup-right">
         <div class="popup-header">
@@ -196,6 +215,13 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ── GALLERY LIGHTBOX ── -->
+  <div id="lightbox">
+    <button id="lightbox-close">✕</button>
+    <img id="lightbox-img" alt="" />
+    <div id="lightbox-caption"></div>
   </div>
 
   <!-- ── ADMIN BAR ── -->

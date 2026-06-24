@@ -63,6 +63,15 @@ function extractYouTubeId(input) {
   return (m1 || m2 || [])[1] || '';
 }
 
+// ── SOCIAL ICONS (shared by nav + footer) ─────────────
+const SOCIAL_ICONS = {
+  twitter:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>`,
+  instagram: `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>`,
+  youtube:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
+};
+const SVG_MUTE   = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12A4.5 4.5 0 0014 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 3.02-1.67 5.65-4.14 7.05l1.42 1.42C19.11 18.44 21 15.42 21 12c0-3.42-1.89-6.44-4.72-8.47l-1.42 1.42C17.33 6.35 19 9 19 12zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`;
+const SVG_UNMUTE = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+
 // ── IMG HELPER ─────────────────────────────────────────
 function imgOrPlaceholder(src, alt, cls = '') {
   const img = document.createElement('img');
@@ -87,11 +96,6 @@ function renderNav() {
   const socialLinks = document.getElementById('nav-social');
   if (socialLinks) {
     socialLinks.innerHTML = '';
-    const ICONS = {
-      twitter:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>`,
-      instagram: `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>`,
-      youtube:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
-    };
     if (t.social) {
       Object.entries(t.social).forEach(([k, v]) => {
         if (v) {
@@ -101,7 +105,7 @@ function renderNav() {
           a.rel = 'noopener';
           a.className = 'nav-social-icon';
           a.setAttribute('aria-label', k);
-          a.innerHTML = ICONS[k.toLowerCase()] || k.charAt(0).toUpperCase();
+          a.innerHTML = SOCIAL_ICONS[k.toLowerCase()] || k.charAt(0).toUpperCase();
           socialLinks.appendChild(a);
         }
       });
@@ -245,12 +249,10 @@ function renderHero() {
     ph.appendChild(img);
 
     item.appendChild(ph);
-    item.innerHTML += `
-      <div class="hero-staff-info">
-        <div class="hero-staff-role">${s.role}</div>
-        <div class="hero-staff-nick">${s.nickname}</div>
-      </div>
-    `;
+    const sInfo = document.createElement('div');
+    sInfo.className = 'hero-staff-info';
+    sInfo.innerHTML = `<div class="hero-staff-role">${s.role}</div><div class="hero-staff-nick">${s.nickname}</div>`;
+    item.appendChild(sInfo);
     item.addEventListener('click', () => openStaffPopup(s));
     staffStrip.appendChild(item);
   });
@@ -269,6 +271,7 @@ function goToSlide(idx) {
   slides[_bannerIndex].classList.add('active');
   dots[_bannerIndex].classList.add('active');
   updateBannerInfo(_bannerIndex);
+  resetProgressBar();
 
   // Resume video if browser throttled hidden iframe
   const slide = slides[_bannerIndex];
@@ -278,7 +281,7 @@ function goToSlide(idx) {
 }
 
 function updateBannerInfo(idx) {
-  const banners = (DATA.banners || []).filter(b => b.image);
+  const banners = (DATA.banners || []).filter(b => b.image || b.video);
   const b = banners[idx];
   const posEl = document.getElementById('hbn-pos');
   const nickEl = document.getElementById('hbn-nick');
@@ -307,6 +310,10 @@ function renderResults() {
   if (!tbody) return;
   tbody.innerHTML = '';
 
+  if (!DATA.results.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="section-empty">첫 시즌 준비 중</td></tr>`;
+    return;
+  }
   DATA.results.forEach(r => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -326,6 +333,10 @@ function renderSchedule() {
   if (!list) return;
   list.innerHTML = '';
 
+  if (!DATA.schedule.length) {
+    list.innerHTML = `<div class="section-empty">일정 공개 예정</div>`;
+    return;
+  }
   DATA.schedule.forEach(s => {
     const item = document.createElement('div');
     item.className = 'schedule-item';
@@ -346,7 +357,7 @@ function renderRoster() {
   if (sub) sub.textContent = `${DATA.team.season} Season`;
   grid.innerHTML = '';
 
-  DATA.players.forEach(p => {
+  DATA.players.forEach((p, pi) => {
     const card = document.createElement('div');
     card.className = 'roster-card';
 
@@ -364,15 +375,12 @@ function renderRoster() {
     wrap.appendChild(img);
 
     card.appendChild(wrap);
-    card.innerHTML += `
-      <div class="roster-info">
-        <div class="roster-pos">${p.positionKo}</div>
-        <div class="roster-nick">${p.nickname}</div>
-        <div class="roster-name">${p.realNameKo}</div>
-      </div>
-    `;
+    const rInfo = document.createElement('div');
+    rInfo.className = 'roster-info';
+    rInfo.innerHTML = `<div class="roster-pos">${p.positionKo}</div><div class="roster-nick">${p.nickname}</div><div class="roster-name">${p.realNameKo}</div>`;
+    card.appendChild(rInfo);
 
-    card.addEventListener('click', () => openPlayerPopup(p));
+    card.addEventListener('click', () => openPlayerPopup(p, pi));
     grid.appendChild(card);
   });
 }
@@ -398,13 +406,10 @@ function renderStaffRoster() {
     photoWrap.appendChild(img);
 
     card.appendChild(photoWrap);
-    card.innerHTML += `
-      <div class="staff-roster-info">
-        <div class="staff-roster-role">${s.roleKo}</div>
-        <div class="staff-roster-nick">${s.nickname}</div>
-        <div class="staff-roster-name">${s.realNameKo}</div>
-      </div>
-    `;
+    const srInfo = document.createElement('div');
+    srInfo.className = 'staff-roster-info';
+    srInfo.innerHTML = `<div class="staff-roster-role">${s.roleKo}</div><div class="staff-roster-nick">${s.nickname}</div><div class="staff-roster-name">${s.realNameKo}</div>`;
+    card.appendChild(srInfo);
     card.addEventListener('click', () => openStaffPopup(s));
     row.appendChild(card);
   });
@@ -436,6 +441,8 @@ function renderGallery() {
 
     item.appendChild(img);
     item.appendChild(caption);
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', () => openLightbox(g));
     grid.appendChild(item);
   });
 }
@@ -471,8 +478,18 @@ function renderSponsors() {
 // ── RENDER FOOTER ──────────────────────────────────────
 function renderFooter() {
   const t = DATA.team;
-  const el = document.getElementById('footer-slogan');
-  if (el) el.textContent = `"${t.slogan}"`;
+
+  const brandEl = document.getElementById('footer-brand');
+  if (brandEl) brandEl.textContent = t.name;
+
+  const leagueEl = document.getElementById('footer-league');
+  if (leagueEl) leagueEl.textContent = `${t.league} · ${t.city} · Est. ${t.founded}`;
+
+  const copyEl = document.getElementById('footer-copy');
+  if (copyEl) copyEl.textContent = `© ${new Date().getFullYear()} ${t.name} Esports`;
+
+  const sloganEl = document.getElementById('footer-slogan');
+  if (sloganEl) sloganEl.textContent = `"${t.slogan}"`;
 
   const social = document.getElementById('footer-social');
   if (social && t.social) {
@@ -482,29 +499,44 @@ function renderFooter() {
         const a = document.createElement('a');
         a.href = v;
         a.target = '_blank';
-        a.textContent = k.charAt(0).toUpperCase() + k.slice(1);
+        a.rel = 'noopener';
+        a.className = 'nav-social-icon';
+        a.setAttribute('aria-label', k);
+        a.innerHTML = SOCIAL_ICONS[k.toLowerCase()] || k.charAt(0).toUpperCase();
         social.appendChild(a);
       }
     });
   }
 }
 
+// ── BANNER PROGRESS BAR ────────────────────────────────
+function resetProgressBar() {
+  const pb = document.getElementById('banner-progress');
+  if (!pb) return;
+  pb.style.animation = 'none';
+  pb.offsetHeight; // force reflow
+  pb.style.animation = '';
+}
+
+// ── GALLERY LIGHTBOX ───────────────────────────────────
+function openLightbox(g) {
+  const lb = document.getElementById('lightbox');
+  if (!lb) return;
+  document.getElementById('lightbox-img').src = g.src;
+  document.getElementById('lightbox-caption').textContent = g.caption || '';
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  if (lb) lb.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
 // ── POPUP: PLAYER ──────────────────────────────────────
 let _isMuted = true;
+let _currentPlayerIdx = -1;
 
-function buildYoutubeEmbedForBanner(input) {
-  if (!input) return '';
-  // iframe 코드 붙여넣기 → src 추출
-  const srcMatch = input.match(/src=["']([^"']+)/);
-  const url = srcMatch ? srcMatch[1] : input;
-  let videoId = '';
-  const matchEmbed = url.match(/youtube\.com\/embed\/([^?&"'\s]+)/);
-  const matchWatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?"\s]+)/);
-  if (matchEmbed) videoId = matchEmbed[1];
-  else if (matchWatch) videoId = matchWatch[1];
-  else return '';
-  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&rel=0&modestbranding=1&showinfo=0`;
-}
 
 function buildYoutubeUrl(url, muted) {
   // Accept full YouTube URL or embed URL, return embed URL with params
@@ -527,7 +559,8 @@ function buildYoutubeUrl(url, muted) {
   return `https://www.youtube.com/embed/${videoId}?${params}`;
 }
 
-function openPlayerPopup(p) {
+function openPlayerPopup(p, idx) {
+  _currentPlayerIdx = (idx !== undefined) ? idx : DATA.players.findIndex(pl => pl.id === p.id);
   const overlay = document.getElementById('popup-overlay');
   const popup = document.getElementById('popup');
   popup.className = 'popup player-popup';
@@ -548,10 +581,10 @@ function openPlayerPopup(p) {
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen></iframe>`;
     muteBtn.style.display = 'flex';
-    muteBtn.textContent = '🔇';
+    muteBtn.innerHTML = SVG_MUTE;
     muteBtn.onclick = () => {
       _isMuted = !_isMuted;
-      muteBtn.textContent = _isMuted ? '🔇' : '🔊';
+      muteBtn.innerHTML = _isMuted ? SVG_MUTE : SVG_UNMUTE;
       videoEl.innerHTML = `<iframe src="${buildYoutubeUrl(p.highlight, _isMuted)}"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen></iframe>`;
@@ -617,10 +650,16 @@ function openPlayerPopup(p) {
   (p.champions || []).forEach(c => {
     const div = document.createElement('div');
     div.className = 'popup-champ';
-    div.innerHTML = `
-      <div class="popup-champ-name">${c.name}</div>
-      <div class="popup-champ-stats">${c.winRate}% WR · ${c.kda} KDA<br>${c.games} 게임</div>
-    `;
+    if (c.image) {
+      const ci = document.createElement('img');
+      ci.src = c.image;
+      ci.alt = c.name;
+      ci.onerror = function() { this.remove(); };
+      div.appendChild(ci);
+    }
+    const cs = document.createElement('div');
+    cs.innerHTML = `<div class="popup-champ-name">${c.name}</div><div class="popup-champ-stats">${c.winRate}% WR · ${c.kda} KDA<br>${c.games} 게임</div>`;
+    div.appendChild(cs);
     champsEl.appendChild(div);
   });
 
@@ -646,6 +685,23 @@ function openPlayerPopup(p) {
     });
   } else {
     awardsSection.style.display = 'none';
+  }
+
+  // Player nav buttons
+  const prevBtn = document.getElementById('popup-player-prev');
+  const nextBtn = document.getElementById('popup-player-next');
+  if (prevBtn && nextBtn) {
+    const total = DATA.players.length;
+    prevBtn.style.display = total > 1 ? '' : 'none';
+    nextBtn.style.display = total > 1 ? '' : 'none';
+    prevBtn.onclick = () => {
+      const ni = (_currentPlayerIdx - 1 + total) % total;
+      openPlayerPopup(DATA.players[ni], ni);
+    };
+    nextBtn.onclick = () => {
+      const ni = (_currentPlayerIdx + 1) % total;
+      openPlayerPopup(DATA.players[ni], ni);
+    };
   }
 
   overlay.classList.add('active');
@@ -721,6 +777,8 @@ function closePopup() {
   const overlay = document.getElementById('popup-overlay');
   overlay.classList.remove('active');
   document.body.style.overflow = '';
+  _isMuted = true;
+  _currentPlayerIdx = -1;
   const videoInner = document.getElementById('popup-video-inner');
   if (videoInner) videoInner.innerHTML = '';
   const muteBtn = document.getElementById('popup-mute-btn');
@@ -773,6 +831,22 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollEffects();
   checkAdmin();
 
+  // Hamburger menu
+  const hamburger = document.getElementById('nav-hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (hamburger && mobileMenu) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+    mobileMenu.querySelectorAll('.mobile-menu-link').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+      });
+    });
+  }
+
   // Popup close
   document.getElementById('popup-close').addEventListener('click', closePopup);
   document.getElementById('popup-overlay').addEventListener('click', (e) => {
@@ -780,6 +854,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closePopup();
+    if (e.key === 'Escape') { closePopup(); closeLightbox(); }
   });
+
+  // Lightbox
+  const lbClose = document.getElementById('lightbox-close');
+  if (lbClose) lbClose.addEventListener('click', closeLightbox);
+  const lb = document.getElementById('lightbox');
+  if (lb) lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
 });
