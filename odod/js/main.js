@@ -394,6 +394,17 @@ function renderRoster() {
     const img = imgOrPlaceholder(p.photo, p.nickname);
     wrap.appendChild(img);
 
+    // 비교 버튼
+    const cmpBtn = document.createElement('button');
+    cmpBtn.className = 'roster-compare-btn';
+    cmpBtn.textContent = '+';
+    cmpBtn.title = '비교에 추가';
+    cmpBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleCompare(p.id, cmpBtn);
+    });
+    wrap.appendChild(cmpBtn);
+
     card.appendChild(wrap);
     const rInfo = document.createElement('div');
     rInfo.className = 'roster-info';
@@ -538,6 +549,351 @@ document.addEventListener('click', (e) => {
     panel.classList.remove('open');
   }
 });
+
+// ── COMPARE MODE ───────────────────────────────────────
+let _compareSelected = [];
+
+function toggleCompare(playerId, btn) {
+  const idx = _compareSelected.indexOf(playerId);
+  if (idx !== -1) {
+    _compareSelected.splice(idx, 1);
+    btn.classList.remove('selected');
+    btn.textContent = '+';
+  } else {
+    if (_compareSelected.length >= 2) return; // 최대 2명
+    _compareSelected.push(playerId);
+    btn.classList.add('selected');
+    btn.textContent = '✓';
+  }
+
+  const toast = document.getElementById('compare-toast');
+  if (_compareSelected.length === 0) {
+    toast.style.display = 'none';
+  } else if (_compareSelected.length === 1) {
+    toast.style.display = 'flex';
+    document.getElementById('compare-toast-text').textContent = '선수 1명 더 선택하면 비교합니다';
+  } else {
+    toast.style.display = 'none';
+    openCompare();
+  }
+}
+
+function clearCompare() {
+  _compareSelected = [];
+  document.querySelectorAll('.roster-compare-btn').forEach(b => {
+    b.classList.remove('selected');
+    b.textContent = '+';
+  });
+  document.getElementById('compare-toast').style.display = 'none';
+}
+
+function openCompare() {
+  const [idA, idB] = _compareSelected;
+  const pA = DATA.players.find(p => p.id === idA);
+  const pB = DATA.players.find(p => p.id === idB);
+  if (!pA || !pB) return;
+
+  const STATS = [
+    { key: 'kda',      label: 'KDA',    fmt: v => v.toFixed(1) },
+    { key: 'winRate',  label: '승률',   fmt: v => v.toFixed(1) + '%' },
+    { key: 'csPerMin', label: 'CS/분',  fmt: v => v.toFixed(1) },
+    { key: 'kills',    label: '킬',     fmt: v => v.toFixed(1) },
+    { key: 'deaths',   label: '데스',   fmt: v => v.toFixed(1), invert: true },
+    { key: 'assists',  label: '어시',   fmt: v => v.toFixed(1) },
+  ];
+
+  function playerCard(p) {
+    const img = p.photoThumb || p.photo
+      ? `<img class="compare-player-img" src="${p.photoThumb || p.photo}" alt="${p.nickname}" />`
+      : `<div class="compare-player-img"></div>`;
+    return `
+      <div class="compare-player">
+        ${img}
+        <div class="compare-player-pos">${p.positionKo}</div>
+        <div class="compare-player-nick">${p.nickname}</div>
+      </div>`;
+  }
+
+  document.getElementById('compare-header').innerHTML =
+    playerCard(pA) +
+    `<div class="compare-vs">VS</div>` +
+    playerCard(pB);
+
+  document.getElementById('compare-stats').innerHTML = STATS.map(s => {
+    const vA = pA.stats?.[s.key] ?? 0;
+    const vB = pB.stats?.[s.key] ?? 0;
+    const aWins = s.invert ? vA < vB : vA > vB;
+    const bWins = s.invert ? vB < vA : vB > vA;
+    return `
+      <div class="compare-stat-row">
+        <div class="compare-stat-val compare-stat-val-left ${aWins ? 'win' : ''}">${s.fmt(vA)}</div>
+        <div class="compare-stat-lbl">${s.label}</div>
+        <div class="compare-stat-val compare-stat-val-right ${bWins ? 'win' : ''}">${s.fmt(vB)}</div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('compare-overlay').classList.add('open');
+}
+
+function closeCompare() {
+  document.getElementById('compare-overlay').classList.remove('open');
+  clearCompare();
+}
+
+// ── MVP VOTE ───────────────────────────────────────────
+function renderMvpVote() {
+  const section = document.getElementById('mvp-section');
+  const body    = document.getElementById('mvp-body');
+  const matchLbl = document.getElementById('mvp-match-label');
+  if (!section || !body) return;
+
+  const results = DATA.results || [];
+  if (results.length === 0) return;
+
+  // 가장 최근 경기
+  const latest = results[0];
+  const matchKey = `mvp_${latest.date}_${latest.opponent}`.replace(/\s/g, '_');
+
+  section.style.display = '';
+  if (matchLbl) matchLbl.textContent = `vs ${latest.opponent} · ${latest.date}`;
+
+  const players = DATA.players || [];
+  const voted = localStorage.getItem('odod_mvp_voted');
+  const votedKey = localStorage.getItem('odod_mvp_voted_key');
+
+  // 이미 투표했고 같은 경기면 결과 표시
+  if (voted && votedKey === matchKey) {
+    renderMvpResults(body, matchKey, players, voted);
+  } else {
+    // 다른 경기면 이전 투표 초기화
+    if (votedKey !== matchKey) {
+      localStorage.removeItem('odod_mvp_voted');
+      localStorage.removeItem('odod_mvp_voted_key');
+      // 이전 경기 카운트도 초기화
+      localStorage.removeItem('odod_mvp_counts_' + votedKey);
+    }
+    renderMvpCandidates(body, matchKey, players);
+  }
+}
+
+function renderMvpCandidates(body, matchKey, players) {
+  body.innerHTML = `<div class="mvp-candidates">${
+    players.map(p => `
+      <button class="mvp-btn" onclick="castMvpVote('${matchKey}','${p.id}')">
+        ${p.photoThumb || p.photo
+          ? `<img class="mvp-btn-thumb" src="${p.photoThumb || p.photo}" alt="${p.nickname}" />`
+          : `<div class="mvp-btn-thumb"></div>`}
+        <div>
+          <span class="mvp-btn-pos">${p.positionKo}</span>
+          <span class="mvp-btn-nick">${p.nickname}</span>
+        </div>
+      </button>`).join('')}
+  </div>`;
+}
+
+function castMvpVote(matchKey, playerId) {
+  const countKey = 'odod_mvp_counts_' + matchKey;
+  const raw = localStorage.getItem(countKey);
+  const counts = raw ? JSON.parse(raw) : {};
+  counts[playerId] = (counts[playerId] || 0) + 1;
+  localStorage.setItem(countKey, JSON.stringify(counts));
+  localStorage.setItem('odod_mvp_voted', playerId);
+  localStorage.setItem('odod_mvp_voted_key', matchKey);
+
+  const body = document.getElementById('mvp-body');
+  if (body) renderMvpResults(body, matchKey, DATA.players, playerId);
+}
+
+function renderMvpResults(body, matchKey, players, myVote) {
+  const countKey = 'odod_mvp_counts_' + matchKey;
+  const raw = localStorage.getItem(countKey);
+  const counts = raw ? JSON.parse(raw) : {};
+
+  const total = Object.values(counts).reduce((s, v) => s + v, 0) || 1;
+  const maxVotes = Math.max(...Object.values(counts), 1);
+
+  const rows = players.map(p => {
+    const votes = counts[p.id] || 0;
+    const pct   = Math.round((votes / total) * 100);
+    const isWinner = votes === maxVotes && votes > 0;
+    return { p, votes, pct, isWinner };
+  }).sort((a, b) => b.votes - a.votes);
+
+  body.innerHTML = `
+    <div class="mvp-results">
+      ${rows.map(({ p, pct, isWinner }) => `
+        <div class="mvp-result-row">
+          <div class="mvp-result-name ${isWinner ? 'winner' : ''}">${p.nickname}</div>
+          <div class="mvp-result-bar-wrap">
+            <div class="mvp-result-bar ${isWinner ? 'winner' : ''}" style="width:${pct}%"></div>
+          </div>
+          <div class="mvp-result-pct ${isWinner ? 'winner' : ''}">${pct}%</div>
+        </div>`).join('')}
+    </div>
+    <p class="mvp-voted-note">투표해주셔서 감사합니다 · 내 선택: ${players.find(p => p.id === myVote)?.nickname || '?'}</p>
+  `;
+}
+
+// ── RENDER CHAMPION POOL ───────────────────────────────
+function renderChampPool() {
+  const grid = document.getElementById('champ-pool-grid');
+  if (!grid) return;
+
+  // 전 선수 챔피언 데이터 집계
+  const map = {};
+  (DATA.players || []).forEach(p => {
+    (p.champions || []).forEach(c => {
+      if (!c.name) return;
+      if (!map[c.name]) {
+        map[c.name] = { name: c.name, image: c.image, games: 0, winRateSum: 0, count: 0 };
+      }
+      map[c.name].games     += (c.games || 0);
+      map[c.name].winRateSum += (c.winRate || 0) * (c.games || 0);
+      map[c.name].count     += 1;
+    });
+  });
+
+  const champs = Object.values(map)
+    .sort((a, b) => b.games - a.games);
+
+  if (champs.length === 0) return;
+
+  const maxGames = champs[0].games;
+
+  grid.innerHTML = champs.map(c => {
+    const barPct = maxGames > 0 ? Math.round((c.games / maxGames) * 100) : 0;
+    const imgHtml = c.image
+      ? `<img class="champ-cell-img" src="${c.image}" alt="${c.name}" />`
+      : `<div class="champ-cell-placeholder">${c.name.slice(0,3).toUpperCase()}</div>`;
+    return `
+      <div class="champ-cell">
+        ${imgHtml}
+        <div class="champ-cell-overlay"></div>
+        <div class="champ-cell-info">
+          <span class="champ-cell-name">${c.name}</span>
+          <span class="champ-cell-games">${c.games}G</span>
+        </div>
+        <div class="champ-cell-bar-wrap">
+          <div class="champ-cell-bar" style="width:${barPct}%"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── RENDER SPONSORSHIP ─────────────────────────────────
+function renderSponsorship() {
+  const t = DATA.team;
+  const contact = t.contact || 'partnership@odod.gg';
+
+  // 인트로 텍스트
+  const introEl = document.getElementById('sp-intro-text');
+  if (introEl) {
+    introEl.textContent = `ODOD는 ${t.league} 무대에서 성장하는 팀입니다. 저희와 함께하는 파트너사는 경기 중계, SNS, 유니폼, 공식 채널 등 다양한 노출 기회를 얻게 됩니다.`;
+  }
+
+  const TIERS = [
+    {
+      cls: 'tier-bronze',
+      tier: 'Bronze',
+      name: 'Bronze',
+      price: '문의 시 협의',
+      benefits: [
+        '공식 웹사이트 로고 노출',
+        'SNS 멘션 연 4회',
+        '시즌 종료 보고서 제공',
+      ]
+    },
+    {
+      cls: 'tier-silver',
+      tier: 'Silver',
+      name: 'Silver',
+      price: '문의 시 협의',
+      benefits: [
+        'Bronze 전체 포함',
+        '연습 시설 로고 부착',
+        'SNS 멘션 연 8회',
+        '팀 콘텐츠 공동 제작 1회',
+      ]
+    },
+    {
+      cls: 'tier-gold',
+      tier: 'Gold',
+      name: 'Gold',
+      price: '문의 시 협의',
+      benefits: [
+        'Silver 전체 포함',
+        '유니폼 슬리브 로고',
+        '경기 전 인터뷰 배경 노출',
+        'SNS 멘션 연 16회',
+        '팬 미팅 공동 주최 가능',
+      ]
+    },
+    {
+      cls: 'tier-title',
+      tier: 'Title',
+      name: 'Title',
+      price: '문의 시 협의',
+      benefits: [
+        'Gold 전체 포함',
+        '팀명 병기 (ODOD × 파트너)',
+        '유니폼 전면 메인 로고',
+        '모든 공식 채널 최우선 노출',
+        '전용 브랜드 콘텐츠 시리즈',
+        '연간 파트너십 리뷰 미팅',
+      ]
+    },
+  ];
+
+  const grid = document.getElementById('sp-grid');
+  if (!grid) return;
+  grid.innerHTML = TIERS.map(t => `
+    <div class="sp-card ${t.cls}">
+      <div class="sp-card-tier">${t.tier}</div>
+      <div class="sp-card-name">${t.name}</div>
+      <div class="sp-card-price">${t.price}</div>
+      <div class="sp-card-divider"></div>
+      <ul class="sp-card-benefits">
+        ${t.benefits.map(b => `<li>${b}</li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+
+  // CTA
+  const ctaBtn = document.getElementById('sp-cta-btn');
+  if (ctaBtn) ctaBtn.href = `mailto:${contact}?subject=ODOD 파트너십 문의`;
+}
+
+// ── RENDER MEDIA KIT ───────────────────────────────────
+function renderMediaKit() {
+  const mk = DATA.mediakit;
+  const grid = document.getElementById('mk-grid');
+  if (!grid || !mk) return;
+
+  const ICONS = { logo: '◈', photos: '◉', presskit: '◎', brandguide: '◻' };
+  const KEYS  = ['logo', 'photos', 'presskit', 'brandguide'];
+
+  grid.innerHTML = KEYS.map(key => {
+    const item = mk[key] || {};
+    const hasFile = !!item.file;
+    if (hasFile) {
+      return `
+        <a class="mk-card" href="${item.file}" download target="_blank" rel="noopener">
+          <div class="mk-card-icon">${ICONS[key]}</div>
+          <div class="mk-card-label">${item.label || key}</div>
+          <div class="mk-card-desc">${item.desc || ''}</div>
+          <div class="mk-card-action">다운로드 →</div>
+        </a>`;
+    } else {
+      return `
+        <div class="mk-card mk-unavailable">
+          <div class="mk-card-icon">${ICONS[key]}</div>
+          <div class="mk-card-label">${item.label || key}</div>
+          <div class="mk-card-desc">${item.desc || ''}</div>
+          <div class="mk-card-action">준비 중</div>
+        </div>`;
+    }
+  }).join('');
+}
 
 // ── RENDER FOOTER ──────────────────────────────────────
 function renderFooter() {
@@ -880,18 +1236,38 @@ function checkAdmin() {
   }
 }
 
+// ── THEME TOGGLE ───────────────────────────────────────
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.textContent = theme === 'light' ? '☀' : '☽';
+  localStorage.setItem('odod_theme', theme);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
 // ── INIT ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // 저장된 테마 적용 (깜빡임 방지용 — HTML에 인라인 스크립트가 없어서 DOMContentLoaded에서 처리)
+  applyTheme(localStorage.getItem('odod_theme') || 'dark');
+
   renderNav();
   renderLive();
   renderHero();
   renderStats();
   renderResults();
+  renderMvpVote();
   renderSchedule();
   renderRoster();
   renderStaffRoster();
+  renderChampPool();
   renderGallery();
   renderSponsors();
+  renderSponsorship();
+  renderMediaKit();
   renderFooter();
   initScrollEffects();
   checkAdmin();
@@ -919,8 +1295,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { closePopup(); closeLightbox(); }
+    if (e.key === 'Escape') { closePopup(); closeLightbox(); closeCompare(); }
   });
+
+  // Compare overlay
+  const cmpClose = document.getElementById('compare-close');
+  if (cmpClose) cmpClose.addEventListener('click', closeCompare);
+  const cmpOverlay = document.getElementById('compare-overlay');
+  if (cmpOverlay) cmpOverlay.addEventListener('click', (e) => { if (e.target === cmpOverlay) closeCompare(); });
 
   // Lightbox
   const lbClose = document.getElementById('lightbox-close');

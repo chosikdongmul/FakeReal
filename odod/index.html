@@ -21,8 +21,10 @@
       <a href="#schedule">Schedule</a>
       <a href="#media">Media</a>
       <a href="#partners">Partners</a>
+      <a href="#sponsorship">Sponsorship</a>
     </div>
     <div id="nav-social" style="display:flex;gap:20px;align-items:center;"></div>
+    <button class="theme-toggle-btn" id="theme-toggle-btn" title="라이트/다크 모드" onclick="toggleTheme()">☽</button>
     <div id="live-widget" style="display:none;position:relative;">
       <button class="live-btn" id="live-btn" onclick="toggleLivePanel()">
         <span class="live-dot"></span>
@@ -51,6 +53,7 @@
     <a href="#schedule" class="mobile-menu-link">Schedule</a>
     <a href="#media" class="mobile-menu-link">Media</a>
     <a href="#partners" class="mobile-menu-link">Partners</a>
+    <a href="#sponsorship" class="mobile-menu-link">Sponsorship</a>
   </div>
 
   <!-- ── HERO ── -->
@@ -122,6 +125,12 @@
       <div class="staff-section-label">Coaching Staff</div>
       <div class="staff-row" id="roster-staff-row"></div>
     </div>
+
+    <!-- Champion pool sub-section -->
+    <div class="champ-pool-section reveal">
+      <div class="staff-section-label">Team Champion Pool</div>
+      <div class="champ-pool-grid" id="champ-pool-grid"></div>
+    </div>
   </section>
 
   <!-- ── RESULTS ── -->
@@ -133,6 +142,12 @@
     <table class="results-table reveal">
       <tbody id="results-tbody"></tbody>
     </table>
+
+    <!-- MVP Vote sub-section -->
+    <div class="mvp-section reveal" id="mvp-section" style="display:none;">
+      <div class="staff-section-label">Fan MVP Vote <span class="mvp-match-label" id="mvp-match-label"></span></div>
+      <div class="mvp-body" id="mvp-body"></div>
+    </div>
   </section>
 
   <!-- ── SCHEDULE ── -->
@@ -159,6 +174,31 @@
       <span class="section-title">Partners</span>
     </div>
     <div class="sponsors-row reveal" id="sponsors-row"></div>
+  </section>
+
+  <!-- ── SPONSORSHIP ── -->
+  <section id="sponsorship" class="section" style="padding-top:0">
+    <div class="section-head reveal">
+      <span class="section-title">Sponsorship</span>
+      <span class="section-sub">파트너십 패키지</span>
+    </div>
+    <div class="sp-intro reveal">
+      <p class="sp-intro-text" id="sp-intro-text"></p>
+    </div>
+    <div class="sp-grid reveal" id="sp-grid"></div>
+    <div class="sp-cta reveal">
+      <p class="sp-cta-text">문의 및 제안</p>
+      <a class="sp-cta-btn" id="sp-cta-btn" href="#">파트너십 문의하기 →</a>
+    </div>
+  </section>
+
+  <!-- ── MEDIA KIT ── -->
+  <section id="mediakit" class="section" style="padding-top:0">
+    <div class="section-head reveal">
+      <span class="section-title">Media Kit</span>
+      <span class="section-sub">언론 · 크리에이터용</span>
+    </div>
+    <div class="mk-grid reveal" id="mk-grid"></div>
   </section>
 
   <!-- ── FOOTER ── -->
@@ -241,6 +281,21 @@
     <button id="lightbox-close">✕</button>
     <img id="lightbox-img" alt="" />
     <div id="lightbox-caption"></div>
+  </div>
+
+  <!-- ── COMPARE OVERLAY ── -->
+  <div id="compare-overlay">
+    <div class="compare-box" id="compare-box">
+      <button class="compare-close" id="compare-close">✕</button>
+      <div class="compare-header" id="compare-header"></div>
+      <div class="compare-stats" id="compare-stats"></div>
+    </div>
+  </div>
+
+  <!-- ── COMPARE TOAST ── -->
+  <div id="compare-toast" style="display:none;">
+    <span id="compare-toast-text"></span>
+    <button onclick="clearCompare()">취소</button>
   </div>
 
   <!-- ── ADMIN BAR ── -->

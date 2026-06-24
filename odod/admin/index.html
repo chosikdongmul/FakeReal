@@ -450,6 +450,7 @@
     <button class="tab-btn" onclick="switchTab('gallery')">갤러리</button>
     <button class="tab-btn" onclick="switchTab('sponsors')">스폰서</button>
     <button class="tab-btn" onclick="switchTab('banners')">메인 배너</button>
+    <button class="tab-btn" onclick="switchTab('mediakit')">미디어 킷</button>
     <button class="tab-btn" onclick="switchTab('live')" style="color:#e84545;border-bottom-color:transparent;" id="tab-live-btn">⬤ LIVE</button>
   </div>
 
@@ -487,6 +488,10 @@
         <div class="form-group"><label>Twitter</label><span class="field-hint">https://twitter.com/계정명</span><input class="form-input" id="t-twitter" /></div>
         <div class="form-group"><label>Instagram</label><span class="field-hint">https://instagram.com/계정명</span><input class="form-input" id="t-instagram" /></div>
         <div class="form-group"><label>YouTube</label><span class="field-hint">https://youtube.com/@채널명</span><input class="form-input" id="t-youtube" /></div>
+      </div>
+      <div class="form-section-title" style="margin-top:24px;">파트너십 문의</div>
+      <div class="form-row">
+        <div class="form-group"><label>문의 이메일</label><span class="field-hint">스폰서십 페이지 CTA 버튼에 연결됩니다</span><input class="form-input" id="t-contact" placeholder="partnership@odod.gg" /></div>
       </div>
     </div>
   </div>
@@ -559,6 +564,39 @@
     <button class="add-btn" onclick="addBanner()">+ 배너 추가</button>
   </div>
 
+  <!-- MEDIA KIT -->
+  <div class="tab-panel" id="panel-mediakit">
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:28px;line-height:1.7;">
+      파일 경로 또는 외부 URL을 입력하면 미디어킷 섹션에서 다운로드 버튼이 활성화됩니다.<br>
+      비워두면 해당 항목이 <strong style="color:var(--text)">준비 중</strong>으로 표시됩니다.
+    </p>
+    <div class="form-section">
+      <div class="form-section-title">미디어킷 파일</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>팀 로고 패키지</label>
+          <span class="field-hint">ZIP, PNG, SVG 등 · 파일 경로 또는 외부 URL</span>
+          <input class="form-input" id="mk-logo" placeholder="assets/mediakit/odod_logo.zip" />
+        </div>
+        <div class="form-group">
+          <label>선수 공식 사진</label>
+          <span class="field-hint">ZIP 권장</span>
+          <input class="form-input" id="mk-photos" placeholder="assets/mediakit/odod_photos.zip" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>보도자료 PDF</label>
+          <input class="form-input" id="mk-presskit" placeholder="assets/mediakit/odod_presskit.pdf" />
+        </div>
+        <div class="form-group">
+          <label>브랜드 가이드라인</label>
+          <input class="form-input" id="mk-brandguide" placeholder="assets/mediakit/odod_brand.pdf" />
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- LIVE -->
   <div class="tab-panel" id="panel-live">
     <div class="form-section">
@@ -599,6 +637,9 @@
           <input class="form-input" id="live-stream" type="text" placeholder="https://www.twitch.tv/lck">
         </div>
       </div>
+      <div class="form-section-title" style="margin-top:32px;">팬 MVP 투표 관리</div>
+      <p class="field-hint" style="margin-bottom:16px;">투표 데이터는 방문자 브라우저 localStorage에 저장됩니다. 새 경기 등록 시 자동 초기화됩니다.</p>
+      <button class="add-btn" onclick="resetMvpVotes()">⟳ 투표 초기화 (모든 기기 공유 불가 · 로컬만 리셋)</button>
     </div>
   </div>
 
@@ -704,7 +745,7 @@ let DATA = loadData();
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const tabs = ['team','players','staff','results','schedule','gallery','sponsors','banners','live'];
+  const tabs = ['team','players','staff','results','schedule','gallery','sponsors','banners','mediakit','live'];
   const idx = tabs.indexOf(name);
   if (idx !== -1) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
   const panel = document.getElementById('panel-' + name);
@@ -722,6 +763,7 @@ function initAdmin() {
   sv('t-wins', t.record.wins); sv('t-losses', t.record.losses);
   sv('t-winrate', t.winRate); sv('t-worlds', t.worldsAppearances);
   sv('t-twitter', t.social.twitter); sv('t-instagram', t.social.instagram); sv('t-youtube', t.social.youtube);
+  sv('t-contact', t.contact || '');
 
   buildPlayersEditor();
   buildStaffEditor();
@@ -730,7 +772,26 @@ function initAdmin() {
   buildGalleryEditor();
   buildSponsorsEditor();
   buildBannersEditor();
+  buildMediakitEditor();
   buildLiveEditor();
+}
+
+function buildMediakitEditor() {
+  const mk = DATA.mediakit || {};
+  sv('mk-logo',       mk.logo?.file       || '');
+  sv('mk-photos',     mk.photos?.file     || '');
+  sv('mk-presskit',   mk.presskit?.file   || '');
+  sv('mk-brandguide', mk.brandguide?.file || '');
+}
+
+function resetMvpVotes() {
+  const keys = Object.keys(localStorage).filter(k => k.startsWith('odod_mvp'));
+  keys.forEach(k => localStorage.removeItem(k));
+  const toast = document.getElementById('toast');
+  const prev = toast.textContent;
+  toast.textContent = 'MVP 투표가 초기화되었습니다.';
+  toast.classList.add('show');
+  setTimeout(() => { toast.classList.remove('show'); toast.textContent = prev; }, 2200);
 }
 
 function buildLiveEditor() {
@@ -1090,6 +1151,7 @@ function collectData() {
   DATA.team.record.wins = +v('t-wins'); DATA.team.record.losses = +v('t-losses');
   DATA.team.winRate = +v('t-winrate'); DATA.team.worldsAppearances = +v('t-worlds');
   DATA.team.social.twitter = v('t-twitter'); DATA.team.social.instagram = v('t-instagram'); DATA.team.social.youtube = v('t-youtube');
+  DATA.team.contact = v('t-contact');
 
   // Players
   document.querySelectorAll('[data-p][data-f]').forEach(el => {
@@ -1141,6 +1203,12 @@ function collectData() {
   // Banners
   document.querySelectorAll('[data-bi][data-bf]').forEach(el => {
     if(DATA.banners[+el.dataset.bi]) DATA.banners[+el.dataset.bi][el.dataset.bf]=el.value;
+  });
+  // Mediakit
+  if (!DATA.mediakit) DATA.mediakit = { logo:{}, photos:{}, presskit:{}, brandguide:{} };
+  ['logo','photos','presskit','brandguide'].forEach(k => {
+    if (!DATA.mediakit[k]) DATA.mediakit[k] = {};
+    DATA.mediakit[k].file = v('mk-' + k);
   });
   // Live
   if (!DATA.live) DATA.live = {};

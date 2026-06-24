@@ -22,7 +22,8 @@ const DEFAULT_DATA = {
       "twitter": "https://twitter.com/ODOD_LCK",
       "instagram": "https://instagram.com/odod_lck",
       "youtube": "https://youtube.com/@ODOD"
-    }
+    },
+    "contact": "partnership@odod.gg"
   },
   "staff": [
     {
@@ -536,6 +537,12 @@ const DEFAULT_DATA = {
       "url": "#"
     }
   ],
+  "mediakit": {
+    "logo":       { "file": "", "label": "팀 로고 패키지", "desc": "PNG · SVG · 흰색/컬러/모노 버전 포함" },
+    "photos":     { "file": "", "label": "선수 공식 사진", "desc": "고해상도 JPG · 선수별 개인 컷 포함" },
+    "presskit":   { "file": "", "label": "보도자료 PDF", "desc": "팀 소개 · 선수단 · 시즌 성적 요약" },
+    "brandguide": { "file": "", "label": "브랜드 가이드라인", "desc": "컬러 코드 · 폰트 · 사용 규정" }
+  },
   "live": {
     "active": true,
     "opponent": "T1",

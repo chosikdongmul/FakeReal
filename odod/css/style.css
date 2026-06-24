@@ -19,6 +19,49 @@
   --pop-bg:      #241f18;
 }
 
+[data-theme="light"] {
+  --bg:          #f5f0e8;
+  --bg2:         #ece7de;
+  --bg3:         #e2ddd4;
+  --orange:      #c45e38;
+  --orange-dim:  rgba(196, 94, 56, 0.14);
+  --text:        #1a1610;
+  --text-muted:  #5c5248;
+  --text-dim:    #9c958c;
+  --border:      rgba(26, 22, 16, 0.1);
+  --border-light:rgba(26, 22, 16, 0.18);
+  --pop-bg:      #ece7de;
+}
+
+[data-theme="light"] body {
+  background:
+    radial-gradient(ellipse 55% 100% at 50% 50%, transparent 10%, rgba(0,0,0,0.08) 100%),
+    var(--bg);
+}
+
+[data-theme="light"] #nav.scrolled {
+  background: rgba(245, 240, 232, 0.92);
+}
+
+[data-theme="light"] .photo-placeholder span { color: rgba(26,22,16,0.08); }
+
+/* 테마 토글 버튼 */
+.theme-toggle-btn {
+  background: none;
+  border: 0.5px solid var(--border-light);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle-btn:hover { border-color: var(--orange); color: var(--orange); }
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -860,6 +903,572 @@ a { color: inherit; text-decoration: none; }
   padding: 10px 18px;
 }
 .sponsor-item:hover .sponsor-name-text { color: var(--text-muted); border-color: rgba(240,235,228,0.25); }
+
+/* ── SPONSORSHIP ─────────────────────────────────── */
+.sp-intro {
+  margin-bottom: 48px;
+}
+.sp-intro-text {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  max-width: 640px;
+}
+
+.sp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-bottom: 64px;
+}
+
+.sp-card {
+  background: var(--bg);
+  padding: 36px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  transition: background 0.25s;
+}
+.sp-card:hover { background: var(--bg2); }
+
+.sp-card-tier {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.sp-card-name {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.sp-card-price {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  letter-spacing: 0.02em;
+}
+
+.sp-card-divider {
+  width: 24px;
+  height: 1px;
+  background: var(--border-light);
+  margin-bottom: 24px;
+}
+
+.sp-card-benefits {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.sp-card-benefits li {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+.sp-card-benefits li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--text-dim);
+}
+
+/* 티어별 강조 */
+.sp-card.tier-title { background: var(--bg2); }
+.sp-card.tier-title .sp-card-name { color: var(--orange); }
+.sp-card.tier-title .sp-card-tier { color: var(--orange); opacity: 0.7; }
+.sp-card.tier-title .sp-card-benefits li { color: var(--text); }
+.sp-card.tier-title .sp-card-benefits li::before { color: var(--orange); }
+.sp-card.tier-title:hover { background: var(--bg3); }
+
+.sp-cta {
+  border-top: 0.5px solid var(--border);
+  padding-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.sp-cta-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.sp-cta-btn {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--orange);
+  text-decoration: none;
+  border: 0.5px solid rgba(212,113,78,0.5);
+  padding: 13px 28px;
+  transition: background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.sp-cta-btn:hover {
+  background: rgba(212,113,78,0.1);
+  border-color: var(--orange);
+}
+
+/* ── COMPARE ─────────────────────────────────────── */
+
+/* 로스터 카드 비교 버튼 */
+.roster-compare-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(33,28,21,0.72);
+  border: 0.5px solid var(--border-light);
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.roster-compare-btn:hover { color: var(--orange); border-color: var(--orange); }
+.roster-compare-btn.selected {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+}
+
+/* 하단 비교 토스트 */
+#compare-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg2);
+  border: 0.5px solid var(--border-light);
+  color: var(--text);
+  padding: 12px 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 300;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  white-space: nowrap;
+}
+#compare-toast button {
+  background: none;
+  border: 0.5px solid var(--border-light);
+  color: var(--text-muted);
+  padding: 4px 12px;
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+}
+#compare-toast button:hover { color: var(--text); }
+
+/* 비교 오버레이 */
+#compare-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(33,28,21,0.85);
+  z-index: 400;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+#compare-overlay.open { display: flex; }
+
+.compare-box {
+  background: var(--pop-bg);
+  border: 0.5px solid var(--border-light);
+  width: 90%;
+  max-width: 720px;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 40px;
+  position: relative;
+}
+
+.compare-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.compare-close:hover { color: var(--text); }
+
+.compare-header {
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.compare-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.compare-player-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  background: var(--bg3);
+}
+
+.compare-player-pos {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.compare-player-nick {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.compare-vs {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.compare-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compare-stat-row {
+  display: grid;
+  grid-template-columns: 1fr 100px 1fr;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 0.5px solid var(--border);
+}
+.compare-stat-row:last-child { border-bottom: none; }
+
+.compare-stat-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: -0.02em;
+}
+.compare-stat-val.win { color: var(--orange); }
+.compare-stat-val-left { text-align: left; }
+.compare-stat-val-right { text-align: right; }
+
+.compare-stat-lbl {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+/* ── MVP VOTE ────────────────────────────────────── */
+.mvp-section {
+  margin-top: 48px;
+}
+
+.mvp-match-label {
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-size: 11px;
+  margin-left: 8px;
+}
+
+.mvp-body {
+  margin-top: 20px;
+}
+
+/* 투표 전: 선수 버튼 목록 */
+.mvp-candidates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mvp-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg2);
+  border: 0.5px solid var(--border-light);
+  color: var(--text);
+  padding: 10px 16px 10px 10px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.mvp-btn:hover {
+  background: var(--bg3);
+  border-color: var(--orange);
+}
+
+.mvp-btn-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  background: var(--bg3);
+  flex-shrink: 0;
+}
+
+.mvp-btn-pos {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--orange);
+  display: block;
+}
+
+.mvp-btn-nick {
+  font-size: 13px;
+  font-weight: 700;
+  display: block;
+}
+
+/* 투표 후: 결과 바 */
+.mvp-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 520px;
+}
+
+.mvp-result-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 36px;
+  align-items: center;
+  gap: 12px;
+}
+
+.mvp-result-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mvp-result-name.winner { color: var(--orange); }
+
+.mvp-result-bar-wrap {
+  height: 4px;
+  background: var(--border);
+}
+
+.mvp-result-bar {
+  height: 100%;
+  background: var(--border-light);
+  transition: width 0.6s ease;
+}
+.mvp-result-bar.winner { background: var(--orange); }
+
+.mvp-result-pct {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-align: right;
+}
+.mvp-result-pct.winner { color: var(--orange); }
+
+.mvp-voted-note {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 16px;
+  letter-spacing: 0.04em;
+}
+
+/* ── CHAMPION POOL ───────────────────────────────── */
+.champ-pool-section {
+  margin-top: 48px;
+}
+
+.champ-pool-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.champ-cell {
+  position: relative;
+  width: 72px;
+  cursor: default;
+  flex-shrink: 0;
+}
+
+.champ-cell-img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  filter: grayscale(20%) brightness(0.75);
+  transition: filter 0.25s;
+}
+.champ-cell:hover .champ-cell-img {
+  filter: grayscale(0%) brightness(0.95);
+}
+
+.champ-cell-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(33,28,21,0.92) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.champ-cell-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 5px 4px;
+}
+
+.champ-cell-name {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.champ-cell-games {
+  font-size: 9px;
+  color: var(--orange);
+  font-weight: 600;
+}
+
+/* usage bar under each cell */
+.champ-cell-bar-wrap {
+  height: 2px;
+  background: var(--border);
+  margin-top: 3px;
+}
+.champ-cell-bar {
+  height: 100%;
+  background: var(--orange);
+  opacity: 0.6;
+}
+
+/* placeholder when no image */
+.champ-cell-placeholder {
+  width: 72px;
+  height: 72px;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: -0.02em;
+}
+
+/* ── MEDIA KIT ───────────────────────────────────── */
+.mk-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+.mk-card {
+  background: var(--bg);
+  padding: 32px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  text-decoration: none;
+  transition: background 0.2s;
+  position: relative;
+}
+.mk-card:not(.mk-unavailable):hover { background: var(--bg2); }
+
+.mk-card-icon {
+  font-size: 22px;
+  margin-bottom: 18px;
+  opacity: 0.7;
+}
+
+.mk-card-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.mk-card-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.mk-card-action {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.mk-unavailable .mk-card-label,
+.mk-unavailable .mk-card-desc,
+.mk-unavailable .mk-card-icon { opacity: 0.35; }
+
+.mk-unavailable .mk-card-action {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
 
 /* ── FOOTER ───────────────────────────────────────── */
 #footer {
