@@ -4,7 +4,7 @@
    이미지 배너와 함께 사용하거나, 직접 올린 YouTube 영상만 사용하세요. */
 const DEFAULT_DATA = {
   "team": {
-    "name": "팀명이 들어갈 자리",
+    "name": "ODOD",
     "fullName": "OverDrive Outlaw Dogs",
     "league": "LCK",
     "founded": "2022",
@@ -516,26 +516,18 @@ const DEFAULT_DATA = {
     }
   ],
   "sponsors": [
-    {
-      "name": "AXPEX Gaming",
-      "logo": "assets/images/sponsors/axpex.svg",
-      "url": "#"
-    },
-    {
-      "name": "Red Wulf",
-      "logo": "assets/images/sponsors/redwulf.svg",
-      "url": "#"
-    },
-    {
-      "name": "Logitex G",
-      "logo": "assets/images/sponsors/logitex.svg",
-      "url": "#"
-    },
-    {
-      "name": "Sunsung",
-      "logo": "assets/images/sponsors/sunsung.svg",
-      "url": "#"
-    }
+    { "name": "AXPEX Gaming",  "logo": "assets/images/sponsors/axpex.svg",      "url": "#" },
+    { "name": "Red Wulf",      "logo": "assets/images/sponsors/redwulf.svg",     "url": "#" },
+    { "name": "Logitex G",     "logo": "assets/images/sponsors/logitex.svg",     "url": "#" },
+    { "name": "Sunsung",       "logo": "assets/images/sponsors/sunsung.svg",     "url": "#" },
+    { "name": "HyperZ",        "logo": "assets/images/sponsors/hyperz.svg",      "url": "#" },
+    { "name": "SteelForce",    "logo": "assets/images/sponsors/steelforce.svg",  "url": "#" },
+    { "name": "Razyr",         "logo": "assets/images/sponsors/razyr.svg",       "url": "#" },
+    { "name": "Intek",         "logo": "assets/images/sponsors/intek.svg",       "url": "#" },
+    { "name": "ROQ",           "logo": "assets/images/sponsors/roq.svg",         "url": "#" },
+    { "name": "Venom Energy",  "logo": "assets/images/sponsors/venomx.svg",      "url": "#" },
+    { "name": "Novania",       "logo": "assets/images/sponsors/novania.svg",     "url": "#" },
+    { "name": "CrownLab",      "logo": "assets/images/sponsors/crownlab.svg",    "url": "#" }
   ],
   "sponsorshipTiers": [
     {
