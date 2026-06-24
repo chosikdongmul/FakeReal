@@ -31,20 +31,23 @@ function _loadYtApi() {
 
 function _fadeOutOverlay(overlay) {
   if (!overlay) return;
+  clearTimeout(overlay._fallback);
   overlay.style.transition = 'opacity 0.5s ease';
   overlay.style.opacity = '0';
 }
 
-function _showOverlay(overlay) {
+function _showOverlayWithFallback(overlay) {
   if (!overlay) return;
   overlay.style.transition = 'none';
   overlay.style.opacity = '1';
+  // Fallback: if PLAYING never fires in 4s, remove overlay anyway
+  clearTimeout(overlay._fallback);
+  overlay._fallback = setTimeout(() => _fadeOutOverlay(overlay), 4000);
 }
 
 function _createYtPlayer({ elementId, videoId, overlay }) {
   if (!videoId) { _fadeOutOverlay(overlay); return; }
-  // Fallback: if PLAYING never fires within 4s, remove overlay anyway
-  let fallback = setTimeout(() => _fadeOutOverlay(overlay), 4000);
+  _showOverlayWithFallback(overlay);
   // eslint-disable-next-line no-undef
   new YT.Player(elementId, {
     videoId,
@@ -54,10 +57,14 @@ function _createYtPlayer({ elementId, videoId, overlay }) {
       playsinline: 1, disablekb: 1, iv_load_policy: 3,
     },
     events: {
+      onReady(e) {
+        // Store player reference on overlay so we can call playVideo() later
+        if (overlay) overlay._ytPlayer = e.target;
+      },
       onStateChange(e) {
-        if (e.data === 1) { // PLAYING — lift overlay immediately
-          clearTimeout(fallback);
-          _fadeOutOverlay(overlay);
+        if (e.data === 1) { // PLAYING — extra 600ms so YT UI fully settles
+          clearTimeout(overlay._fallback);
+          overlay._fallback = setTimeout(() => _fadeOutOverlay(overlay), 600);
         }
       },
     },
@@ -287,8 +294,14 @@ function goToSlide(idx) {
   dots[_bannerIndex].classList.add('active');
   updateBannerInfo(_bannerIndex);
 
-  // Re-show overlay when switching to a YouTube slide
-  _showOverlay(slides[_bannerIndex]._ytLoadOverlay);
+  // Re-show overlay and explicitly resume video (browser may have throttled hidden iframe)
+  const ov = slides[_bannerIndex]._ytLoadOverlay;
+  if (ov) {
+    _showOverlayWithFallback(ov);
+    if (ov._ytPlayer) {
+      try { ov._ytPlayer.playVideo(); } catch(e) {}
+    }
+  }
 }
 
 function updateBannerInfo(idx) {
