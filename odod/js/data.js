@@ -4,7 +4,7 @@
    이미지 배너와 함께 사용하거나, 직접 올린 YouTube 영상만 사용하세요. */
 const DEFAULT_DATA = {
   "team": {
-    "name": "ODOD",
+    "name": "팀명이 들어갈 자리",
     "fullName": "OverDrive Outlaw Dogs",
     "league": "LCK",
     "founded": "2022",
@@ -245,7 +245,7 @@ const DEFAULT_DATA = {
       "games": 134,
       "isAce": true,
       "photo": "assets/images/players/midplayer.jpg",
-      "highlight": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/105YX7hWSAs?si=y97M-vA_dNpI0oiT\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+      "highlight": "<iframe width=",
       "stats": {
         "kda": 5.8,
         "winRate": 70.1,
