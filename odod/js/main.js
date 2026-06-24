@@ -125,11 +125,38 @@ function renderHero() {
 
     updateBannerInfo(0);
 
+    // 화살표 버튼 연결
+    const prevBtn = document.getElementById('banner-prev');
+    const nextBtn = document.getElementById('banner-next');
+    if (prevBtn) prevBtn.onclick = () => goToSlide((_bannerIndex - 1 + banners.length) % banners.length);
+    if (nextBtn) nextBtn.onclick = () => goToSlide((_bannerIndex + 1) % banners.length);
+
+    // 배너가 1개면 화살표 숨김
+    if (banners.length <= 1) {
+      if (prevBtn) prevBtn.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+    }
+
     if (_bannerTimer) clearInterval(_bannerTimer);
     if (banners.length > 1) {
       _bannerTimer = setInterval(() => {
         goToSlide((_bannerIndex + 1) % banners.length);
-      }, 5000);
+      }, 7000);
+
+      // 호버 시 자동 전환 일시정지
+      const heroEl = document.getElementById('hero');
+      if (heroEl) {
+        heroEl.addEventListener('mouseenter', () => {
+          clearInterval(_bannerTimer);
+          _bannerTimer = null;
+        });
+        heroEl.addEventListener('mouseleave', () => {
+          if (_bannerTimer) clearInterval(_bannerTimer);
+          _bannerTimer = setInterval(() => {
+            goToSlide((_bannerIndex + 1) % banners.length);
+          }, 7000);
+        });
+      }
     }
   }
 
