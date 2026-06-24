@@ -1090,7 +1090,7 @@ a { color: inherit; text-decoration: none; }
 .popup-thumb {
   flex-shrink: 0;
   width: 68px;
-  height: 56px;
+  height: 68px;
   border-radius: 50%;
   overflow: hidden;
   border: 0.5px solid var(--border-light);
