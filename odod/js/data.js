@@ -244,7 +244,7 @@ const DEFAULT_DATA = {
       "joinYear": 2022,
       "games": 134,
       "isAce": true,
-      "photo": "assets/images/players/overdrive.jpg",
+      "photo": "assets/images/players/midplayer.jpg",
       "highlight": "",
       "stats": {
         "kda": 5.8,
@@ -291,7 +291,7 @@ const DEFAULT_DATA = {
       ],
       "social": {},
       "bannerImage": "",
-      "photoThumb": ""
+      "photoThumb": "assets/images/players/midplayer_small.jpg"
     },
     {
       "id": "buckshot",
