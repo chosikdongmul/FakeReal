@@ -29,7 +29,22 @@ function _loadYtApi() {
   document.head.appendChild(s);
 }
 
+function _fadeOutOverlay(overlay) {
+  if (!overlay) return;
+  overlay.style.transition = 'opacity 0.5s ease';
+  overlay.style.opacity = '0';
+}
+
+function _showOverlay(overlay) {
+  if (!overlay) return;
+  overlay.style.transition = 'none';
+  overlay.style.opacity = '1';
+}
+
 function _createYtPlayer({ elementId, videoId, overlay }) {
+  if (!videoId) { _fadeOutOverlay(overlay); return; }
+  // Fallback: if PLAYING never fires within 4s, remove overlay anyway
+  let fallback = setTimeout(() => _fadeOutOverlay(overlay), 4000);
   // eslint-disable-next-line no-undef
   new YT.Player(elementId, {
     videoId,
@@ -40,10 +55,9 @@ function _createYtPlayer({ elementId, videoId, overlay }) {
     },
     events: {
       onStateChange(e) {
-        // 1 = PLAYING — video actually started, remove overlay immediately
-        if (e.data === 1 && overlay) {
-          overlay.style.transition = 'opacity 0.5s ease';
-          overlay.style.opacity = '0';
+        if (e.data === 1) { // PLAYING — lift overlay immediately
+          clearTimeout(fallback);
+          _fadeOutOverlay(overlay);
         }
       },
     },
@@ -155,26 +169,22 @@ function renderHero() {
           vid.setAttribute('playsinline', '');
           wrap.appendChild(vid);
         } else {
-          // YouTube embed — use IFrame API so we can detect PLAYING state
+          // YouTube embed — use IFrame API so we detect PLAYING and remove overlay
           const videoId = extractYouTubeId(b.video);
-          const iframeId = 'yt-banner-' + i;
-          // Pre-create iframe so existing CSS sizing rules apply
-          const iframe = document.createElement('iframe');
-          iframe.id = iframeId;
-          iframe.setAttribute('allow', 'autoplay; encrypted-media');
-          iframe.setAttribute('allowfullscreen', '');
-          wrap.appendChild(iframe);
-          // Shield: blocks mouse hover → YouTube controls never appear
+          // Div placeholder: YT.Player replaces this with an iframe
+          const placeholder = document.createElement('div');
+          placeholder.id = 'yt-banner-' + i;
+          wrap.appendChild(placeholder);
+          // Shield: sits above the iframe, blocks mouse → no hover controls
           const shield = document.createElement('div');
           shield.className = 'yt-shield';
           wrap.appendChild(shield);
-          // Load overlay: removed by YT API exactly when video starts playing
+          // Load overlay: removed when PLAYING fires (or after 6s fallback)
           const loadOverlay = document.createElement('div');
           loadOverlay.className = 'yt-load-overlay';
           wrap.appendChild(loadOverlay);
           slide._ytLoadOverlay = loadOverlay;
-          // Queue player creation (waits for API if needed)
-          queueYtPlayer({ elementId: iframeId, videoId, overlay: loadOverlay });
+          queueYtPlayer({ elementId: 'yt-banner-' + i, videoId, overlay: loadOverlay });
         }
         slide.appendChild(wrap);
       } else {
@@ -277,9 +287,8 @@ function goToSlide(idx) {
   dots[_bannerIndex].classList.add('active');
   updateBannerInfo(_bannerIndex);
 
-  // Re-show overlay if switching to a YouTube slide (will be hidden when PLAYING fires)
-  const ov = slides[_bannerIndex]._ytLoadOverlay;
-  if (ov) { ov.style.transition = 'none'; ov.style.opacity = '1'; }
+  // Re-show overlay when switching to a YouTube slide
+  _showOverlay(slides[_bannerIndex]._ytLoadOverlay);
 }
 
 function updateBannerInfo(idx) {
