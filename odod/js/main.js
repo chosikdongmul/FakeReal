@@ -1037,8 +1037,10 @@ function openPlayerPopup(p, idx) {
     <div class="popup-stat"><div class="popup-stat-val">${s.assists}</div><div class="popup-stat-lbl">어시스트</div></div>
   `;
 
-  // Radar chart
+  // Radar chart (선수 전용)
+  const radarWrap = document.getElementById('popup-radar-wrap');
   const radarCanvas = document.getElementById('popup-radar');
+  if (radarWrap) radarWrap.style.display = '';
   if (radarCanvas) drawRadarChart(radarCanvas, s);
 
   const champsEl = document.getElementById('popup-champs');
@@ -1205,7 +1207,9 @@ function openStaffPopup(s) {
   const popup = document.getElementById('popup');
   popup.className = 'popup staff-popup';
 
-  // Hide video & champions, show photo & philosophy
+  // Hide video & champions & radar, show photo & philosophy
+  const radarWrap = document.getElementById('popup-radar-wrap');
+  if (radarWrap) radarWrap.style.display = 'none';
   document.getElementById('popup-video-inner').innerHTML = '';
   document.getElementById('popup-video').style.display = 'none';
   document.getElementById('popup-mute-btn').style.display = 'none';
