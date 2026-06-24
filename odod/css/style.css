@@ -1373,6 +1373,128 @@ a { color: inherit; text-decoration: none; }
 }
 .popup-player-nav:hover { background: rgba(212,113,78,0.7); border-color: var(--orange); }
 
+/* ── LIVE WIDGET ─────────────────────────────────── */
+.live-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212, 113, 78, 0.12);
+  border: 0.5px solid rgba(212, 113, 78, 0.4);
+  color: var(--text);
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.live-btn:hover { background: rgba(212,113,78,0.22); border-color: var(--orange); }
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e84545;
+  display: inline-block;
+  animation: livePulse 1.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.45; transform: scale(0.8); }
+}
+
+.live-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #e84545;
+}
+
+.live-match-nav {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.live-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 280px;
+  background: var(--pop-bg);
+  border: 0.5px solid var(--border-light);
+  padding: 20px;
+  z-index: 200;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+}
+.live-panel.open { display: block; }
+
+.live-panel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.live-panel-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #e84545;
+}
+
+.live-panel-timer {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.live-panel-score {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.live-panel-score .score-sep {
+  color: var(--text-dim);
+  font-weight: 300;
+  margin: 0 8px;
+}
+
+.live-panel-score .score-my { color: var(--orange); }
+
+.live-panel-status {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 18px;
+  letter-spacing: 0.04em;
+}
+
+.live-panel-link {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange);
+  text-decoration: none;
+  border: 0.5px solid rgba(212,113,78,0.4);
+  padding: 10px;
+  transition: background 0.2s;
+}
+.live-panel-link:hover { background: rgba(212,113,78,0.12); }
+
 /* ── HAMBURGER NAV ───────────────────────────────── */
 .nav-hamburger {
   display: none;

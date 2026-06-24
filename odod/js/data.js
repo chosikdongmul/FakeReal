@@ -536,6 +536,15 @@ const DEFAULT_DATA = {
       "url": "#"
     }
   ],
+  "live": {
+    "active": false,
+    "opponent": "T1",
+    "opponentLogo": "",
+    "score": "1-0",
+    "mapStatus": "Game 2 진행 중",
+    "timer": "23:14",
+    "stream": "https://www.twitch.tv/lck"
+  },
   "banners": [
     {
       "image": "",

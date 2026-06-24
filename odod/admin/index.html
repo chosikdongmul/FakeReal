@@ -450,6 +450,7 @@
     <button class="tab-btn" onclick="switchTab('gallery')">갤러리</button>
     <button class="tab-btn" onclick="switchTab('sponsors')">스폰서</button>
     <button class="tab-btn" onclick="switchTab('banners')">메인 배너</button>
+    <button class="tab-btn" onclick="switchTab('live')" style="color:#e84545;border-bottom-color:transparent;" id="tab-live-btn">⬤ LIVE</button>
   </div>
 
   <!-- TEAM -->
@@ -556,6 +557,49 @@
     </p>
     <div class="list-editor" id="banners-editor"></div>
     <button class="add-btn" onclick="addBanner()">+ 배너 추가</button>
+  </div>
+
+  <!-- LIVE -->
+  <div class="tab-panel" id="panel-live">
+    <div class="form-section">
+      <div class="form-section-title">LIVE 경기 상태</div>
+      <div class="form-row" style="align-items:center;margin-bottom:24px;">
+        <div class="form-group" style="flex-direction:row;align-items:center;gap:12px;">
+          <label style="white-space:nowrap;margin:0;">LIVE 활성화</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;">
+            <input type="checkbox" id="live-active" style="width:18px;height:18px;accent-color:var(--orange);">
+            <span class="field-hint" style="margin:0;">켜면 nav에 LIVE 뱃지가 표시됩니다</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>상대 팀명</label>
+          <input class="form-input" id="live-opponent" type="text" placeholder="T1">
+        </div>
+        <div class="form-group">
+          <label>현재 스코어 (우리 팀 기준)</label>
+          <input class="form-input" id="live-score" type="text" placeholder="1-0">
+          <span class="field-hint">형식: 1-0 (ODOD 승수 먼저)</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>경기 상태 텍스트</label>
+          <input class="form-input" id="live-mapStatus" type="text" placeholder="Game 2 진행 중">
+        </div>
+        <div class="form-group">
+          <label>인게임 타이머</label>
+          <input class="form-input" id="live-timer" type="text" placeholder="23:14">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>중계 스트림 URL</label>
+          <input class="form-input" id="live-stream" type="text" placeholder="https://www.twitch.tv/lck">
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -684,6 +728,18 @@ function initAdmin() {
   buildGalleryEditor();
   buildSponsorsEditor();
   buildBannersEditor();
+  buildLiveEditor();
+}
+
+function buildLiveEditor() {
+  const live = DATA.live || {};
+  const activeEl = document.getElementById('live-active');
+  if (activeEl) activeEl.checked = !!live.active;
+  sv('live-opponent',  live.opponent  || '');
+  sv('live-score',     live.score     || '');
+  sv('live-mapStatus', live.mapStatus || '');
+  sv('live-timer',     live.timer     || '');
+  sv('live-stream',    live.stream    || '');
 }
 
 // ── PLAYERS ────────────────────────────────────────
@@ -1081,6 +1137,14 @@ function collectData() {
   document.querySelectorAll('[data-bi][data-bf]').forEach(el => {
     if(DATA.banners[+el.dataset.bi]) DATA.banners[+el.dataset.bi][el.dataset.bf]=el.value;
   });
+  // Live
+  if (!DATA.live) DATA.live = {};
+  DATA.live.active     = document.getElementById('live-active')?.checked || false;
+  DATA.live.opponent   = v('live-opponent');
+  DATA.live.score      = v('live-score');
+  DATA.live.mapStatus  = v('live-mapStatus');
+  DATA.live.timer      = v('live-timer');
+  DATA.live.stream     = v('live-stream');
 }
 
 function saveData() {

@@ -23,6 +23,22 @@
       <a href="#partners">Partners</a>
     </div>
     <div id="nav-social" style="display:flex;gap:20px;align-items:center;"></div>
+    <div id="live-widget" style="display:none;position:relative;">
+      <button class="live-btn" id="live-btn" onclick="toggleLivePanel()">
+        <span class="live-dot"></span>
+        <span class="live-label">LIVE</span>
+        <span class="live-match-nav" id="live-match-nav"></span>
+      </button>
+      <div class="live-panel" id="live-panel">
+        <div class="live-panel-top">
+          <span class="live-panel-badge"><span class="live-dot"></span>LIVE</span>
+          <span class="live-panel-timer" id="live-panel-timer"></span>
+        </div>
+        <div class="live-panel-score" id="live-panel-score"></div>
+        <div class="live-panel-status" id="live-panel-status"></div>
+        <a class="live-panel-link" id="live-panel-link" target="_blank" rel="noopener">경기 시청 →</a>
+      </div>
+    </div>
     <button class="nav-hamburger" id="nav-hamburger" aria-label="메뉴">
       <span></span><span></span><span></span>
     </button>

@@ -495,6 +495,50 @@ function renderSponsors() {
   });
 }
 
+// ── LIVE WIDGET ────────────────────────────────────────
+function renderLive() {
+  const live = DATA.live;
+  const widget = document.getElementById('live-widget');
+  if (!widget || !live || !live.active) return;
+
+  widget.style.display = 'block';
+
+  // nav badge: "ODOD 1 — T1 0" 형식
+  const [myScore, oppScore] = (live.score || '0-0').split('-');
+  const nav = document.getElementById('live-match-nav');
+  if (nav) {
+    nav.innerHTML = `ODOD <span style="color:var(--orange);margin:0 4px">${myScore}</span><span style="color:var(--text-dim)">—</span><span style="margin:0 4px">${oppScore}</span>${live.opponent}`;
+  }
+
+  // panel
+  const scoreEl = document.getElementById('live-panel-score');
+  if (scoreEl) {
+    scoreEl.innerHTML = `<span class="score-my">ODOD ${myScore}</span><span class="score-sep">—</span>${oppScore} ${live.opponent}`;
+  }
+  const statusEl = document.getElementById('live-panel-status');
+  if (statusEl) statusEl.textContent = live.mapStatus || '';
+
+  const timerEl = document.getElementById('live-panel-timer');
+  if (timerEl) timerEl.textContent = live.timer || '';
+
+  const linkEl = document.getElementById('live-panel-link');
+  if (linkEl && live.stream) linkEl.href = live.stream;
+}
+
+function toggleLivePanel() {
+  const panel = document.getElementById('live-panel');
+  if (panel) panel.classList.toggle('open');
+}
+
+// 패널 외부 클릭 시 닫기
+document.addEventListener('click', (e) => {
+  const widget = document.getElementById('live-widget');
+  const panel = document.getElementById('live-panel');
+  if (panel && panel.classList.contains('open') && widget && !widget.contains(e.target)) {
+    panel.classList.remove('open');
+  }
+});
+
 // ── RENDER FOOTER ──────────────────────────────────────
 function renderFooter() {
   const t = DATA.team;
@@ -839,6 +883,7 @@ function checkAdmin() {
 // ── INIT ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   renderNav();
+  renderLive();
   renderHero();
   renderStats();
   renderResults();
