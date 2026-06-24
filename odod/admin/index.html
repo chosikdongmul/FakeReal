@@ -807,7 +807,7 @@ function buildPlayersEditor() {
         <div class="form-group" style="margin-bottom:16px">
           <label>하이라이트 영상 URL (팝업 좌측 풀패널 재생)</label>
           <span class="field-hint">유튜브 URL 그대로 붙여넣기 — embed로 자동 변환됩니다<br>예: https://www.youtube.com/watch?v=XXXXXXX<br>예: https://youtu.be/XXXXXXX<br>비어있으면 좌측 패널이 검은 화면으로 표시됩니다</span>
-          <input class="form-input" data-p="${pi}" data-f="highlight" value="${p.highlight||''}" style="margin-top:4px" />
+          <input class="form-input" id="highlight-${pi}" data-p="${pi}" data-f="highlight" style="margin-top:4px" />
         </div>
 
         <div style="margin-bottom:8px;margin-top:8px"><div class="form-section-title">스탯</div></div>
@@ -850,6 +850,9 @@ function buildPlayersEditor() {
       </div>
     `;
     el.appendChild(acc);
+    // highlight 필드: iframe HTML에 따옴표 포함 → innerHTML 어트리뷰트로 못 넣음, JS로 직접 주입
+    const hlInput = document.getElementById(`highlight-${pi}`);
+    if (hlInput) hlInput.value = p.highlight || '';
   });
 }
 
