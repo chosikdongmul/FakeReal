@@ -218,11 +218,11 @@ function showYtOverlay(slide) {
   ov.style.opacity = '1';
   // Clear any pending hide
   if (_overlayTimer) clearTimeout(_overlayTimer);
-  // Fade out after 8s
+  // Fade out after 2s (just long enough to hide YouTube's initial player UI)
   _overlayTimer = setTimeout(() => {
-    ov.style.transition = 'opacity 1.5s ease';
+    ov.style.transition = 'opacity 1s ease';
     ov.style.opacity = '0';
-  }, 8000);
+  }, 2000);
 }
 
 function goToSlide(idx) {
