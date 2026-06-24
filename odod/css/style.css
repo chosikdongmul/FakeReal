@@ -472,14 +472,34 @@ a { color: inherit; text-decoration: none; }
   margin: 0 auto;
 }
 
+/* 섹션 간 풀블리드 구분선 + 상단 패딩 */
+.section-divided {
+  padding-top: 72px;
+  position: relative;
+}
+.section-divided::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 0.5px;
+  background: var(--border);
+  pointer-events: none;
+}
+
 .section-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   border-bottom: 0.5px solid var(--border);
   padding-bottom: 16px;
-  margin-bottom: 56px;
+  margin-bottom: 40px;
 }
+
+/* Partners: 헤더 바로 아래 로고 그리드 붙이기 */
+#partners .section-head { margin-bottom: 0; }
 
 .section-title {
   font-size: 11px;
