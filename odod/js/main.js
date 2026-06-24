@@ -604,7 +604,7 @@ function openCompare() {
 
   function playerCard(p) {
     const img = p.photoThumb || p.photo
-      ? `<img class="compare-player-img" src="${p.photoThumb || p.photo}" alt="${p.nickname}" />`
+      ? `<img class="compare-player-img" src="${p.photoThumb || p.photo}" alt="${p.nickname}" onerror="this.outerHTML='<div class=\\'compare-player-img\\'></div>'" />`
       : `<div class="compare-player-img"></div>`;
     return `
       <div class="compare-player">
@@ -661,6 +661,23 @@ function renderMvpVote() {
   const voted = localStorage.getItem('odod_mvp_voted');
   const votedKey = localStorage.getItem('odod_mvp_voted_key');
 
+  // 가짜 투표 사전 시딩 (처음 로드 시 한 번만)
+  const countKey = 'odod_mvp_counts_' + matchKey;
+  if (!localStorage.getItem(countKey) && players.length > 0) {
+    const seed = {};
+    // 각 선수별 시드값: KDA × 게임수 기반으로 현실적인 분포 생성
+    const base = players.reduce((s, p) => s + (p.stats?.kda || 3) * (p.games || 50), 0);
+    players.forEach(p => {
+      const weight = (p.stats?.kda || 3) * (p.games || 50);
+      const raw = Math.round((weight / base) * 2800) + Math.floor(Math.random() * 180 + 20);
+      seed[p.id] = raw;
+    });
+    // Ace 플레이어 보너스
+    const ace = players.find(p => p.isAce);
+    if (ace) seed[ace.id] = Math.round(seed[ace.id] * 1.35);
+    localStorage.setItem(countKey, JSON.stringify(seed));
+  }
+
   // 이미 투표했고 같은 경기면 결과 표시
   if (voted && votedKey === matchKey) {
     renderMvpResults(body, matchKey, players, voted);
@@ -681,7 +698,7 @@ function renderMvpCandidates(body, matchKey, players) {
     players.map(p => `
       <button class="mvp-btn" onclick="castMvpVote('${matchKey}','${p.id}')">
         ${p.photoThumb || p.photo
-          ? `<img class="mvp-btn-thumb" src="${p.photoThumb || p.photo}" alt="${p.nickname}" />`
+          ? `<img class="mvp-btn-thumb" src="${p.photoThumb || p.photo}" alt="${p.nickname}" onerror="this.outerHTML='<div class=\\'mvp-btn-thumb\\'></div>'" />`
           : `<div class="mvp-btn-thumb"></div>`}
         <div>
           <span class="mvp-btn-pos">${p.positionKo}</span>
@@ -763,7 +780,7 @@ function renderChampPool() {
   grid.innerHTML = champs.map(c => {
     const barPct = maxGames > 0 ? Math.round((c.games / maxGames) * 100) : 0;
     const imgHtml = c.image
-      ? `<img class="champ-cell-img" src="${c.image}" alt="${c.name}" />`
+      ? `<img class="champ-cell-img" src="${c.image}" alt="${c.name}" onerror="this.outerHTML='<div class=\\'champ-cell-placeholder\\'>${c.name.slice(0,3).toUpperCase()}</div>'" />`
       : `<div class="champ-cell-placeholder">${c.name.slice(0,3).toUpperCase()}</div>`;
     return `
       <div class="champ-cell">
@@ -785,82 +802,31 @@ function renderSponsorship() {
   const t = DATA.team;
   const contact = t.contact || 'partnership@odod.gg';
 
-  // 인트로 텍스트
   const introEl = document.getElementById('sp-intro-text');
   if (introEl) {
-    introEl.textContent = `ODOD는 ${t.league} 무대에서 성장하는 팀입니다. 저희와 함께하는 파트너사는 경기 중계, SNS, 유니폼, 공식 채널 등 다양한 노출 기회를 얻게 됩니다.`;
+    introEl.textContent = `${t.name}는 ${t.league} 무대에서 성장하는 팀입니다. 저희와 함께하는 파트너사는 경기 중계, SNS, 유니폼, 공식 채널 등 다양한 노출 기회를 얻게 됩니다.`;
   }
 
-  const TIERS = [
-    {
-      cls: 'tier-bronze',
-      tier: 'Bronze',
-      name: 'Bronze',
-      price: '문의 시 협의',
-      benefits: [
-        '공식 웹사이트 로고 노출',
-        'SNS 멘션 연 4회',
-        '시즌 종료 보고서 제공',
-      ]
-    },
-    {
-      cls: 'tier-silver',
-      tier: 'Silver',
-      name: 'Silver',
-      price: '문의 시 협의',
-      benefits: [
-        'Bronze 전체 포함',
-        '연습 시설 로고 부착',
-        'SNS 멘션 연 8회',
-        '팀 콘텐츠 공동 제작 1회',
-      ]
-    },
-    {
-      cls: 'tier-gold',
-      tier: 'Gold',
-      name: 'Gold',
-      price: '문의 시 협의',
-      benefits: [
-        'Silver 전체 포함',
-        '유니폼 슬리브 로고',
-        '경기 전 인터뷰 배경 노출',
-        'SNS 멘션 연 16회',
-        '팬 미팅 공동 주최 가능',
-      ]
-    },
-    {
-      cls: 'tier-title',
-      tier: 'Title',
-      name: 'Title',
-      price: '문의 시 협의',
-      benefits: [
-        'Gold 전체 포함',
-        '팀명 병기 (ODOD × 파트너)',
-        '유니폼 전면 메인 로고',
-        '모든 공식 채널 최우선 노출',
-        '전용 브랜드 콘텐츠 시리즈',
-        '연간 파트너십 리뷰 미팅',
-      ]
-    },
-  ];
-
+  const tiers = DATA.sponsorshipTiers || [];
   const grid = document.getElementById('sp-grid');
   if (!grid) return;
-  grid.innerHTML = TIERS.map(t => `
-    <div class="sp-card ${t.cls}">
-      <div class="sp-card-tier">${t.tier}</div>
-      <div class="sp-card-name">${t.name}</div>
-      <div class="sp-card-price">${t.price}</div>
-      <div class="sp-card-divider"></div>
-      <ul class="sp-card-benefits">
-        ${t.benefits.map(b => `<li>${b}</li>`).join('')}
-      </ul>
-    </div>
-  `).join('');
 
-  // CTA
+  grid.innerHTML = tiers.map((tier, i) => {
+    const isTitle = tier.id === 'title' || i === tiers.length - 1;
+    return `
+      <div class="sp-card ${isTitle ? 'tier-title' : ''}">
+        <div class="sp-card-tier">${tier.tier || tier.name}</div>
+        <div class="sp-card-name">${tier.name}</div>
+        <div class="sp-card-price">${tier.price || '문의 시 협의'}</div>
+        <div class="sp-card-divider"></div>
+        <ul class="sp-card-benefits">
+          ${(tier.benefits || []).map(b => `<li>${b}</li>`).join('')}
+        </ul>
+      </div>`;
+  }).join('');
+
   const ctaBtn = document.getElementById('sp-cta-btn');
-  if (ctaBtn) ctaBtn.href = `mailto:${contact}?subject=ODOD 파트너십 문의`;
+  if (ctaBtn) ctaBtn.href = `mailto:${contact}?subject=${t.name} 파트너십 문의`;
 }
 
 // ── RENDER MEDIA KIT ───────────────────────────────────

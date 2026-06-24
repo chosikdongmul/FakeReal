@@ -451,6 +451,7 @@
     <button class="tab-btn" onclick="switchTab('sponsors')">스폰서</button>
     <button class="tab-btn" onclick="switchTab('banners')">메인 배너</button>
     <button class="tab-btn" onclick="switchTab('mediakit')">미디어 킷</button>
+    <button class="tab-btn" onclick="switchTab('sponsorship')">스폰서십 패키지</button>
     <button class="tab-btn" onclick="switchTab('live')" style="color:#e84545;border-bottom-color:transparent;" id="tab-live-btn">⬤ LIVE</button>
   </div>
 
@@ -597,6 +598,16 @@
     </div>
   </div>
 
+  <!-- SPONSORSHIP TIERS -->
+  <div class="tab-panel" id="panel-sponsorship">
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.7;">
+      스폰서십 패키지 티어를 관리합니다. 순서대로 표시됩니다.<br>
+      마지막 티어가 Title 티어(주황 하이라이트)로 강조됩니다.
+    </p>
+    <div id="sp-tiers-editor"></div>
+    <button class="add-btn" onclick="addSpTier()">+ 티어 추가</button>
+  </div>
+
   <!-- LIVE -->
   <div class="tab-panel" id="panel-live">
     <div class="form-section">
@@ -696,6 +707,12 @@ const DEFAULT_DATA = {
     {name:"RedBull",logo:"assets/images/sponsors/redbull.png",url:"#"},
     {name:"Logitech G",logo:"assets/images/sponsors/logitechg.png",url:"#"},
     {name:"Samsung",logo:"assets/images/sponsors/samsung.png",url:"#"}
+  ],
+  sponsorshipTiers:[
+    {id:"bronze",tier:"Bronze",name:"Bronze",price:"문의 시 협의",benefits:["공식 웹사이트 로고 노출","SNS 멘션 연 4회","시즌 종료 보고서 제공"]},
+    {id:"silver",tier:"Silver",name:"Silver",price:"문의 시 협의",benefits:["Bronze 전체 포함","연습 시설 로고 부착","SNS 멘션 연 8회","팀 콘텐츠 공동 제작 1회"]},
+    {id:"gold",tier:"Gold",name:"Gold",price:"문의 시 협의",benefits:["Silver 전체 포함","유니폼 슬리브 로고","경기 전 인터뷰 배경 노출","SNS 멘션 연 16회","팬 미팅 공동 주최 가능"]},
+    {id:"title",tier:"Title",name:"Title",price:"문의 시 협의",benefits:["Gold 전체 포함","팀명 병기 (ODOD × 파트너)","유니폼 전면 메인 로고","모든 공식 채널 최우선 노출","전용 브랜드 콘텐츠 시리즈","연간 파트너십 리뷰 미팅"]}
   ]
 };
 
@@ -745,7 +762,7 @@ let DATA = loadData();
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const tabs = ['team','players','staff','results','schedule','gallery','sponsors','banners','mediakit','live'];
+  const tabs = ['team','players','staff','results','schedule','gallery','sponsors','banners','mediakit','sponsorship','live'];
   const idx = tabs.indexOf(name);
   if (idx !== -1) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
   const panel = document.getElementById('panel-' + name);
@@ -773,7 +790,141 @@ function initAdmin() {
   buildSponsorsEditor();
   buildBannersEditor();
   buildMediakitEditor();
+  buildSponsorshipTiersEditor();
   buildLiveEditor();
+}
+
+// ── CHAMPION CDN AUTO-FILL ─────────────────────────────
+const CHAMP_KEY_MAP = {
+  // 특수 케이스만 정의 — 나머지는 공백/특수문자 제거로 자동 처리
+  "aurelion sol": "AurelionSol",
+  "bel'veth": "Belveth",
+  "cho'gath": "Chogath",
+  "dr. mundo": "DrMundo",
+  "jarvan iv": "JarvanIV",
+  "jarvan 4": "JarvanIV",
+  "kai'sa": "KaiSa",
+  "kaisa": "KaiSa",
+  "k'sante": "KSante",
+  "ksante": "KSante",
+  "kha'zix": "Khazix",
+  "khazix": "Khazix",
+  "kog'maw": "KogMaw",
+  "kogmaw": "KogMaw",
+  "lee sin": "LeeSin",
+  "master yi": "MasterYi",
+  "miss fortune": "MissFortune",
+  "mf": "MissFortune",
+  "nunu": "Nunu",
+  "nunu & willump": "Nunu",
+  "rek'sai": "RekSai",
+  "reksai": "RekSai",
+  "renata": "Renata",
+  "renata glasc": "Renata",
+  "tahm kench": "TahmKench",
+  "twisted fate": "TwistedFate",
+  "tf": "TwistedFate",
+  "vel'koz": "Velkoz",
+  "velkoz": "Velkoz",
+  "wukong": "MonkeyKing",
+  "xin zhao": "XinZhao",
+  "yorick": "Yorick",
+};
+
+function champNameToCdnUrl(name) {
+  if (!name.trim()) return '';
+  const lower = name.trim().toLowerCase();
+  // 예외 맵 먼저 확인
+  if (CHAMP_KEY_MAP[lower]) {
+    return `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/${CHAMP_KEY_MAP[lower]}.png`;
+  }
+  // 일반 규칙: 첫 글자 대문자 + 공백/특수문자 제거
+  const key = name.trim()
+    .replace(/[^a-zA-Z0-9 ]/g, '')        // 특수문자 제거
+    .split(' ')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join('');
+  return `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/${key}.png`;
+}
+
+function autoFillChampImg(nameInput) {
+  // 같은 list-item 안의 image 입력 필드 찾기
+  const item = nameInput.closest('.list-item');
+  if (!item) return;
+  const imgInput = item.querySelector('[data-cf="image"]');
+  if (!imgInput) return;
+  // 이미 수동으로 입력된 값이 있으면 덮어쓰지 않음 (CDN URL이 아닌 경우)
+  const existing = imgInput.value.trim();
+  if (existing && !existing.includes('ddragon.leagueoflegends.com')) return;
+  imgInput.value = champNameToCdnUrl(nameInput.value);
+}
+
+function buildSponsorshipTiersEditor() {
+  if (!DATA.sponsorshipTiers) DATA.sponsorshipTiers = [];
+  const el = document.getElementById('sp-tiers-editor');
+  if (!el) return;
+  el.innerHTML = '';
+  DATA.sponsorshipTiers.forEach((tier, ti) => {
+    const acc = document.createElement('div');
+    acc.className = 'player-accordion';
+    const benefitsHtml = (tier.benefits || []).map((b, bi) => `
+      <div class="list-item">
+        <input placeholder="혜택 설명" data-ti="${ti}" data-bi="${bi}" data-spb="benefit" value="${b.replace(/"/g, '&quot;')}" />
+        <button class="remove-btn" onclick="removeSpBenefit(${ti},${bi})">✕</button>
+      </div>`).join('');
+    acc.innerHTML = `
+      <div class="player-acc-header" onclick="toggleAcc(this)">
+        <div><span class="pos-badge">${tier.tier || tier.name || '티어'}</span> <h3>${tier.name || ''}</h3></div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="player-acc-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>티어 레이블</label>
+            <span class="field-hint">카드 상단에 표시 — Bronze, Silver, Gold, Title 등</span>
+            <input class="form-input" data-ti="${ti}" data-spf="tier" value="${tier.tier || ''}" />
+          </div>
+          <div class="form-group">
+            <label>티어 이름</label>
+            <span class="field-hint">카드 중앙 큰 텍스트</span>
+            <input class="form-input" data-ti="${ti}" data-spf="name" value="${tier.name || ''}" />
+          </div>
+          <div class="form-group">
+            <label>가격 / 조건</label>
+            <span class="field-hint">예: 문의 시 협의, ₩500만/월</span>
+            <input class="form-input" data-ti="${ti}" data-spf="price" value="${tier.price || ''}" />
+          </div>
+        </div>
+        <div style="margin-bottom:8px;margin-top:8px"><div class="form-section-title">혜택 목록</div></div>
+        <div class="list-editor" id="sp-benefits-${ti}">${benefitsHtml}</div>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button class="add-btn" onclick="addSpBenefit(${ti})">+ 혜택 추가</button>
+          <button class="remove-btn" style="padding:10px 20px;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;" onclick="removeSpTier(${ti})">이 티어 삭제</button>
+        </div>
+      </div>`;
+    el.appendChild(acc);
+  });
+}
+
+function addSpTier() {
+  if (!DATA.sponsorshipTiers) DATA.sponsorshipTiers = [];
+  DATA.sponsorshipTiers.push({ id: 'tier' + Date.now(), tier: '', name: '', price: '문의 시 협의', benefits: [''] });
+  buildSponsorshipTiersEditor();
+}
+
+function removeSpTier(ti) {
+  DATA.sponsorshipTiers.splice(ti, 1);
+  buildSponsorshipTiersEditor();
+}
+
+function addSpBenefit(ti) {
+  DATA.sponsorshipTiers[ti].benefits.push('');
+  buildSponsorshipTiersEditor();
+}
+
+function removeSpBenefit(ti, bi) {
+  DATA.sponsorshipTiers[ti].benefits.splice(bi, 1);
+  buildSponsorshipTiersEditor();
 }
 
 function buildMediakitEditor() {
@@ -881,11 +1032,11 @@ function buildPlayersEditor() {
           <div class="form-group"><label>어시스트</label><input class="form-input" type="number" step="0.1" data-p="${pi}" data-s="assists" value="${p.stats.assists}" /></div>
         </div>
         <div style="margin-bottom:8px;margin-top:8px"><div class="form-section-title">주 챔피언</div></div>
-        <p class="field-hint" style="margin-bottom:12px;">최대 3개 권장 · 챔피언 이미지: 1:1 정사각형 · 최소 80×80px · 저장 경로: assets/images/champions/챔피언명.jpg</p>
+        <p class="field-hint" style="margin-bottom:12px;">최대 3개 권장 · 챔피언명 입력 시 라이엇 CDN 이미지 URL 자동 세팅 · 직접 URL 입력하면 덮어쓰지 않음</p>
         <div id="p-champs-${pi}" class="list-editor">${p.champions.map((c,ci)=>`
           <div class="list-item">
-            <input placeholder="챔피언명 (영어)" data-p="${pi}" data-ci="${ci}" data-cf="name" value="${c.name}" />
-            <input placeholder="이미지 경로 — assets/images/champions/이름.jpg" data-p="${pi}" data-ci="${ci}" data-cf="image" value="${c.image}" />
+            <input placeholder="챔피언명 (영어)" data-p="${pi}" data-ci="${ci}" data-cf="name" value="${c.name}" oninput="autoFillChampImg(this)" />
+            <input placeholder="자동 입력 or 직접 URL 입력" data-p="${pi}" data-ci="${ci}" data-cf="image" value="${c.image}" />
             <input type="number" placeholder="승률%" data-p="${pi}" data-ci="${ci}" data-cf="winRate" value="${c.winRate}" style="max-width:70px" />
             <input type="number" step="0.1" placeholder="KDA" data-p="${pi}" data-ci="${ci}" data-cf="kda" value="${c.kda}" style="max-width:60px" />
             <input type="number" placeholder="게임수" data-p="${pi}" data-ci="${ci}" data-cf="games" value="${c.games}" style="max-width:70px" />
@@ -1204,6 +1355,19 @@ function collectData() {
   document.querySelectorAll('[data-bi][data-bf]').forEach(el => {
     if(DATA.banners[+el.dataset.bi]) DATA.banners[+el.dataset.bi][el.dataset.bf]=el.value;
   });
+  // Sponsorship Tiers
+  if (DATA.sponsorshipTiers) {
+    document.querySelectorAll('[data-ti][data-spf]').forEach(el => {
+      const ti = +el.dataset.ti, f = el.dataset.spf;
+      if (DATA.sponsorshipTiers[ti]) DATA.sponsorshipTiers[ti][f] = el.value;
+    });
+    document.querySelectorAll('[data-ti][data-bi][data-spb]').forEach(el => {
+      const ti = +el.dataset.ti, bi = +el.dataset.bi;
+      if (DATA.sponsorshipTiers[ti] && DATA.sponsorshipTiers[ti].benefits[bi] !== undefined)
+        DATA.sponsorshipTiers[ti].benefits[bi] = el.value;
+    });
+  }
+
   // Mediakit
   if (!DATA.mediakit) DATA.mediakit = { logo:{}, photos:{}, presskit:{}, brandguide:{} };
   ['logo','photos','presskit','brandguide'].forEach(k => {

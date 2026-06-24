@@ -129,21 +129,21 @@ const DEFAULT_DATA = {
       "champions": [
         {
           "name": "Garen",
-          "image": "assets/images/champions/garen.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Garen.png",
           "winRate": 71,
           "kda": 4.1,
           "games": 21
         },
         {
           "name": "Renekton",
-          "image": "assets/images/champions/renekton.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Renekton.png",
           "winRate": 64,
           "kda": 3.4,
           "games": 14
         },
         {
           "name": "Camille",
-          "image": "assets/images/champions/camille.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Camille.png",
           "winRate": 60,
           "kda": 2.9,
           "games": 10
@@ -194,21 +194,21 @@ const DEFAULT_DATA = {
       "champions": [
         {
           "name": "Vi",
-          "image": "assets/images/champions/vi.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Vi.png",
           "winRate": 75,
           "kda": 5.2,
           "games": 16
         },
         {
           "name": "Jarvan IV",
-          "image": "assets/images/champions/jarvaniv.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/JarvanIV.png",
           "winRate": 70,
           "kda": 4,
           "games": 10
         },
         {
           "name": "Hecarim",
-          "image": "assets/images/champions/hecarim.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Hecarim.png",
           "winRate": 62,
           "kda": 3.8,
           "games": 8
@@ -258,21 +258,21 @@ const DEFAULT_DATA = {
       "champions": [
         {
           "name": "Azir",
-          "image": "assets/images/champions/azir.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Azir.png",
           "winRate": 78,
           "kda": 7.1,
           "games": 29
         },
         {
           "name": "Zed",
-          "image": "assets/images/champions/zed.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Zed.png",
           "winRate": 72,
           "kda": 6.2,
           "games": 18
         },
         {
           "name": "Orianna",
-          "image": "assets/images/champions/orianna.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Orianna.png",
           "winRate": 68,
           "kda": 5.4,
           "games": 15
@@ -320,21 +320,21 @@ const DEFAULT_DATA = {
       "champions": [
         {
           "name": "Jhin",
-          "image": "assets/images/champions/jhin.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Jhin.png",
           "winRate": 74,
           "kda": 5.5,
           "games": 27
         },
         {
           "name": "Kai'Sa",
-          "image": "assets/images/champions/kaisa.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/KaiSa.png",
           "winRate": 66,
           "kda": 4.2,
           "games": 19
         },
         {
           "name": "Caitlyn",
-          "image": "assets/images/champions/caitlyn.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Caitlyn.png",
           "winRate": 61,
           "kda": 3.9,
           "games": 12
@@ -385,21 +385,21 @@ const DEFAULT_DATA = {
       "champions": [
         {
           "name": "Thresh",
-          "image": "assets/images/champions/thresh.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Thresh.png",
           "winRate": 72,
           "kda": 7.8,
           "games": 31
         },
         {
           "name": "Nautilus",
-          "image": "assets/images/champions/nautilus.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Nautilus.png",
           "winRate": 68,
           "kda": 6.5,
           "games": 20
         },
         {
           "name": "Lulu",
-          "image": "assets/images/champions/lulu.jpg",
+          "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/Lulu.png",
           "winRate": 64,
           "kda": 5.9,
           "games": 13
@@ -537,6 +537,36 @@ const DEFAULT_DATA = {
       "url": "#"
     }
   ],
+  "sponsorshipTiers": [
+    {
+      "id": "bronze",
+      "tier": "Bronze",
+      "name": "Bronze",
+      "price": "문의 시 협의",
+      "benefits": ["공식 웹사이트 로고 노출", "SNS 멘션 연 4회", "시즌 종료 보고서 제공"]
+    },
+    {
+      "id": "silver",
+      "tier": "Silver",
+      "name": "Silver",
+      "price": "문의 시 협의",
+      "benefits": ["Bronze 전체 포함", "연습 시설 로고 부착", "SNS 멘션 연 8회", "팀 콘텐츠 공동 제작 1회"]
+    },
+    {
+      "id": "gold",
+      "tier": "Gold",
+      "name": "Gold",
+      "price": "문의 시 협의",
+      "benefits": ["Silver 전체 포함", "유니폼 슬리브 로고", "경기 전 인터뷰 배경 노출", "SNS 멘션 연 16회", "팬 미팅 공동 주최 가능"]
+    },
+    {
+      "id": "title",
+      "tier": "Title",
+      "name": "Title",
+      "price": "문의 시 협의",
+      "benefits": ["Gold 전체 포함", "팀명 병기 (ODOD × 파트너)", "유니폼 전면 메인 로고", "모든 공식 채널 최우선 노출", "전용 브랜드 콘텐츠 시리즈", "연간 파트너십 리뷰 미팅"]
+    }
+  ],
   "mediakit": {
     "logo":       { "file": "", "label": "팀 로고 패키지", "desc": "PNG · SVG · 흰색/컬러/모노 버전 포함" },
     "photos":     { "file": "", "label": "선수 공식 사진", "desc": "고해상도 JPG · 선수별 개인 컷 포함" },
@@ -544,7 +574,7 @@ const DEFAULT_DATA = {
     "brandguide": { "file": "", "label": "브랜드 가이드라인", "desc": "컬러 코드 · 폰트 · 사용 규정" }
   },
   "live": {
-    "active": true,
+    "active": false,
     "opponent": "T1",
     "opponentLogo": "",
     "score": "1-0",

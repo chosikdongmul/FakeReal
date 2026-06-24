@@ -1418,7 +1418,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .mk-card {
-  background: var(--bg);
+  background: var(--bg2);
   padding: 32px 28px 28px;
   display: flex;
   flex-direction: column;
@@ -1461,7 +1461,7 @@ a { color: inherit; text-decoration: none; }
 
 .mk-unavailable .mk-card-label,
 .mk-unavailable .mk-card-desc,
-.mk-unavailable .mk-card-icon { opacity: 0.35; }
+.mk-unavailable .mk-card-icon { opacity: 0.5; }
 
 .mk-unavailable .mk-card-action {
   font-size: 11px;
