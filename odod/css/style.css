@@ -12,8 +12,8 @@
   --orange:      #c8601a;
   --orange-dim:  rgba(200, 96, 26, 0.18);
   --text:        #f0ebe4;
-  --text-muted:  #7a7066;
-  --text-dim:    #3a3530;
+  --text-muted:  #9c9489;
+  --text-dim:    #52504a;
   --border:      rgba(240, 235, 228, 0.07);
   --border-light:rgba(240, 235, 228, 0.13);
   --pop-bg:      #100e0a;
@@ -78,7 +78,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .nav-logo-sub {
-  font-size: 8px;
+  font-size: 9px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -91,8 +91,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .nav-links a {
-  font-size: 10px;
-  letter-spacing: 0.16em;
+  font-size: 11px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
   transition: color 0.2s;
@@ -247,13 +247,13 @@ a { color: inherit; text-decoration: none; }
 .hero-staff-item:hover { opacity: 0.7; }
 
 .hero-staff-role {
-  font-size: 8px;
-  letter-spacing: 0.18em;
+  font-size: 9px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 .hero-staff-nick {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text);
 }
@@ -266,8 +266,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .hero-tag {
-  font-size: 9px;
-  letter-spacing: 0.24em;
+  font-size: 10px;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--orange);
   margin-bottom: 16px;
@@ -288,9 +288,9 @@ a { color: inherit; text-decoration: none; }
 
 .hero-slogan {
   margin-top: 20px;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   opacity: 0;
   animation: fadeUp 0.8s 0.7s forwards;
 }
@@ -313,14 +313,14 @@ a { color: inherit; text-decoration: none; }
 }
 
 .hbn-pos {
-  font-size: 8px;
-  letter-spacing: 0.22em;
+  font-size: 9px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--orange);
 }
 
 .hbn-nick {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text);
   letter-spacing: 0.02em;
@@ -408,8 +408,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .stat-label {
-  font-size: 9px;
-  letter-spacing: 0.2em;
+  font-size: 10px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-dim);
 }
@@ -431,15 +431,15 @@ a { color: inherit; text-decoration: none; }
 }
 
 .section-title {
-  font-size: 10px;
-  letter-spacing: 0.26em;
+  font-size: 11px;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--text-dim);
 }
 
 .section-sub {
-  font-size: 10px;
-  letter-spacing: 0.1em;
+  font-size: 11px;
+  letter-spacing: 0.08em;
   color: var(--text-dim);
 }
 
@@ -449,8 +449,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .staff-section-label {
-  font-size: 9px;
-  letter-spacing: 0.22em;
+  font-size: 10px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-dim);
   padding: 20px 0 14px;
@@ -514,8 +514,8 @@ a { color: inherit; text-decoration: none; }
 
 .staff-roster-info {}
 .staff-roster-role {
-  font-size: 8px;
-  letter-spacing: 0.2em;
+  font-size: 9px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-dim);
 }
@@ -526,7 +526,7 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: -0.01em;
 }
 .staff-roster-name {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-muted);
   margin-top: 2px;
 }
@@ -614,18 +614,22 @@ a { color: inherit; text-decoration: none; }
 .roster-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 1px;
-  background: var(--border);
+  gap: 10px;
+  background: transparent;
 }
 
 .roster-card {
-  background: var(--bg);
+  background: var(--bg2);
+  border: 1px solid var(--border-light);
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  transition: background 0.3s;
+  transition: background 0.3s, border-color 0.3s;
 }
-.roster-card:hover { background: var(--bg2); }
+.roster-card:hover {
+  background: var(--bg3);
+  border-color: rgba(240,235,228,0.22);
+}
 
 .roster-photo-wrap {
   aspect-ratio: 3/4;
@@ -679,8 +683,8 @@ a { color: inherit; text-decoration: none; }
   position: absolute;
   top: 12px;
   right: 12px;
-  font-size: 8px;
-  letter-spacing: 0.16em;
+  font-size: 9px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--orange);
   border: 0.5px solid var(--orange);
@@ -693,21 +697,21 @@ a { color: inherit; text-decoration: none; }
 }
 
 .roster-pos {
-  font-size: 8px;
-  letter-spacing: 0.2em;
+  font-size: 10px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--orange);
 }
 
 .roster-nick {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.01em;
 }
 
 .roster-name {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-muted);
   margin-top: 2px;
 }
@@ -862,8 +866,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .footer-league {
-  font-size: 9px;
-  letter-spacing: 0.2em;
+  font-size: 10px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-dim);
   margin-top: 4px;
@@ -894,8 +898,8 @@ a { color: inherit; text-decoration: none; }
 
 .footer-copy {
   align-self: flex-end;
-  font-size: 9px;
-  letter-spacing: 0.08em;
+  font-size: 10px;
+  letter-spacing: 0.06em;
   color: var(--text-dim);
 }
 
@@ -1100,8 +1104,8 @@ a { color: inherit; text-decoration: none; }
 
 /* Popup info */
 .popup-pos {
-  font-size: 9px;
-  letter-spacing: 0.22em;
+  font-size: 10px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--orange);
   margin-bottom: 8px;
@@ -1135,8 +1139,8 @@ a { color: inherit; text-decoration: none; }
 
 .popup-meta-item {}
 .popup-meta-label {
-  font-size: 8px;
-  letter-spacing: 0.2em;
+  font-size: 9px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-dim);
   margin-bottom: 4px;
@@ -1169,8 +1173,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .popup-stat-lbl {
-  font-size: 8px;
-  letter-spacing: 0.16em;
+  font-size: 9px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-dim);
   margin-top: 4px;
@@ -1206,7 +1210,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .popup-champ-stats {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-muted);
   margin-top: 4px;
   line-height: 1.6;
@@ -1214,8 +1218,8 @@ a { color: inherit; text-decoration: none; }
 
 /* Career / Awards */
 .popup-section-title {
-  font-size: 8px;
-  letter-spacing: 0.22em;
+  font-size: 9px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-dim);
   margin-bottom: 12px;
