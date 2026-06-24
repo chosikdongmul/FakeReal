@@ -4,7 +4,7 @@
    이미지 배너와 함께 사용하거나, 직접 올린 YouTube 영상만 사용하세요. */
 const DEFAULT_DATA = {
   "team": {
-    "name": "ODOD",
+    "name": "Outlaw Dogs",
     "fullName": "OverDrive Outlaw Dogs",
     "league": "LCK",
     "founded": "2026",
