@@ -29,27 +29,10 @@ function _loadYtApi() {
   document.head.appendChild(s);
 }
 
-function _fadeOutOverlay(overlay) {
-  if (!overlay) return;
-  clearTimeout(overlay._fallback);
-  overlay.style.transition = 'opacity 0.5s ease';
-  overlay.style.opacity = '0';
-}
-
-function _showOverlayWithFallback(overlay) {
-  if (!overlay) return;
-  overlay.style.transition = 'none';
-  overlay.style.opacity = '1';
-  // Fallback: if PLAYING never fires in 4s, remove overlay anyway
-  clearTimeout(overlay._fallback);
-  overlay._fallback = setTimeout(() => _fadeOutOverlay(overlay), 4000);
-}
-
-function _createYtPlayer({ elementId, videoId, overlay }) {
-  if (!videoId) { _fadeOutOverlay(overlay); return; }
-  _showOverlayWithFallback(overlay);
+function _createYtPlayer({ elementId, videoId, slideEl }) {
+  if (!videoId) return;
   // eslint-disable-next-line no-undef
-  new YT.Player(elementId, {
+  const player = new YT.Player(elementId, {
     videoId,
     playerVars: {
       autoplay: 1, mute: 1, loop: 1, playlist: videoId,
@@ -58,14 +41,7 @@ function _createYtPlayer({ elementId, videoId, overlay }) {
     },
     events: {
       onReady(e) {
-        // Store player reference on overlay so we can call playVideo() later
-        if (overlay) overlay._ytPlayer = e.target;
-      },
-      onStateChange(e) {
-        if (e.data === 1) { // PLAYING — extra 600ms so YT UI fully settles
-          clearTimeout(overlay._fallback);
-          overlay._fallback = setTimeout(() => _fadeOutOverlay(overlay), 600);
-        }
+        if (slideEl) slideEl._ytPlayer = e.target;
       },
     },
   });
@@ -76,6 +52,7 @@ function queueYtPlayer(config) {
   if (window._ytApiReady) _createYtPlayer(config);
   else window._ytPendingPlayers.push(config);
 }
+
 
 function extractYouTubeId(input) {
   if (!input) return '';
@@ -182,16 +159,11 @@ function renderHero() {
           const placeholder = document.createElement('div');
           placeholder.id = 'yt-banner-' + i;
           wrap.appendChild(placeholder);
-          // Shield: sits above the iframe, blocks mouse → no hover controls
+          // Shield: sits above the iframe, blocks mouse hover → no hover controls
           const shield = document.createElement('div');
           shield.className = 'yt-shield';
           wrap.appendChild(shield);
-          // Load overlay: removed when PLAYING fires (or after 6s fallback)
-          const loadOverlay = document.createElement('div');
-          loadOverlay.className = 'yt-load-overlay';
-          wrap.appendChild(loadOverlay);
-          slide._ytLoadOverlay = loadOverlay;
-          queueYtPlayer({ elementId: 'yt-banner-' + i, videoId, overlay: loadOverlay });
+          queueYtPlayer({ elementId: 'yt-banner-' + i, videoId, slideEl: slide });
         }
         slide.appendChild(wrap);
       } else {
@@ -294,13 +266,10 @@ function goToSlide(idx) {
   dots[_bannerIndex].classList.add('active');
   updateBannerInfo(_bannerIndex);
 
-  // Re-show overlay and explicitly resume video (browser may have throttled hidden iframe)
-  const ov = slides[_bannerIndex]._ytLoadOverlay;
-  if (ov) {
-    _showOverlayWithFallback(ov);
-    if (ov._ytPlayer) {
-      try { ov._ytPlayer.playVideo(); } catch(e) {}
-    }
+  // Resume video if browser throttled hidden iframe
+  const slide = slides[_bannerIndex];
+  if (slide._ytPlayer) {
+    try { slide._ytPlayer.playVideo(); } catch(e) {}
   }
 }
 
