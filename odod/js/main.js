@@ -220,21 +220,6 @@ function renderHero() {
         goToSlide((_bannerIndex + 1) % banners.length);
       }, 7000);
 
-      // 호버 시 자동 전환 일시정지
-      const heroEl = document.getElementById('hero');
-      if (heroEl) {
-        heroEl.addEventListener('mouseenter', () => {
-          clearInterval(_bannerTimer);
-          _bannerTimer = null;
-        });
-        heroEl.addEventListener('mouseleave', () => {
-          if (_bannerTimer) clearInterval(_bannerTimer);
-          resetProgressBar(); // 타이머 재시작과 동시에 바도 재시작
-          _bannerTimer = setInterval(() => {
-            goToSlide((_bannerIndex + 1) % banners.length);
-          }, 7000);
-        });
-      }
     }
   }
 
