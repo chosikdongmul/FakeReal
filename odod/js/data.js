@@ -326,7 +326,7 @@ const DEFAULT_DATA = {
           "games": 27
         },
         {
-          "name": "Kai'Sa",
+          "name": "KaiSa",
           "image": "https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/KaiSa.png",
           "winRate": 66,
           "kda": 4.2,
@@ -543,35 +543,73 @@ const DEFAULT_DATA = {
       "tier": "Bronze",
       "name": "Bronze",
       "price": "문의 시 협의",
-      "benefits": ["공식 웹사이트 로고 노출", "SNS 멘션 연 4회", "시즌 종료 보고서 제공"]
+      "benefits": [
+        "공식 웹사이트 로고 노출",
+        "SNS 멘션 연 4회",
+        "시즌 종료 보고서 제공"
+      ]
     },
     {
       "id": "silver",
       "tier": "Silver",
       "name": "Silver",
       "price": "문의 시 협의",
-      "benefits": ["Bronze 전체 포함", "연습 시설 로고 부착", "SNS 멘션 연 8회", "팀 콘텐츠 공동 제작 1회"]
+      "benefits": [
+        "Bronze 전체 포함",
+        "연습 시설 로고 부착",
+        "SNS 멘션 연 8회",
+        "팀 콘텐츠 공동 제작 1회"
+      ]
     },
     {
       "id": "gold",
       "tier": "Gold",
       "name": "Gold",
       "price": "문의 시 협의",
-      "benefits": ["Silver 전체 포함", "유니폼 슬리브 로고", "경기 전 인터뷰 배경 노출", "SNS 멘션 연 16회", "팬 미팅 공동 주최 가능"]
+      "benefits": [
+        "Silver 전체 포함",
+        "유니폼 슬리브 로고",
+        "경기 전 인터뷰 배경 노출",
+        "SNS 멘션 연 16회",
+        "팬 미팅 공동 주최 가능"
+      ]
     },
     {
       "id": "title",
       "tier": "Title",
       "name": "Title",
       "price": "문의 시 협의",
-      "benefits": ["Gold 전체 포함", "팀명 병기 (ODOD × 파트너)", "유니폼 전면 메인 로고", "모든 공식 채널 최우선 노출", "전용 브랜드 콘텐츠 시리즈", "연간 파트너십 리뷰 미팅"]
+      "benefits": [
+        "Gold 전체 포함",
+        "팀명 병기 (ODOD × 파트너)",
+        "유니폼 전면 메인 로고",
+        "모든 공식 채널 최우선 노출",
+        "전용 브랜드 콘텐츠 시리즈",
+        "연간 파트너십 리뷰 미팅"
+      ]
     }
   ],
   "mediakit": {
-    "logo":       { "file": "", "label": "팀 로고 패키지", "desc": "PNG · SVG · 흰색/컬러/모노 버전 포함" },
-    "photos":     { "file": "", "label": "선수 공식 사진", "desc": "고해상도 JPG · 선수별 개인 컷 포함" },
-    "presskit":   { "file": "", "label": "보도자료 PDF", "desc": "팀 소개 · 선수단 · 시즌 성적 요약" },
-    "brandguide": { "file": "", "label": "브랜드 가이드라인", "desc": "컬러 코드 · 폰트 · 사용 규정" }
+    "logo": {
+      "file": "",
+      "label": "팀 로고 패키지",
+      "desc": "PNG · SVG · 흰색/컬러/모노 버전 포함"
+    },
+    "photos": {
+      "file": "",
+      "label": "선수 공식 사진",
+      "desc": "고해상도 JPG · 선수별 개인 컷 포함"
+    },
+    "presskit": {
+      "file": "",
+      "label": "보도자료 PDF",
+      "desc": "팀 소개 · 선수단 · 시즌 성적 요약"
+    },
+    "brandguide": {
+      "file": "",
+      "label": "브랜드 가이드라인",
+      "desc": "컬러 코드 · 폰트 · 사용 규정"
+    }
   },
   "live": {
     "active": false,
