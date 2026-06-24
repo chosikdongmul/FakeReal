@@ -22,7 +22,10 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
+  background:
+    radial-gradient(ellipse 55% 100% at 50% 50%, transparent 10%, rgba(0,0,0,0.55) 100%),
+    var(--bg);
+  background-attachment: fixed, fixed;
   color: var(--text);
   font-family: 'Helvetica Neue', Helvetica, Arial, 'Apple SD Gothic Neo', sans-serif;
   font-size: 14px;

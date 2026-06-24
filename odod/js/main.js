@@ -214,12 +214,42 @@ function renderHero() {
 
     if (_bannerTimer) clearInterval(_bannerTimer);
     if (banners.length > 1) {
-      resetProgressBar(); // 타이머와 동시에 시작
-
+      resetProgressBar();
       _bannerTimer = setInterval(() => {
         goToSlide((_bannerIndex + 1) % banners.length);
       }, 7000);
+    }
 
+    // ── 드래그 / 스와이프 이동 ────────────────────────
+    let _dragStartX = null;
+    let _isDragging = false;
+    const DRAG_THRESHOLD = 50;
+
+    function onDragStart(x) { _dragStartX = x; _isDragging = false; }
+    function onDragMove(x)  { if (_dragStartX !== null && Math.abs(x - _dragStartX) > 8) _isDragging = true; }
+    function onDragEnd(x) {
+      if (_dragStartX === null) return;
+      const diff = x - _dragStartX;
+      if (Math.abs(diff) >= DRAG_THRESHOLD && banners.length > 1) {
+        if (diff < 0) goToSlide((_bannerIndex + 1) % banners.length);
+        else          goToSlide((_bannerIndex - 1 + banners.length) % banners.length);
+      }
+      _dragStartX = null;
+    }
+
+    const heroEl = document.getElementById('hero');
+    if (heroEl) {
+      // 마우스
+      heroEl.addEventListener('mousedown',  e => onDragStart(e.clientX));
+      heroEl.addEventListener('mousemove',  e => onDragMove(e.clientX));
+      heroEl.addEventListener('mouseup',    e => onDragEnd(e.clientX));
+      heroEl.addEventListener('mouseleave', e => { if (_dragStartX !== null) onDragEnd(e.clientX); });
+      // 슬라이드 클릭 이벤트가 드래그 후 발동되지 않도록 캡처 단계에서 차단
+      heroEl.addEventListener('click', e => { if (_isDragging) { e.stopPropagation(); _isDragging = false; } }, true);
+      // 터치
+      heroEl.addEventListener('touchstart', e => onDragStart(e.touches[0].clientX),      { passive: true });
+      heroEl.addEventListener('touchmove',  e => onDragMove(e.touches[0].clientX),       { passive: true });
+      heroEl.addEventListener('touchend',   e => onDragEnd(e.changedTouches[0].clientX), { passive: true });
     }
   }
 
