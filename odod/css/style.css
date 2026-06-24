@@ -167,27 +167,21 @@ a { color: inherit; text-decoration: none; }
   background: rgba(14,12,8,0.45);
   z-index: 1;
 }
-/* YouTube 초기 로딩 시 컨트롤 버튼 플래시 억제 */
-.hero-slide-video::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: rgba(14,12,8,0.95);
-  animation: ytFadeOut 5s ease forwards;
-  pointer-events: none;
-}
-@keyframes ytFadeOut {
-  0%   { opacity: 1; }
-  70%  { opacity: 1; }
-  100% { opacity: 0; }
-}
 /* YouTube hover controls 차단 — 마우스가 iframe에 닿지 않도록 */
 .yt-shield {
   position: absolute;
   inset: 0;
   z-index: 1;
   background: transparent;
+}
+/* YouTube 플레이어 UI 로딩 커버 — JS로 타이밍 제어 */
+.yt-load-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--bg);
+  pointer-events: none;
+  opacity: 1;
 }
 .hero-slide-video iframe,
 .hero-slide-video video {

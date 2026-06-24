@@ -107,10 +107,15 @@ function renderHero() {
           iframe.setAttribute('allow', 'autoplay; encrypted-media');
           iframe.setAttribute('allowfullscreen', '');
           wrap.appendChild(iframe);
-          // Shield: blocks mouse from reaching iframe → YouTube controls never appear on hover
+          // Shield: blocks mouse hover from reaching iframe permanently
           const shield = document.createElement('div');
           shield.className = 'yt-shield';
           wrap.appendChild(shield);
+          // Load overlay: covers YouTube player UI during initial load (JS-controlled, more reliable than CSS animation)
+          const loadOverlay = document.createElement('div');
+          loadOverlay.className = 'yt-load-overlay';
+          wrap.appendChild(loadOverlay);
+          slide._ytLoadOverlay = loadOverlay;
         }
         slide.appendChild(wrap);
       } else {
@@ -136,6 +141,10 @@ function renderHero() {
     });
 
     updateBannerInfo(0);
+
+    // 첫 슬라이드 YouTube overlay 시작
+    const firstSlideEl = banner.querySelector('.hero-slide');
+    if (firstSlideEl) showYtOverlay(firstSlideEl);
 
     // 화살표 버튼 연결
     const prevBtn = document.getElementById('banner-prev');
@@ -199,6 +208,23 @@ function renderHero() {
   });
 }
 
+let _overlayTimer = null;
+
+function showYtOverlay(slide) {
+  const ov = slide._ytLoadOverlay;
+  if (!ov) return;
+  // Reset to opaque
+  ov.style.transition = 'none';
+  ov.style.opacity = '1';
+  // Clear any pending hide
+  if (_overlayTimer) clearTimeout(_overlayTimer);
+  // Fade out after 8s
+  _overlayTimer = setTimeout(() => {
+    ov.style.transition = 'opacity 1.5s ease';
+    ov.style.opacity = '0';
+  }, 8000);
+}
+
 function goToSlide(idx) {
   const slides = document.querySelectorAll('.hero-slide');
   const dots = document.querySelectorAll('.banner-dot');
@@ -212,6 +238,9 @@ function goToSlide(idx) {
   slides[_bannerIndex].classList.add('active');
   dots[_bannerIndex].classList.add('active');
   updateBannerInfo(_bannerIndex);
+
+  // Re-show overlay when switching to a YouTube slide
+  showYtOverlay(slides[_bannerIndex]);
 }
 
 function updateBannerInfo(idx) {
