@@ -702,11 +702,13 @@ let DATA = loadData();
 // → 어드민이 항상 배포 최신 데이터를 기반으로 시작
 
 function switchTab(name) {
-  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const tabs = ['team','players','staff','results','schedule','gallery','sponsors','banners'];
-  document.querySelectorAll('.tab-btn')[tabs.indexOf(name)].classList.add('active');
-  document.getElementById('panel-' + name).classList.add('active');
+  const tabs = ['team','players','staff','results','schedule','gallery','sponsors','banners','live'];
+  const idx = tabs.indexOf(name);
+  if (idx !== -1) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  const panel = document.getElementById('panel-' + name);
+  if (panel) panel.classList.add('active');
 }
 
 function v(id) { return document.getElementById(id).value; }
