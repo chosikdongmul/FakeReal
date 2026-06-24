@@ -459,34 +459,43 @@ a { color: inherit; text-decoration: none; }
 
 .staff-row {
   display: flex;
-  gap: 1px;
-  background: var(--border-light);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
 .staff-roster-card {
-  flex: 1;
-  background: var(--bg3);
+  width: calc((100% - 20px) / 3); /* 3열: 2gap × 10px */
+  background: var(--bg2);
+  border: 1px solid var(--border-light);
   display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 22px 24px;
+  flex-direction: column;
   cursor: pointer;
-  transition: background 0.2s;
-  border-left: 2px solid transparent;
+  overflow: hidden;
+  position: relative;
+  transition: background 0.3s, border-color 0.3s;
 }
 .staff-roster-card:hover {
-  background: #211d15;
-  border-left-color: var(--orange);
+  background: var(--bg3);
+  border-color: rgba(240,235,228,0.22);
 }
 
 .staff-roster-photo {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 100%;
+  aspect-ratio: 3/4;
   overflow: hidden;
   flex-shrink: 0;
-  border: 0.5px solid var(--border-light);
-  background: var(--bg2);
+  background: var(--bg3);
+  position: relative;
+}
+
+.staff-roster-photo::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40%;
+  background: linear-gradient(to top, var(--bg2) 0%, transparent 100%);
+  pointer-events: none;
 }
 
 .staff-roster-photo img {
@@ -494,11 +503,12 @@ a { color: inherit; text-decoration: none; }
   height: 100%;
   object-fit: cover;
   object-position: top center;
-  filter: grayscale(20%) brightness(0.8);
-  transition: filter 0.3s;
+  filter: grayscale(15%) brightness(0.85);
+  transition: transform 0.5s ease, filter 0.4s;
 }
 .staff-roster-card:hover .staff-roster-photo img {
-  filter: grayscale(0%) brightness(0.9);
+  transform: scale(1.03);
+  filter: grayscale(0%) brightness(0.95);
 }
 
 .staff-roster-photo-ph {
@@ -507,17 +517,17 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 56px;
   font-weight: 900;
-  color: rgba(240,235,228,0.1);
+  color: rgba(240,235,228,0.06);
 }
 
-.staff-roster-info {}
+.staff-roster-info { padding: 14px 16px 20px; }
 .staff-roster-role {
-  font-size: 9px;
-  letter-spacing: 0.18em;
+  font-size: 12px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--text-muted);
 }
 .staff-roster-nick {
   font-size: 15px;
@@ -612,13 +622,14 @@ a { color: inherit; text-decoration: none; }
 
 /* ── ROSTER ───────────────────────────────────────── */
 .roster-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
-  background: transparent;
 }
 
 .roster-card {
+  width: calc((100% - 40px) / 5); /* 5열: 4gap × 10px */
   background: var(--bg2);
   border: 1px solid var(--border-light);
   cursor: pointer;
@@ -697,8 +708,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .roster-pos {
-  font-size: 10px;
-  letter-spacing: 0.18em;
+  font-size: 13px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--orange);
 }
@@ -1450,7 +1461,7 @@ a { color: inherit; text-decoration: none; }
 
 /* ── RESPONSIVE ───────────────────────────────────── */
 @media (max-width: 1024px) {
-  .roster-grid { grid-template-columns: repeat(3, 1fr); }
+  .roster-card { width: calc((100% - 20px) / 3); }
 }
 
 @media (max-width: 768px) {
@@ -1469,7 +1480,8 @@ a { color: inherit; text-decoration: none; }
 
   .section { padding: 72px 24px; }
 
-  .roster-grid { grid-template-columns: repeat(2, 1fr); }
+  .roster-card { width: calc((100% - 10px) / 2); }
+  .staff-roster-card { width: calc((100% - 10px) / 2); }
 
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
 
