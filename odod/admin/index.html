@@ -619,15 +619,16 @@ const ADMIN_PW = 'ODOD2025';
 async function showAdmin() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('admin-ui').style.display = 'block';
-  // 로컬스토리지 없으면 배포된 data.js에서 로드
-  if (!localStorage.getItem('odod_data')) {
-    try {
-      const resp = await fetch('../js/data.js?_=' + Date.now());
-      if (resp.ok) {
-        const text = await resp.text();
-        DATA = new Function(text + '; return DEFAULT_DATA;')();
-      }
-    } catch(e) {}
+  // 항상 배포된 data.js를 먼저 동기화 (localStorage 낡은 데이터 문제 방지)
+  try {
+    const resp = await fetch('../js/data.js?_=' + Date.now());
+    if (resp.ok) {
+      const text = await resp.text();
+      DATA = new Function(text + '; return DEFAULT_DATA;')();
+      localStorage.setItem('odod_data', JSON.stringify(DATA));
+    }
+  } catch(e) {
+    // fetch 실패 시 localStorage 또는 기본값 사용
   }
   initAdmin();
 }
