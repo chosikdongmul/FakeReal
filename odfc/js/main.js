@@ -96,15 +96,13 @@ function renderHeroBanner() {
 
   showBanner(0);
 
-  // 배너가 2개 이상이고 영상 없는 경우만 자동 롤링 (영상은 자체 루프)
-  const imageOnlyBanners = banners.filter(b => !b.video && b.image);
-  if (banners.length > 1 && imageOnlyBanners.length === banners.length) {
+  if (banners.length > 1) {
     _bannerIdx = 0;
     if (_bannerTimer) clearInterval(_bannerTimer);
     _bannerTimer = setInterval(() => {
       _bannerIdx = (_bannerIdx + 1) % banners.length;
       showBanner(_bannerIdx);
-    }, 6000);
+    }, 8000);
   }
 }
 
