@@ -74,23 +74,51 @@ function renderHeroBanner() {
   const banners = (DATA.banners || []).filter(b => b.video || b.image);
   if (!banners.length) return;
 
-  function showBanner(idx) {
-    const banner = banners[idx];
-    if (banner.video) {
-      const vid = youtubeId(banner.video);
-      if (vid) {
-        slot.innerHTML = `
-          <div class="hero-bg-yt-wrap">
-            <iframe
-              src="https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&loop=1&playlist=${vid}&controls=0&disablekb=1&modestbranding=1&playsinline=1"
-              allow="autoplay; encrypted-media" allowfullscreen
-            ></iframe>
-          </div>`;
-        return;
-      }
+  // 모든 배너 요소를 미리 생성 (영상은 iframe 유지 → 이어보기)
+  slot.innerHTML = '';
+  const els = banners.map((banner, i) => {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = `position:absolute;inset:0;opacity:${i === 0 ? 1 : 0};transition:opacity 0.8s ease;pointer-events:none;`;
+
+    const vid = banner.video ? youtubeId(banner.video) : null;
+    if (vid) {
+      const ytWrap = document.createElement('div');
+      ytWrap.className = 'hero-bg-yt-wrap';
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=${i === 0 ? 1 : 0}&mute=1&loop=1&playlist=${vid}&controls=0&disablekb=1&modestbranding=1&playsinline=1`;
+      iframe.allow = 'autoplay; encrypted-media';
+      iframe.setAttribute('allowfullscreen', '');
+      ytWrap.appendChild(iframe);
+      wrap.appendChild(ytWrap);
+    } else if (banner.image) {
+      const img = document.createElement('img');
+      img.className = 'hero-bg-video';
+      img.src = banner.image;
+      img.alt = '';
+      wrap.appendChild(img);
     }
-    if (banner.image) {
-      slot.innerHTML = `<img class="hero-bg-video" src="${esc(banner.image)}" alt="" loading="eager">`;
+
+    slot.appendChild(wrap);
+    return wrap;
+  });
+
+  function showBanner(idx) {
+    els.forEach((el, i) => {
+      el.style.opacity = i === idx ? '1' : '0';
+      // 영상 배너: 보이게 될 때 autoplay 파라미터 활성화
+      if (i === idx) {
+        const iframe = el.querySelector('iframe');
+        if (iframe && !iframe.src.includes('autoplay=1')) {
+          iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
+        }
+      }
+    });
+    // 이미지 배너는 전환 시 Ken Burns 리셋
+    const img = els[idx].querySelector('img');
+    if (img) {
+      img.style.animation = 'none';
+      img.offsetHeight;
+      img.style.animation = 'heroBgZoom 8s ease forwards';
     }
   }
 
@@ -112,7 +140,7 @@ function resetBannerProgress() {
   const pb = document.getElementById('banner-progress');
   if (!pb) return;
   pb.style.animation = 'none';
-  pb.offsetHeight; // force reflow
+  pb.offsetHeight;
   pb.style.animation = 'bannerProgressAnim 8s linear forwards';
 }
 
