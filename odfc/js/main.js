@@ -275,10 +275,10 @@ function renderChampions() {
   }).join('');
 }
 
-// ---------- Fighters (체급 무제한 — 전체 출력) ----------
+// ---------- 대표선수 (챔피언 우선, 랭킹 순) ----------
 function renderFighters() {
   const tabsEl = document.getElementById('wc-tabs');
-  if (tabsEl) tabsEl.style.display = 'none'; // 체급탭 숨김
+  if (tabsEl) tabsEl.style.display = 'none';
 
   const grid = document.getElementById('fighters-grid');
   if (!grid) return;
@@ -287,12 +287,21 @@ function renderFighters() {
   const rankings = DATA.rankings || {};
   const wcs = DATA.weightClasses || [];
 
-  // 체급 순서 기준으로 정렬 (flyweight → heavyweight)
   const wcOrder = wcs.map(w => w.id);
+
+  // 체급 순서 → 체급 내에서 챔피언 먼저, 그 다음 랭킹 순
   const sorted = [...fighters].sort((a, b) => {
-    const ai = wcOrder.indexOf(a.weightClass);
-    const bi = wcOrder.indexOf(b.weightClass);
-    return ai - bi;
+    const awci = wcOrder.indexOf(a.weightClass);
+    const bwci = wcOrder.indexOf(b.weightClass);
+    if (awci !== bwci) return awci - bwci;
+    if (a.isChampion && !b.isChampion) return -1;
+    if (!a.isChampion && b.isChampion) return 1;
+    const aRank = (rankings[a.weightClass] || []).indexOf(a.id);
+    const bRank = (rankings[b.weightClass] || []).indexOf(b.id);
+    if (aRank === -1 && bRank === -1) return 0;
+    if (aRank === -1) return 1;
+    if (bRank === -1) return -1;
+    return aRank - bRank;
   });
 
   grid.innerHTML = sorted.map(f => {
@@ -667,7 +676,6 @@ function init() {
   renderFightCard();
   renderChampions();
   renderFighters();
-  renderRankings();
   renderPastEvents();
   renderSponsors();
   renderMediaKit();
