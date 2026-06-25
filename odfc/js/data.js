@@ -248,7 +248,7 @@ const DEFAULT_DATA = {
       "nameKo": "최용석",
       "nickname": "The Reaper",
       "weightClass": "welterweight",
-      "isChampion": true,
+      "isChampion": false,
       "record": {
         "w": 20,
         "l": 1,
@@ -436,7 +436,7 @@ const DEFAULT_DATA = {
       "nameKo": "이태훈",
       "nickname": "The Viper",
       "weightClass": "middleweight",
-      "isChampion": true,
+      "isChampion": false,
       "record": {
         "w": 16,
         "l": 2,
@@ -531,7 +531,7 @@ const DEFAULT_DATA = {
       "nameKo": "오동규",
       "nickname": "The Wall",
       "weightClass": "heavyweight",
-      "isChampion": true,
+      "isChampion": false,
       "record": {
         "w": 12,
         "l": 1,
@@ -626,7 +626,7 @@ const DEFAULT_DATA = {
       "nameKo": "신준호",
       "nickname": "Ghost",
       "weightClass": "flyweight",
-      "isChampion": true,
+      "isChampion": false,
       "record": {
         "w": 21,
         "l": 0,
