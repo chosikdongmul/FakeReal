@@ -90,6 +90,85 @@
     .checkbox-wrap label { margin: 0; font-size: 13px; font-weight: 600; color: var(--text); text-transform: none; letter-spacing: 0; }
     select { background: var(--bg3); }
     .hint { font-size: 12px; color: var(--text-faint); margin-top: 4px; }
+
+    /* Export button */
+    .admin-export-btn {
+      background: transparent;
+      border: 0.5px solid var(--gold);
+      color: var(--gold);
+      padding: 7px 16px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .admin-export-btn:hover { background: var(--gold); color: #000; }
+
+    /* Export modal */
+    #export-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8,10,16,0.92);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+    #export-modal.open { display: flex; }
+    .export-box {
+      background: var(--bg2);
+      border: 0.5px solid var(--border-light);
+      width: 90%;
+      max-width: 700px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      padding: 32px;
+      gap: 16px;
+    }
+    .export-box h2 { font-size: 14px; font-weight: 800; }
+    .export-box p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+    .export-box ol { font-size: 13px; color: var(--text-muted); line-height: 2; padding-left: 18px; }
+    .export-box ol code { background: var(--bg3); padding: 1px 6px; font-size: 12px; color: var(--text); }
+    .export-textarea {
+      flex: 1;
+      min-height: 200px;
+      background: var(--bg3);
+      border: 0.5px solid var(--border);
+      color: var(--text);
+      font-size: 12px;
+      font-family: monospace;
+      padding: 12px;
+      resize: none;
+      outline: none;
+    }
+    .export-btns { display: flex; gap: 8px; justify-content: flex-end; }
+    .export-copy-btn {
+      background: var(--gold);
+      border: none;
+      color: #000;
+      padding: 10px 24px;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-weight: 700;
+      border-radius: var(--radius);
+    }
+    .export-close-btn {
+      background: transparent;
+      border: 0.5px solid var(--border-light);
+      color: var(--text-muted);
+      padding: 10px 20px;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: var(--radius);
+    }
   </style>
 </head>
 <body>
@@ -113,6 +192,7 @@
     <div class="admin-logo"><span>ODFC</span></div>
     <span class="admin-badge">ADMIN</span>
     <a class="view-btn" href="../" target="_blank">사이트 보기 →</a>
+    <button class="admin-export-btn" onclick="openExport()">↑ DATA.JS 내보내기</button>
     <button class="reset-btn" onclick="resetData()">초기화</button>
     <button class="save-btn" onclick="saveData()">저장 (LocalStorage)</button>
   </header>
@@ -249,6 +329,24 @@
 
 <div id="save-toast">✓ 저장 완료</div>
 
+<!-- Export Modal -->
+<div id="export-modal">
+  <div class="export-box">
+    <h2>DATA.JS 내보내기</h2>
+    <p>아래 코드를 전체 복사해서 <code>odfc/js/data.js</code> 파일의 <code>const DEFAULT_DATA = ...</code> 부분과 교체하세요.</p>
+    <ol>
+      <li>아래 <strong>전체 복사</strong> 클릭</li>
+      <li><code>odfc/js/data.js</code> 파일 열기</li>
+      <li>기존 <code>const DEFAULT_DATA = {...};</code> 전체 선택 후 붙여넣기</li>
+    </ol>
+    <textarea class="export-textarea" id="export-textarea" readonly></textarea>
+    <div class="export-btns">
+      <button class="export-close-btn" onclick="closeExport()">닫기</button>
+      <button class="export-copy-btn" onclick="copyExport()">전체 복사</button>
+    </div>
+  </div>
+</div>
+
 <script src="../js/data.js"></script>
 <script>
 /* ========================
@@ -258,20 +356,25 @@ const ADMIN_PW = 'ODFC2025';
 let ADMIN_DATA = null;
 
 // ---------- Auth ----------
+function showAdminScreen() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('admin-screen').style.display = 'block';
+  sessionStorage.setItem('odfc_admin_auth', '1');
+  initAdmin();
+}
 function checkAuth() {
   const pw = document.getElementById('auth-pw').value;
   if (pw === ADMIN_PW) {
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('admin-screen').style.display = 'block';
-    initAdmin();
+    showAdminScreen();
   } else {
     document.getElementById('auth-error').style.display = '';
   }
 }
 document.getElementById('auth-pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkAuth(); });
 
-// Auto-open if URL has ?admin=ODFC2025
+// Auto-open if URL has ?admin=ODFC2025 OR session already authenticated
 (function() {
+  if (sessionStorage.getItem('odfc_admin_auth') === '1') { showAdminScreen(); return; }
   const params = new URLSearchParams(window.location.search);
   if (params.get('admin') === ADMIN_PW) {
     document.getElementById('auth-pw').value = ADMIN_PW;
@@ -590,11 +693,8 @@ function collectData() {
   };
 
   // Fighters
-  d.fighters = (d.fighters || []).map((f, i) => {
-    const g = (ff) => {
-      const el = document.querySelector(`[data-fi="${i}"][data-ff="${ff}"]`);
-      if (!el) return f[ff];
-      return el.type === 'checkbox' ? el.checked : el.value;
+  d.fig      if (el.type === 'checkbox') return el.checked;
+      return el.value;
     };
     return {
       ...f,
@@ -603,20 +703,15 @@ function collectData() {
       name: g('name'),
       nameKo: g('nameKo'),
       weightClass: g('weightClass'),
-      age: parseInt(g('age')) || 0,
+      age: Number(g('age')) || f.age,
       isChampion: g('isChampion'),
-      record: {
-        w: parseInt(g('record_w')) || 0,
-        l: parseInt(g('record_l')) || 0,
-        d: parseInt(g('record_d')) || 0,
-      },
       photo: g('photo'),
       highlight: g('highlight'),
       height: g('height'),
       reach: g('reach'),
       stance: g('stance'),
       nationality: g('nationality'),
-      style: g('style').split(',').map(s=>s.trim()).filter(Boolean),
+      style: g('style').split(',').map(s => s.trim()).filter(Boolean),
     };
   });
 
@@ -629,22 +724,26 @@ function collectData() {
     return { ...ev, name: g('name'), subtitle: g('subtitle'), date: g('date'), time: g('time'), venue: g('venue'), city: g('city'), status: g('status') };
   });
 
-  // Rankings — 단일 배열
-  {
-    const el = document.getElementById('ranking-all');
-    if (el) d.rankings = el.value.split(',').map(s=>s.trim()).filter(Boolean);
-  }
+  // Rankings
+  const rankEl = document.getElementById('ranking-all');
+  if (rankEl) d.rankings = rankEl.value.split(',').map(s => s.trim()).filter(Boolean);
 
   // Sponsors
   d.sponsors = (d.sponsors || []).map((s, i) => {
-    const g = (sf) => { const el = document.querySelector(`[data-si="${i}"][data-sf="${sf}"]`); return el ? el.value : s[sf]; };
-    return { ...s, name: g('name'), url: g('url'), logo: g('logo') };
+    const g = (sf) => {
+      const el = document.querySelector(`[data-si="${i}"][data-sf="${sf}"]`);
+      return el ? el.value : s[sf];
+    };
+    return { ...s, name: g('name'), logo: g('logo'), url: g('url') };
   });
 
   // Banners
   d.banners = (d.banners || []).map((b, i) => {
-    const g = (bf) => { const el = document.querySelector(`[data-bni="${i}"][data-bnf="${bf}"]`); return el ? el.value : b[bf]; };
-    return { ...b, image: g('image'), video: g('video'), caption: g('caption') };
+    const g = (bnf) => {
+      const el = document.querySelector(`[data-bni="${i}"][data-bnf="${bnf}"]`);
+      return el ? el.value : b[bnf];
+    };
+    return { ...b, video: g('video'), image: g('image'), caption: g('caption') };
   });
 
   // MediaKit
@@ -652,9 +751,10 @@ function collectData() {
   d.mediakit = d.mediakit || {};
   mkKeys.forEach(key => {
     d.mediakit[key] = {
-      label: document.getElementById(`mk-${key}-label`)?.value || '',
-      desc:  document.getElementById(`mk-${key}-desc`)?.value || '',
-      file:  document.getElementById(`mk-${key}-file`)?.value || '',
+      ...(d.mediakit[key] || {}),
+      label: gv('mk-' + key + '-label'),
+      desc: gv('mk-' + key + '-desc'),
+      file: gv('mk-' + key + '-file'),
     };
   });
 
@@ -675,31 +775,46 @@ function collectData() {
 // ---------- Save ----------
 function saveData() {
   const data = collectData();
-  localStorage.setItem('odfc_data', JSON.stringify(data));
   ADMIN_DATA = data;
+  localStorage.setItem('odfc_data', JSON.stringify(data));
   const toast = document.getElementById('save-toast');
+  toast.textContent = '✓ 저장 완료';
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2200);
+  setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
+// ---------- Reset ----------
 function resetData() {
-  if (!confirm('모든 변경사항을 초기화하시겠습니까? (DEFAULT_DATA로 복원)')) return;
+  if (!confirm('모든 데이터를 기본값으로 초기화하시겠습니까?')) return;
   localStorage.removeItem('odfc_data');
   ADMIN_DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
-  buildOrgEditor();
-  buildAnnouncementEditor();
-  buildFightersEditor();
-  buildEventsEditor();
-  buildRankingsEditor();
-  buildSponsorsEditor();
-  buildBannersEditor();
-  buildMediaKitEditor();
-  buildLiveEditor();
-  const toast = document.getElementById('save-toast');
-  toast.textContent = '✓ 초기화 완료';
-  toast.classList.add('show');
-  setTimeout(() => { toast.classList.remove('show'); toast.textContent = '✓ 저장 완료'; }, 2200);
+  initAdmin();
+}
+
+// ---------- Export ----------
+function openExport() {
+  const data = collectData();
+  // warn about video-only banners
+  const videoOnly = (data.banners || []).filter(b => b.video && !b.image);
+  let warning = '';
+  if (videoOnly.length > 0) {
+    warning = `/* ⚠️ 경고: 영상 배너 ${videoOnly.length}개가 이미지 없이 등록됨.\n   YouTube 퍼가기 차단 시 다른 사람 화면에 빈 슬라이드로 표시됩니다. */\n`;
+  }
+  const code = warning + 'const DEFAULT_DATA = ' + JSON.stringify(data, null, 2) + ';';
+  document.getElementById('export-textarea').value = code;
+  document.getElementById('export-modal').classList.add('open');
+}
+function closeExport() {
+  document.getElementById('export-modal').classList.remove('open');
+}
+function copyExport() {
+  const ta = document.getElementById('export-textarea');
+  ta.select();
+  document.execCommand('copy');
+  const btn = document.querySelector('.export-copy-btn');
+  btn.textContent = '✓ 복사됨';
+  setTimeout(() => { btn.textContent = '전체 복사'; }, 2000);
 }
 </script>
 </body>
-</
+</html>
