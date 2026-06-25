@@ -2420,6 +2420,8 @@ body.has-announcement .mobile-menu { top: calc(36px + 72px); }
 
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
 
+  .sp-grid { grid-template-columns: 1fr; }
+
   .sponsors-row { grid-template-columns: repeat(2, 1fr); }
   .sponsor-item { padding: 28px 20px; }
 
