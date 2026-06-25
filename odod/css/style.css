@@ -45,12 +45,14 @@
 
 [data-theme="light"] .photo-placeholder span { color: rgba(26,22,16,0.08); }
 
-/* 라이트모드: 선수단/코치진 이미지 마스크 완화 */
-[data-theme="light"] .roster-photo-wrap img { filter: grayscale(10%) brightness(0.97); }
-[data-theme="light"] .roster-card:hover .roster-photo-wrap img { filter: grayscale(0%) brightness(1); }
-[data-theme="light"] .roster-photo-wrap::before { background: rgba(26,22,16,0.18); }
-[data-theme="light"] .staff-roster-photo img { filter: grayscale(8%) brightness(0.97); }
-[data-theme="light"] .staff-roster-card:hover .staff-roster-photo img { filter: grayscale(0%) brightness(1); }
+/* 라이트모드: 선수단/코치진 이미지 마스크 제거 */
+[data-theme="light"] .roster-photo-wrap img,
+[data-theme="light"] .roster-card:hover .roster-photo-wrap img { filter: none; }
+[data-theme="light"] .roster-photo-wrap::before { display: none; }
+[data-theme="light"] .roster-photo-wrap::after { display: none; }
+[data-theme="light"] .staff-roster-photo img,
+[data-theme="light"] .staff-roster-card:hover .staff-roster-photo img { filter: none; }
+[data-theme="light"] .staff-roster-photo::after { display: none; }
 [data-theme="light"] .staff-roster-card:hover { background: var(--bg3); border-color: var(--border-light); }
 
 /* 라이트모드: SVG 스폰서 로고 색상 반전 */
