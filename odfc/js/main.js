@@ -230,17 +230,19 @@ function renderFightCard() {
     const f1Name = f1 ? `"${f1.nickname}"` : (fight.fighter1Label || 'TBA');
     const f1Real = f1 ? f1.nameKo : '';
     const f1Record = f1 ? recordStr(f1.record) : '';
+    const f1Initial = f1 ? f1.nickname[0].toUpperCase() : '?';
     const f1Photo = f1 && f1.photo
-      ? `<img src="../${esc(f1.photo)}" alt="${esc(f1Name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none">🥊</div>`
-      : `<div class="placeholder-fighter">🥊</div>`;
+      ? `<img src="../${esc(f1.photo)}" alt="${esc(f1Name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none">${f1Initial}</div>`
+      : `<div class="placeholder-fighter">${f1Initial}</div>`;
     const f1ChampClass = f1 && f1.isChampion ? ' champ' : '';
 
     const f2Name = f2 ? `"${f2.nickname}"` : (fight.fighter2Label || 'TBA');
     const f2Real = f2 ? f2.nameKo : '';
     const f2Record = f2 ? recordStr(f2.record) : '';
+    const f2Initial = f2 ? f2.nickname[0].toUpperCase() : '?';
     const f2Photo = f2 && f2.photo
-      ? `<img src="../${esc(f2.photo)}" alt="${esc(f2Name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none">🥊</div>`
-      : `<div class="placeholder-fighter">🥊</div>`;
+      ? `<img src="../${esc(f2.photo)}" alt="${esc(f2Name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none">${f2Initial}</div>`
+      : `<div class="placeholder-fighter">${f2Initial}</div>`;
     const f2ChampClass = f2 && f2.isChampion ? ' champ' : '';
 
     const typeLabel = fight.type === 'main' ? 'MAIN EVENT' : fight.type === 'co-main' ? 'CO-MAIN EVENT' : 'PRELIM';
@@ -297,9 +299,10 @@ function renderChampions() {
     return;
   }
 
+  const champInitial = (champ.nickname || champ.name || '?')[0].toUpperCase();
   const photoHtml = champ.photo
-    ? `<img src="../${esc(champ.photo)}" alt="${esc(champ.nickname)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none;font-size:64px">🥊</div>`
-    : `<div class="placeholder-fighter" style="font-size:64px">🥊</div>`;
+    ? `<img src="../${esc(champ.photo)}" alt="${esc(champ.nickname)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none;font-size:96px">${champInitial}</div>`
+    : `<div class="placeholder-fighter" style="font-size:96px">${champInitial}</div>`;
 
   const fin = champ.finishes || { ko: 0, sub: 0, dec: 0 };
   const st = champ.stats || {};
@@ -398,9 +401,10 @@ function renderFighters() {
         ? `<span class="fighter-rank-badge">${rankLabel}</span>`
         : '';
 
+    const initial = (f.nickname || f.name || '?')[0].toUpperCase();
     const photoHtml = f.photo
-      ? `<img src="../${esc(f.photo)}" alt="${esc(f.nickname)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none">🥊</div>`
-      : `<div class="placeholder-fighter">🥊</div>`;
+      ? `<img src="../${esc(f.photo)}" alt="${esc(f.nickname)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none">${initial}</div>`
+      : `<div class="placeholder-fighter">${initial}</div>`;
 
     return `
       <div class="fighter-card" onclick="openFighterPopup('${f.id}')">
@@ -592,22 +596,22 @@ function openFighterPopup(fighterId) {
     iframeEl.style.display = 'none';
     photoEl.onerror = () => {
       photoEl.style.display = 'none';
+      placeholderEl.innerHTML = `<span class="popup-placeholder-initial">${(f.nickname || f.name || '?')[0].toUpperCase()}</span>`;
       placeholderEl.style.display = '';
     };
   } else {
     photoEl.style.display = 'none';
     iframeEl.style.display = 'none';
+    placeholderEl.innerHTML = `<span class="popup-placeholder-initial">${(f.nickname || f.name || '?')[0].toUpperCase()}</span>`;
     placeholderEl.style.display = '';
   }
 
   // Header
-  document.getElementById('popup-champ-badge').style.display = f.isChampion ? '' : 'none';
-  if (f.isChampion && wc) {
-    document.getElementById('popup-champ-badge').textContent = `🏆 ${wc.name} Champion`;
-  }
+  const champBadge = document.getElementById('popup-champ-badge');
+  champBadge.style.display = f.isChampion ? '' : 'none';
+  if (f.isChampion) champBadge.textContent = '🏆 Champion';
   document.getElementById('popup-nickname').textContent = `"${f.nickname}"`;
   document.getElementById('popup-realname').textContent = f.nameKo || f.name || '';
-  document.getElementById('popup-class').textContent = wc ? `${wc.name} (${wc.limit})` : '';
   document.getElementById('popup-record').innerHTML =
     `${f.record.w}-${f.record.l}${f.record.d ? '-'+f.record.d : ''}<span>W-L${f.record.d?'-D':''}</span>`;
 
