@@ -301,13 +301,31 @@ function renderChampions() {
     ? `<img src="../${esc(champ.photo)}" alt="${esc(champ.nickname)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none;font-size:64px">🥊</div>`
     : `<div class="placeholder-fighter" style="font-size:64px">🥊</div>`;
 
-  const finHtml = champ.finishes
-    ? `<div style="display:flex;gap:16px;margin-top:8px">
-        <div style="text-align:center"><div style="font-size:20px;font-weight:900;color:var(--text)">${champ.finishes.ko}</div><div style="font-size:12px;color:var(--text-faint);letter-spacing:0.08em">KO/TKO</div></div>
-        <div style="text-align:center"><div style="font-size:20px;font-weight:900;color:var(--text)">${champ.finishes.sub}</div><div style="font-size:12px;color:var(--text-faint);letter-spacing:0.08em">서브미션</div></div>
-        <div style="text-align:center"><div style="font-size:20px;font-weight:900;color:var(--text)">${champ.finishes.dec}</div><div style="font-size:12px;color:var(--text-faint);letter-spacing:0.08em">판정</div></div>
-      </div>`
-    : '';
+  const fin = champ.finishes || { ko: 0, sub: 0, dec: 0 };
+  const st = champ.stats || {};
+  const statItems = [
+    { label: 'Striking',   val: st.striking  || 0 },
+    { label: 'Grappling',  val: st.grappling || 0 },
+    { label: 'Wrestling',  val: st.wrestling || 0 },
+    { label: 'Cardio',     val: st.cardio    || 0 },
+    { label: 'Chin',       val: st.chin      || 0 },
+    { label: 'Power',      val: st.power     || 0 },
+  ];
+  const statBars = statItems.map(s => `
+    <div class="champ-stat-row">
+      <span class="champ-stat-label">${s.label}</span>
+      <div class="champ-stat-bar-wrap">
+        <div class="champ-stat-bar" style="width:${s.val}%"></div>
+      </div>
+      <span class="champ-stat-val">${s.val}</span>
+    </div>`).join('');
+
+  const bioItems = [
+    champ.nationality ? `<span class="champ-bio-item">${esc(champ.nationality)}</span>` : '',
+    champ.age        ? `<span class="champ-bio-item">${esc(String(champ.age))} yrs</span>` : '',
+    champ.height     ? `<span class="champ-bio-item">${esc(champ.height)}</span>` : '',
+    champ.stance     ? `<span class="champ-bio-item">${esc(champ.stance)}</span>` : '',
+  ].filter(Boolean).join('');
 
   wrap.innerHTML = `
     <div class="champ-featured" onclick="openFighterPopup('${champ.id}')">
@@ -317,8 +335,16 @@ function renderChampions() {
         <div class="champ-featured-nickname">${esc(champ.nickname)}</div>
         <div class="champ-featured-realname">${esc(champ.nameKo || champ.name)}</div>
         <div class="champ-featured-record">${recordStr(champ.record)}</div>
-        ${finHtml}
-        ${champ.titles && champ.titles.length ? `<div style="margin-top:16px;font-size:12px;color:var(--text-faint)">${champ.titles.map(t => esc(t)).join('<br>')}</div>` : ''}
+        <div class="champ-finishes">
+          <div class="champ-finish-item"><span class="champ-finish-val">${fin.ko}</span><span class="champ-finish-lbl">KO/TKO</span></div>
+          <div class="champ-finish-item"><span class="champ-finish-val">${fin.sub}</span><span class="champ-finish-lbl">서브미션</span></div>
+          <div class="champ-finish-item"><span class="champ-finish-val">${fin.dec}</span><span class="champ-finish-lbl">판정</span></div>
+        </div>
+        ${bioItems ? `<div class="champ-bio-row">${bioItems}</div>` : ''}
+      </div>
+      <div class="champ-featured-stats">
+        <div class="champ-stats-title">능력치</div>
+        ${statBars}
       </div>
     </div>
   `;

@@ -499,13 +499,21 @@ function buildFighterCard(f, i) {
       <div class="form-group"><label>파이팅 스타일 (쉼표 구분)</label><input data-fi="${i}" data-ff="style" value="${escHtml((f.style||[]).join(', '))}"></div>
       <div class="form-group">
         <div class="checkbox-wrap">
-          <input type="checkbox" data-fi="${i}" data-ff="isChampion" id="fi-champ-${i}" ${f.isChampion ? 'checked' : ''}>
-          <label for="fi-champ-${i}">현 챔피언</label>
+          <input type="checkbox" data-fi="${i}" data-ff="isChampion" id="fi-champ-${i}" ${f.isChampion ? 'checked' : ''} onchange="onChampionCheck(this,${i})">
+          <label for="fi-champ-${i}" style="color:var(--gold);font-weight:700">🏆 현 챔피언</label>
         </div>
       </div>
     </div>
   `;
 }
+// 챔피언 체크박스 → 라디오 동작 (한 명만)
+function onChampionCheck(el, idx) {
+  if (!el.checked) return;
+  document.querySelectorAll('[data-ff="isChampion"]').forEach(cb => {
+    if (cb !== el) cb.checked = false;
+  });
+}
+
 function addFighter() {
   ADMIN_DATA.fighters = ADMIN_DATA.fighters || [];
   ADMIN_DATA.fighters.push({ id: '', nickname: '', name: '', nameKo: '', weightClass: ADMIN_DATA.weightClasses?.[0]?.id || '', age: 25, isChampion: false, record: {w:0,l:0,d:0}, photo: '', highlight: '', height: '', reach: '', stance: 'Orthodox', nationality: 'KR', style: [], stats: {striking:7,grappling:7,wrestling:7,cardio:7,chin:7,power:7}, finishes:{ko:0,sub:0,dec:0}, recentFights: [], career: [], titles: [] });
