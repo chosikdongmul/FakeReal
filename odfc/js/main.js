@@ -64,28 +64,47 @@ function youtubeId(url) {
   return null;
 }
 
+// ---------- Hero Banner Rotator ----------
+let _bannerIdx = 0;
+let _bannerTimer = null;
+
 function renderHeroBanner() {
   const slot = document.getElementById('hero-bg-media');
   if (!slot) return;
-  const banner = (DATA.banners || [])[0];
-  if (!banner) return;
+  const banners = (DATA.banners || []).filter(b => b.video || b.image);
+  if (!banners.length) return;
 
-  if (banner.video) {
-    const vid = youtubeId(banner.video);
-    if (vid) {
-      slot.innerHTML = `
-        <div class="hero-bg-yt-wrap">
-          <iframe
-            src="https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&loop=1&playlist=${vid}&controls=0&disablekb=1&modestbranding=1&playsinline=1"
-            allow="autoplay; encrypted-media"
-            allowfullscreen
-          ></iframe>
-        </div>`;
-      return;
+  function showBanner(idx) {
+    const banner = banners[idx];
+    if (banner.video) {
+      const vid = youtubeId(banner.video);
+      if (vid) {
+        slot.innerHTML = `
+          <div class="hero-bg-yt-wrap">
+            <iframe
+              src="https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&loop=1&playlist=${vid}&controls=0&disablekb=1&modestbranding=1&playsinline=1"
+              allow="autoplay; encrypted-media" allowfullscreen
+            ></iframe>
+          </div>`;
+        return;
+      }
+    }
+    if (banner.image) {
+      slot.innerHTML = `<img class="hero-bg-video" src="${esc(banner.image)}" alt="" loading="eager">`;
     }
   }
-  if (banner.image) {
-    slot.innerHTML = `<img class="hero-bg-video" src="../${esc(banner.image)}" alt="" loading="eager">`;
+
+  showBanner(0);
+
+  // 배너가 2개 이상이고 영상 없는 경우만 자동 롤링 (영상은 자체 루프)
+  const imageOnlyBanners = banners.filter(b => !b.video && b.image);
+  if (banners.length > 1 && imageOnlyBanners.length === banners.length) {
+    _bannerIdx = 0;
+    if (_bannerTimer) clearInterval(_bannerTimer);
+    _bannerTimer = setInterval(() => {
+      _bannerIdx = (_bannerIdx + 1) % banners.length;
+      showBanner(_bannerIdx);
+    }, 6000);
   }
 }
 

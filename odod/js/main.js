@@ -161,17 +161,18 @@ function renderHero() {
           vid.setAttribute('playsinline', '');
           wrap.appendChild(vid);
         } else {
-          // YouTube embed — use IFrame API so we detect PLAYING and remove overlay
+          // YouTube embed — simple iframe (controls=0 hides UI)
           const videoId = extractYouTubeId(b.video);
-          // Div placeholder: YT.Player replaces this with an iframe
-          const placeholder = document.createElement('div');
-          placeholder.id = 'yt-banner-' + i;
-          wrap.appendChild(placeholder);
-          // Shield: sits above the iframe, blocks mouse hover → no hover controls
+          const iframe = document.createElement('iframe');
+          iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&rel=0&disablekb=1&modestbranding=1&playsinline=1&iv_load_policy=3`;
+          iframe.allow = 'autoplay; encrypted-media';
+          iframe.setAttribute('allowfullscreen', '');
+          iframe.setAttribute('frameborder', '0');
+          wrap.appendChild(iframe);
+          // Shield: blocks mouse hover to prevent controls appearing
           const shield = document.createElement('div');
           shield.className = 'yt-shield';
           wrap.appendChild(shield);
-          queueYtPlayer({ elementId: 'yt-banner-' + i, videoId, slideEl: slide });
         }
         slide.appendChild(wrap);
       } else {
