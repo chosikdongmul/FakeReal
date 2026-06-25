@@ -95,6 +95,7 @@ function renderHeroBanner() {
   }
 
   showBanner(0);
+  resetBannerProgress();
 
   if (banners.length > 1) {
     _bannerIdx = 0;
@@ -102,8 +103,17 @@ function renderHeroBanner() {
     _bannerTimer = setInterval(() => {
       _bannerIdx = (_bannerIdx + 1) % banners.length;
       showBanner(_bannerIdx);
+      resetBannerProgress();
     }, 8000);
   }
+}
+
+function resetBannerProgress() {
+  const pb = document.getElementById('banner-progress');
+  if (!pb) return;
+  pb.style.animation = 'none';
+  pb.offsetHeight; // force reflow
+  pb.style.animation = 'bannerProgressAnim 8s linear forwards';
 }
 
 // ---------- Countdown ----------

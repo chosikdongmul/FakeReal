@@ -285,13 +285,6 @@ body.has-announcement .mobile-menu { top: calc(36px + 72px); }
   z-index: 1;
   background: transparent;
 }
-.yt-cover {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: #0a0a0a;
-  pointer-events: none;
-}
 .hero-slide-video iframe,
 .hero-slide-video video {
   position: absolute;
