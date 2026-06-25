@@ -173,6 +173,15 @@ function renderHero() {
           const shield = document.createElement('div');
           shield.className = 'yt-shield';
           wrap.appendChild(shield);
+          // Cover: hides YouTube loading UI until video plays
+          const cover = document.createElement('div');
+          cover.className = 'yt-cover';
+          wrap.appendChild(cover);
+          setTimeout(() => {
+            cover.style.transition = 'opacity 0.8s ease';
+            cover.style.opacity = '0';
+            setTimeout(() => cover.remove(), 900);
+          }, 2500);
         }
         slide.appendChild(wrap);
       } else {
