@@ -231,7 +231,7 @@ function renderFightCard() {
     const f1Real = f1 ? f1.nameKo : '';
     const f1Record = f1 ? recordStr(f1.record) : '';
     const f1Photo = f1 && f1.photo
-      ? `<img src="../${esc(f1.photo)}" alt="${esc(f1Name)}" loading="lazy">`
+      ? `<img src="../${esc(f1.photo)}" alt="${esc(f1Name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none">🥊</div>`
       : `<div class="placeholder-fighter">🥊</div>`;
     const f1ChampClass = f1 && f1.isChampion ? ' champ' : '';
 
@@ -239,7 +239,7 @@ function renderFightCard() {
     const f2Real = f2 ? f2.nameKo : '';
     const f2Record = f2 ? recordStr(f2.record) : '';
     const f2Photo = f2 && f2.photo
-      ? `<img src="../${esc(f2.photo)}" alt="${esc(f2Name)}" loading="lazy">`
+      ? `<img src="../${esc(f2.photo)}" alt="${esc(f2Name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none">🥊</div>`
       : `<div class="placeholder-fighter">🥊</div>`;
     const f2ChampClass = f2 && f2.isChampion ? ' champ' : '';
 
@@ -298,8 +298,8 @@ function renderChampions() {
   }
 
   const photoHtml = champ.photo
-    ? `<img src="../${esc(champ.photo)}" alt="${esc(champ.nickname)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top">`
-    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:64px;background:var(--bg3)">🥊</div>`;
+    ? `<img src="../${esc(champ.photo)}" alt="${esc(champ.nickname)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none;font-size:64px">🥊</div>`
+    : `<div class="placeholder-fighter" style="font-size:64px">🥊</div>`;
 
   const finHtml = champ.finishes
     ? `<div style="display:flex;gap:16px;margin-top:8px">
@@ -373,7 +373,7 @@ function renderFighters() {
         : '';
 
     const photoHtml = f.photo
-      ? `<img src="../${esc(f.photo)}" alt="${esc(f.nickname)}" loading="lazy">`
+      ? `<img src="../${esc(f.photo)}" alt="${esc(f.nickname)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-fighter" style="display:none">🥊</div>`
       : `<div class="placeholder-fighter">🥊</div>`;
 
     return `
@@ -553,6 +553,8 @@ function openFighterPopup(fighterId) {
   // Photo / highlight
   const photoEl = document.getElementById('popup-fighter-photo');
   const iframeEl = document.getElementById('popup-highlight-iframe');
+  const placeholderEl = document.getElementById('popup-photo-placeholder');
+  placeholderEl.style.display = 'none';
   if (f.highlight) {
     iframeEl.src = f.highlight;
     iframeEl.style.display = '';
@@ -562,10 +564,14 @@ function openFighterPopup(fighterId) {
     photoEl.alt = f.nickname;
     photoEl.style.display = '';
     iframeEl.style.display = 'none';
+    photoEl.onerror = () => {
+      photoEl.style.display = 'none';
+      placeholderEl.style.display = '';
+    };
   } else {
     photoEl.style.display = 'none';
     iframeEl.style.display = 'none';
-    document.getElementById('popup-photo-placeholder').style.display = '';
+    placeholderEl.style.display = '';
   }
 
   // Header
