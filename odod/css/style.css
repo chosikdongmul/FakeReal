@@ -76,7 +76,7 @@
 }
 .theme-toggle-btn:hover { border-color: var(--orange); color: var(--orange); }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   background:
