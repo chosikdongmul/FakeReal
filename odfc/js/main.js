@@ -275,46 +275,41 @@ function renderChampions() {
   }).join('');
 }
 
-// ---------- Fighters Tabs ----------
-let activeFighterTab = null;
-
+// ---------- Fighters (체급 무제한 — 전체 출력) ----------
 function renderFighters() {
-  const tabs = document.getElementById('wc-tabs');
-  const grid = document.getElementById('fighters-grid');
-  if (!tabs || !grid) return;
+  const tabsEl = document.getElementById('wc-tabs');
+  if (tabsEl) tabsEl.style.display = 'none'; // 체급탭 숨김
 
-  const wcs = DATA.weightClasses || [];
-  if (!activeFighterTab) activeFighterTab = wcs[0]?.id || null;
-
-  tabs.innerHTML = wcs.map(wc => `
-    <button class="wc-tab${wc.id === activeFighterTab ? ' active' : ''}" onclick="switchFighterTab('${wc.id}')">
-      ${esc(wc.name)}<span style="color:var(--text-faint);font-size:9px;margin-left:6px">${esc(wc.limit)}</span>
-    </button>
-  `).join('');
-
-  renderFightersGrid();
-}
-
-function switchFighterTab(wcId) {
-  activeFighterTab = wcId;
-  document.querySelectorAll('.wc-tab').forEach(t => t.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  renderFightersGrid();
-}
-
-function renderFightersGrid() {
   const grid = document.getElementById('fighters-grid');
   if (!grid) return;
-  const fighters = (DATA.fighters || []).filter(f => f.weightClass === activeFighterTab);
-  const rankings = (DATA.rankings || {})[activeFighterTab] || [];
 
-  grid.innerHTML = fighters.map(f => {
-    const rank = rankings.indexOf(f.id);
+  const fighters = DATA.fighters || [];
+  const rankings = DATA.rankings || {};
+  const wcs = DATA.weightClasses || [];
+
+  // 체급 순서 기준으로 정렬 (flyweight → heavyweight)
+  const wcOrder = wcs.map(w => w.id);
+  const sorted = [...fighters].sort((a, b) => {
+    const ai = wcOrder.indexOf(a.weightClass);
+    const bi = wcOrder.indexOf(b.weightClass);
+    return ai - bi;
+  });
+
+  grid.innerHTML = sorted.map(f => {
+    const wcRankings = rankings[f.weightClass] || [];
+    const rank = wcRankings.indexOf(f.id);
+    const wc = weightClassById(f.weightClass);
+
     const badgeHtml = f.isChampion
       ? `<span class="fighter-champ-badge">CHAMPION</span>`
-      : rank >= 0 && rank < rankings.length
-        ? `<span class="fighter-rank-badge">#${rank + 1} RANKED</span>`
+      : rank >= 0
+        ? `<span class="fighter-rank-badge">#${rank + 1}</span>`
         : '';
+
+    const wcBadge = wc
+      ? `<span style="position:absolute;bottom:44px;right:10px;z-index:3;font-size:12px;font-weight:600;color:var(--text-faint);letter-spacing:0.05em">${esc(wc.name)}</span>`
+      : '';
+
     const photoHtml = f.photo
       ? `<img src="../${esc(f.photo)}" alt="${esc(f.nickname)}" loading="lazy">`
       : `<div class="placeholder-fighter">🥊</div>`;
@@ -323,6 +318,7 @@ function renderFightersGrid() {
       <div class="fighter-card" onclick="openFighterPopup('${f.id}')">
         <div class="fighter-photo-wrap">${photoHtml}</div>
         ${badgeHtml}
+        ${wcBadge}
         <div class="fighter-card-info">
           <div class="fighter-card-nickname">${esc(f.nickname)}</div>
           <div class="fighter-card-realname">${esc(f.nameKo || f.name)}</div>
@@ -330,7 +326,7 @@ function renderFightersGrid() {
         </div>
       </div>
     `;
-  }).join('') || `<div style="padding:40px;color:var(--text-faint);font-size:13px">선수 정보가 없습니다.</div>`;
+  }).join('') || `<div style="padding:40px;color:var(--text-faint)">선수 정보가 없습니다.</div>`;
 }
 
 // ---------- Rankings ----------
