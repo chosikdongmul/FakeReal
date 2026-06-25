@@ -1,10 +1,12 @@
+/* ⚠️ 경고: 영상 배너 1개가 이미지 없이 등록됨.
+   YouTube 퍼가기 차단 시 다른 사람 화면에 빈 슬라이드로 표시됩니다. */
 const DEFAULT_DATA = {
   "org": {
     "name": "Outlaw Dogs FC",
     "abbr": "ODFC",
-    "fullName": "Outlaw Dogs Fighting Championship",
+    "fullName": "Outlaw Dogs Fight Club",
     "slogan": "Every dog has their day.",
-    "founded": "2021",
+    "founded": "2026",
     "city": "Seoul",
     "country": "KR",
     "contact": "booking@odfc.gg",
@@ -15,11 +17,36 @@ const DEFAULT_DATA = {
     }
   },
   "weightClasses": [
-    { "id": "flyweight",     "name": "Flyweight",     "nameKo": "플라이급",   "limit": "56.7kg" },
-    { "id": "lightweight",   "name": "Lightweight",   "nameKo": "라이트급",   "limit": "70.3kg" },
-    { "id": "welterweight",  "name": "Welterweight",  "nameKo": "웰터급",     "limit": "77.1kg" },
-    { "id": "middleweight",  "name": "Middleweight",  "nameKo": "미들급",     "limit": "83.9kg" },
-    { "id": "heavyweight",   "name": "Heavyweight",   "nameKo": "헤비급",     "limit": "120.2kg" }
+    {
+      "id": "flyweight",
+      "name": "Flyweight",
+      "nameKo": "플라이급",
+      "limit": "56.7kg"
+    },
+    {
+      "id": "lightweight",
+      "name": "Lightweight",
+      "nameKo": "라이트급",
+      "limit": "70.3kg"
+    },
+    {
+      "id": "welterweight",
+      "name": "Welterweight",
+      "nameKo": "웰터급",
+      "limit": "77.1kg"
+    },
+    {
+      "id": "middleweight",
+      "name": "Middleweight",
+      "nameKo": "미들급",
+      "limit": "83.9kg"
+    },
+    {
+      "id": "heavyweight",
+      "name": "Heavyweight",
+      "nameKo": "헤비급",
+      "limit": "120.2kg"
+    }
   ],
   "fighters": [
     {
@@ -28,32 +55,99 @@ const DEFAULT_DATA = {
       "nameKo": "김준호",
       "nickname": "The Phantom",
       "weightClass": "lightweight",
-      "isChampion": false,
-      "record": { "w": 18, "l": 2, "d": 0 },
+      "isChampion": true,
+      "record": {
+        "w": 18,
+        "l": 2,
+        "d": 0
+      },
       "age": 28,
       "nationality": "KR",
       "height": "175cm",
       "reach": "182cm",
       "stance": "Orthodox",
-      "style": ["킥복싱", "BJJ"],
+      "style": [
+        "킥복싱",
+        "BJJ"
+      ],
       "photo": "assets/images/fighters/phantom.jpg",
       "photoThumb": "",
       "highlight": "",
-      "stats": { "striking": 9.2, "grappling": 7.8, "wrestling": 6.5, "cardio": 8.5, "chin": 8.0, "power": 8.8 },
-      "finishes": { "ko": 8, "sub": 4, "dec": 6 },
+      "stats": {
+        "striking": 9.2,
+        "grappling": 7.8,
+        "wrestling": 6.5,
+        "cardio": 8.5,
+        "chin": 8,
+        "power": 8.8
+      },
+      "finishes": {
+        "ko": 8,
+        "sub": 4,
+        "dec": 6
+      },
       "recentFights": [
-        { "opponent": "Seo Minjun", "result": "W", "method": "KO",  "round": 3, "time": "2:41", "event": "ODFC 11" },
-        { "opponent": "Lee Sunghoon", "result": "W", "method": "SUB", "round": 2, "time": "3:08", "event": "ODFC 10" },
-        { "opponent": "Park Minsu",   "result": "W", "method": "DEC", "round": 5, "time": "—",    "event": "ODFC 8" },
-        { "opponent": "Kang Donghyun","result": "W", "method": "KO",  "round": 1, "time": "0:47", "event": "ODFC 7" },
-        { "opponent": "Yoon Seongmin","result": "L", "method": "DEC", "round": 3, "time": "—",    "event": "ODFC 5" }
+        {
+          "opponent": "Seo Minjun",
+          "result": "W",
+          "method": "KO",
+          "round": 3,
+          "time": "2:41",
+          "event": "ODFC 11"
+        },
+        {
+          "opponent": "Lee Sunghoon",
+          "result": "W",
+          "method": "SUB",
+          "round": 2,
+          "time": "3:08",
+          "event": "ODFC 10"
+        },
+        {
+          "opponent": "Park Minsu",
+          "result": "W",
+          "method": "DEC",
+          "round": 5,
+          "time": "—",
+          "event": "ODFC 8"
+        },
+        {
+          "opponent": "Kang Donghyun",
+          "result": "W",
+          "method": "KO",
+          "round": 1,
+          "time": "0:47",
+          "event": "ODFC 7"
+        },
+        {
+          "opponent": "Yoon Seongmin",
+          "result": "L",
+          "method": "DEC",
+          "round": 3,
+          "time": "—",
+          "event": "ODFC 5"
+        }
       ],
       "career": [
-        { "year": "2024~",    "org": "Outlaw Dogs FC", "role": "라이트급 챔피언" },
-        { "year": "2022–2024","org": "Outlaw Dogs FC", "role": "라이트급 컨텐더" },
-        { "year": "2019–2022","org": "K-1 코리아",    "role": "킥복서" }
+        {
+          "year": "2024~",
+          "org": "Outlaw Dogs FC",
+          "role": "라이트급 챔피언"
+        },
+        {
+          "year": "2022–2024",
+          "org": "Outlaw Dogs FC",
+          "role": "라이트급 컨텐더"
+        },
+        {
+          "year": "2019–2022",
+          "org": "K-1 코리아",
+          "role": "킥복서"
+        }
       ],
-      "titles": ["ODFC 라이트급 챔피언 (2024~현재)"]
+      "titles": [
+        "ODFC 라이트급 챔피언 (2024~현재)"
+      ]
     },
     {
       "id": "ironjaw",
@@ -62,28 +156,89 @@ const DEFAULT_DATA = {
       "nickname": "Iron Jaw",
       "weightClass": "lightweight",
       "isChampion": false,
-      "record": { "w": 15, "l": 3, "d": 0 },
+      "record": {
+        "w": 15,
+        "l": 3,
+        "d": 0
+      },
       "age": 30,
       "nationality": "KR",
       "height": "172cm",
       "reach": "178cm",
       "stance": "Southpaw",
-      "style": ["레슬링", "타격"],
+      "style": [
+        "레슬링",
+        "타격"
+      ],
       "photo": "assets/images/fighters/ironjaw.jpg",
       "photoThumb": "",
       "highlight": "",
-      "stats": { "striking": 7.5, "grappling": 6.8, "wrestling": 8.9, "cardio": 8.2, "chin": 9.5, "power": 7.2 },
-      "finishes": { "ko": 6, "sub": 2, "dec": 7 },
+      "stats": {
+        "striking": 7.5,
+        "grappling": 6.8,
+        "wrestling": 8.9,
+        "cardio": 8.2,
+        "chin": 9.5,
+        "power": 7.2
+      },
+      "finishes": {
+        "ko": 6,
+        "sub": 2,
+        "dec": 7
+      },
       "recentFights": [
-        { "opponent": "Jung Taeyong", "result": "W", "method": "KO",  "round": 2, "time": "1:33", "event": "ODFC 11" },
-        { "opponent": "Oh Seungwon",  "result": "W", "method": "DEC", "round": 3, "time": "—",    "event": "ODFC 10" },
-        { "opponent": "Kim Junho",    "result": "L", "method": "DEC", "round": 5, "time": "—",    "event": "ODFC 8" },
-        { "opponent": "Bae Hyunwoo",  "result": "W", "method": "DEC", "round": 3, "time": "—",    "event": "ODFC 7" },
-        { "opponent": "Lim Chansu",   "result": "W", "method": "SUB", "round": 1, "time": "2:14", "event": "ODFC 6" }
+        {
+          "opponent": "Jung Taeyong",
+          "result": "W",
+          "method": "KO",
+          "round": 2,
+          "time": "1:33",
+          "event": "ODFC 11"
+        },
+        {
+          "opponent": "Oh Seungwon",
+          "result": "W",
+          "method": "DEC",
+          "round": 3,
+          "time": "—",
+          "event": "ODFC 10"
+        },
+        {
+          "opponent": "Kim Junho",
+          "result": "L",
+          "method": "DEC",
+          "round": 5,
+          "time": "—",
+          "event": "ODFC 8"
+        },
+        {
+          "opponent": "Bae Hyunwoo",
+          "result": "W",
+          "method": "DEC",
+          "round": 3,
+          "time": "—",
+          "event": "ODFC 7"
+        },
+        {
+          "opponent": "Lim Chansu",
+          "result": "W",
+          "method": "SUB",
+          "round": 1,
+          "time": "2:14",
+          "event": "ODFC 6"
+        }
       ],
       "career": [
-        { "year": "2022~",    "org": "Outlaw Dogs FC",  "role": "라이트급 #1 컨텐더" },
-        { "year": "2019–2022","org": "국군 체육부대",   "role": "레슬링 국가대표" }
+        {
+          "year": "2022~",
+          "org": "Outlaw Dogs FC",
+          "role": "라이트급 #1 컨텐더"
+        },
+        {
+          "year": "2019–2022",
+          "org": "국군 체육부대",
+          "role": "레슬링 국가대표"
+        }
       ],
       "titles": []
     },
@@ -93,31 +248,94 @@ const DEFAULT_DATA = {
       "nameKo": "최용석",
       "nickname": "The Reaper",
       "weightClass": "welterweight",
-      "isChampion": false,
-      "record": { "w": 20, "l": 1, "d": 0 },
+      "isChampion": true,
+      "record": {
+        "w": 20,
+        "l": 1,
+        "d": 0
+      },
       "age": 31,
       "nationality": "KR",
       "height": "180cm",
       "reach": "188cm",
       "stance": "Orthodox",
-      "style": ["무에타이", "레슬링"],
+      "style": [
+        "무에타이",
+        "레슬링"
+      ],
       "photo": "assets/images/fighters/reaper.jpg",
       "photoThumb": "",
       "highlight": "",
-      "stats": { "striking": 9.6, "grappling": 7.2, "wrestling": 7.8, "cardio": 9.0, "chin": 7.5, "power": 9.2 },
-      "finishes": { "ko": 14, "sub": 2, "dec": 4 },
+      "stats": {
+        "striking": 9.6,
+        "grappling": 7.2,
+        "wrestling": 7.8,
+        "cardio": 9,
+        "chin": 7.5,
+        "power": 9.2
+      },
+      "finishes": {
+        "ko": 14,
+        "sub": 2,
+        "dec": 4
+      },
       "recentFights": [
-        { "opponent": "Jeon Hyunsu",  "result": "W", "method": "KO",  "round": 1, "time": "0:54", "event": "ODFC 11" },
-        { "opponent": "Kim Hyunsoo",  "result": "W", "method": "KO",  "round": 3, "time": "3:21", "event": "ODFC 9" },
-        { "opponent": "Oh Jungmin",   "result": "W", "method": "KO",  "round": 2, "time": "1:58", "event": "ODFC 7" },
-        { "opponent": "Na Taeho",     "result": "W", "method": "DEC", "round": 5, "time": "—",    "event": "ODFC 5" },
-        { "opponent": "Choi Minjun",  "result": "L", "method": "KO",  "round": 2, "time": "4:07", "event": "ODFC 3" }
+        {
+          "opponent": "Jeon Hyunsu",
+          "result": "W",
+          "method": "KO",
+          "round": 1,
+          "time": "0:54",
+          "event": "ODFC 11"
+        },
+        {
+          "opponent": "Kim Hyunsoo",
+          "result": "W",
+          "method": "KO",
+          "round": 3,
+          "time": "3:21",
+          "event": "ODFC 9"
+        },
+        {
+          "opponent": "Oh Jungmin",
+          "result": "W",
+          "method": "KO",
+          "round": 2,
+          "time": "1:58",
+          "event": "ODFC 7"
+        },
+        {
+          "opponent": "Na Taeho",
+          "result": "W",
+          "method": "DEC",
+          "round": 5,
+          "time": "—",
+          "event": "ODFC 5"
+        },
+        {
+          "opponent": "Choi Minjun",
+          "result": "L",
+          "method": "KO",
+          "round": 2,
+          "time": "4:07",
+          "event": "ODFC 3"
+        }
       ],
       "career": [
-        { "year": "2023~",    "org": "Outlaw Dogs FC",   "role": "웰터급 챔피언" },
-        { "year": "2018–2021","org": "태국 무에타이 투어","role": "프로 선수" }
+        {
+          "year": "2023~",
+          "org": "Outlaw Dogs FC",
+          "role": "웰터급 챔피언"
+        },
+        {
+          "year": "2018–2021",
+          "org": "태국 무에타이 투어",
+          "role": "프로 선수"
+        }
       ],
-      "titles": ["ODFC 웰터급 챔피언 (2023~현재)"]
+      "titles": [
+        "ODFC 웰터급 챔피언 (2023~현재)"
+      ]
     },
     {
       "id": "rampage",
@@ -126,28 +344,89 @@ const DEFAULT_DATA = {
       "nickname": "Rampage",
       "weightClass": "welterweight",
       "isChampion": false,
-      "record": { "w": 14, "l": 4, "d": 0 },
+      "record": {
+        "w": 14,
+        "l": 4,
+        "d": 0
+      },
       "age": 27,
       "nationality": "KR",
       "height": "178cm",
       "reach": "185cm",
       "stance": "Orthodox",
-      "style": ["복싱", "파워 펀처"],
+      "style": [
+        "복싱",
+        "파워 펀처"
+      ],
       "photo": "assets/images/fighters/rampage.jpg",
       "photoThumb": "",
       "highlight": "",
-      "stats": { "striking": 8.0, "grappling": 5.5, "wrestling": 6.0, "cardio": 7.8, "chin": 8.5, "power": 9.8 },
-      "finishes": { "ko": 12, "sub": 0, "dec": 2 },
+      "stats": {
+        "striking": 8,
+        "grappling": 5.5,
+        "wrestling": 6,
+        "cardio": 7.8,
+        "chin": 8.5,
+        "power": 9.8
+      },
+      "finishes": {
+        "ko": 12,
+        "sub": 0,
+        "dec": 2
+      },
       "recentFights": [
-        { "opponent": "Park Jinwoo",  "result": "W", "method": "KO",  "round": 1, "time": "1:12", "event": "ODFC 11" },
-        { "opponent": "Choi Yongseok","result": "L", "method": "KO",  "round": 3, "time": "3:21", "event": "ODFC 9" },
-        { "opponent": "Seo Junho",    "result": "W", "method": "KO",  "round": 2, "time": "0:38", "event": "ODFC 8" },
-        { "opponent": "Lee Donghyun", "result": "W", "method": "KO",  "round": 1, "time": "2:55", "event": "ODFC 7" },
-        { "opponent": "Im Seungho",   "result": "W", "method": "KO",  "round": 3, "time": "1:44", "event": "ODFC 6" }
+        {
+          "opponent": "Park Jinwoo",
+          "result": "W",
+          "method": "KO",
+          "round": 1,
+          "time": "1:12",
+          "event": "ODFC 11"
+        },
+        {
+          "opponent": "Choi Yongseok",
+          "result": "L",
+          "method": "KO",
+          "round": 3,
+          "time": "3:21",
+          "event": "ODFC 9"
+        },
+        {
+          "opponent": "Seo Junho",
+          "result": "W",
+          "method": "KO",
+          "round": 2,
+          "time": "0:38",
+          "event": "ODFC 8"
+        },
+        {
+          "opponent": "Lee Donghyun",
+          "result": "W",
+          "method": "KO",
+          "round": 1,
+          "time": "2:55",
+          "event": "ODFC 7"
+        },
+        {
+          "opponent": "Im Seungho",
+          "result": "W",
+          "method": "KO",
+          "round": 3,
+          "time": "1:44",
+          "event": "ODFC 6"
+        }
       ],
       "career": [
-        { "year": "2022~",    "org": "Outlaw Dogs FC", "role": "웰터급 #1 컨텐더" },
-        { "year": "2020–2022","org": "WBO 코리아",     "role": "아마추어 복싱" }
+        {
+          "year": "2022~",
+          "org": "Outlaw Dogs FC",
+          "role": "웰터급 #1 컨텐더"
+        },
+        {
+          "year": "2020–2022",
+          "org": "WBO 코리아",
+          "role": "아마추어 복싱"
+        }
       ],
       "titles": []
     },
@@ -157,31 +436,94 @@ const DEFAULT_DATA = {
       "nameKo": "이태훈",
       "nickname": "The Viper",
       "weightClass": "middleweight",
-      "isChampion": false,
-      "record": { "w": 16, "l": 2, "d": 0 },
+      "isChampion": true,
+      "record": {
+        "w": 16,
+        "l": 2,
+        "d": 0
+      },
       "age": 29,
       "nationality": "KR",
       "height": "183cm",
       "reach": "191cm",
       "stance": "Orthodox",
-      "style": ["BJJ", "레슬링"],
+      "style": [
+        "BJJ",
+        "레슬링"
+      ],
       "photo": "assets/images/fighters/viper.jpg",
       "photoThumb": "",
       "highlight": "",
-      "stats": { "striking": 7.0, "grappling": 9.5, "wrestling": 9.0, "cardio": 8.5, "chin": 8.0, "power": 6.5 },
-      "finishes": { "ko": 2, "sub": 11, "dec": 3 },
+      "stats": {
+        "striking": 7,
+        "grappling": 9.5,
+        "wrestling": 9,
+        "cardio": 8.5,
+        "chin": 8,
+        "power": 6.5
+      },
+      "finishes": {
+        "ko": 2,
+        "sub": 11,
+        "dec": 3
+      },
       "recentFights": [
-        { "opponent": "Han Seongmin", "result": "W", "method": "SUB", "round": 2, "time": "4:28", "event": "ODFC 11" },
-        { "opponent": "Kwon Taeho",   "result": "W", "method": "SUB", "round": 3, "time": "2:11", "event": "ODFC 9" },
-        { "opponent": "Bae Sungwoo",  "result": "W", "method": "DEC", "round": 5, "time": "—",    "event": "ODFC 7" },
-        { "opponent": "Jung Minho",   "result": "L", "method": "KO",  "round": 3, "time": "3:52", "event": "ODFC 5" },
-        { "opponent": "Shin Junhyuk", "result": "W", "method": "SUB", "round": 1, "time": "1:39", "event": "ODFC 4" }
+        {
+          "opponent": "Han Seongmin",
+          "result": "W",
+          "method": "SUB",
+          "round": 2,
+          "time": "4:28",
+          "event": "ODFC 11"
+        },
+        {
+          "opponent": "Kwon Taeho",
+          "result": "W",
+          "method": "SUB",
+          "round": 3,
+          "time": "2:11",
+          "event": "ODFC 9"
+        },
+        {
+          "opponent": "Bae Sungwoo",
+          "result": "W",
+          "method": "DEC",
+          "round": 5,
+          "time": "—",
+          "event": "ODFC 7"
+        },
+        {
+          "opponent": "Jung Minho",
+          "result": "L",
+          "method": "KO",
+          "round": 3,
+          "time": "3:52",
+          "event": "ODFC 5"
+        },
+        {
+          "opponent": "Shin Junhyuk",
+          "result": "W",
+          "method": "SUB",
+          "round": 1,
+          "time": "1:39",
+          "event": "ODFC 4"
+        }
       ],
       "career": [
-        { "year": "2023~",    "org": "Outlaw Dogs FC",  "role": "미들급 챔피언" },
-        { "year": "2018–2023","org": "BJJ 월드 서킷",   "role": "블랙벨트 / 선수" }
+        {
+          "year": "2023~",
+          "org": "Outlaw Dogs FC",
+          "role": "미들급 챔피언"
+        },
+        {
+          "year": "2018–2023",
+          "org": "BJJ 월드 서킷",
+          "role": "블랙벨트 / 선수"
+        }
       ],
-      "titles": ["ODFC 미들급 챔피언 (2023~현재)"]
+      "titles": [
+        "ODFC 미들급 챔피언 (2023~현재)"
+      ]
     },
     {
       "id": "thewall",
@@ -189,31 +531,94 @@ const DEFAULT_DATA = {
       "nameKo": "오동규",
       "nickname": "The Wall",
       "weightClass": "heavyweight",
-      "isChampion": false,
-      "record": { "w": 12, "l": 1, "d": 0 },
+      "isChampion": true,
+      "record": {
+        "w": 12,
+        "l": 1,
+        "d": 0
+      },
       "age": 32,
       "nationality": "KR",
       "height": "193cm",
       "reach": "205cm",
       "stance": "Orthodox",
-      "style": ["복싱", "무에타이"],
+      "style": [
+        "복싱",
+        "무에타이"
+      ],
       "photo": "assets/images/fighters/thewall.jpg",
       "photoThumb": "",
       "highlight": "",
-      "stats": { "striking": 8.8, "grappling": 6.0, "wrestling": 5.5, "cardio": 7.0, "chin": 9.8, "power": 9.9 },
-      "finishes": { "ko": 10, "sub": 1, "dec": 1 },
+      "stats": {
+        "striking": 8.8,
+        "grappling": 6,
+        "wrestling": 5.5,
+        "cardio": 7,
+        "chin": 9.8,
+        "power": 9.9
+      },
+      "finishes": {
+        "ko": 10,
+        "sub": 1,
+        "dec": 1
+      },
       "recentFights": [
-        { "opponent": "Kang Chulwon", "result": "W", "method": "KO",  "round": 2, "time": "3:18", "event": "ODFC 11" },
-        { "opponent": "Park Gyumin",  "result": "W", "method": "KO",  "round": 1, "time": "1:05", "event": "ODFC 9" },
-        { "opponent": "Sim Jaehong",  "result": "W", "method": "KO",  "round": 3, "time": "2:44", "event": "ODFC 7" },
-        { "opponent": "Cho Yongjun",  "result": "L", "method": "DEC", "round": 3, "time": "—",    "event": "ODFC 4" },
-        { "opponent": "Lee Mingyu",   "result": "W", "method": "KO",  "round": 2, "time": "0:59", "event": "ODFC 3" }
+        {
+          "opponent": "Kang Chulwon",
+          "result": "W",
+          "method": "KO",
+          "round": 2,
+          "time": "3:18",
+          "event": "ODFC 11"
+        },
+        {
+          "opponent": "Park Gyumin",
+          "result": "W",
+          "method": "KO",
+          "round": 1,
+          "time": "1:05",
+          "event": "ODFC 9"
+        },
+        {
+          "opponent": "Sim Jaehong",
+          "result": "W",
+          "method": "KO",
+          "round": 3,
+          "time": "2:44",
+          "event": "ODFC 7"
+        },
+        {
+          "opponent": "Cho Yongjun",
+          "result": "L",
+          "method": "DEC",
+          "round": 3,
+          "time": "—",
+          "event": "ODFC 4"
+        },
+        {
+          "opponent": "Lee Mingyu",
+          "result": "W",
+          "method": "KO",
+          "round": 2,
+          "time": "0:59",
+          "event": "ODFC 3"
+        }
       ],
       "career": [
-        { "year": "2022~",    "org": "Outlaw Dogs FC",        "role": "헤비급 챔피언" },
-        { "year": "2016–2022","org": "한국 복싱 국가대표팀", "role": "아마추어 복서" }
+        {
+          "year": "2022~",
+          "org": "Outlaw Dogs FC",
+          "role": "헤비급 챔피언"
+        },
+        {
+          "year": "2016–2022",
+          "org": "한국 복싱 국가대표팀",
+          "role": "아마추어 복서"
+        }
       ],
-      "titles": ["ODFC 헤비급 챔피언 (2022~현재)"]
+      "titles": [
+        "ODFC 헤비급 챔피언 (2022~현재)"
+      ]
     },
     {
       "id": "ghost",
@@ -222,30 +627,94 @@ const DEFAULT_DATA = {
       "nickname": "Ghost",
       "weightClass": "flyweight",
       "isChampion": true,
-      "record": { "w": 21, "l": 0, "d": 0 },
+      "record": {
+        "w": 21,
+        "l": 0,
+        "d": 0
+      },
       "age": 26,
       "nationality": "KR",
       "height": "165cm",
       "reach": "170cm",
       "stance": "Southpaw",
-      "style": ["킥복싱", "무에타이"],
+      "style": [
+        "킥복싱",
+        "무에타이"
+      ],
       "photo": "assets/images/fighters/ghost.jpg",
       "photoThumb": "",
       "highlight": "",
-      "stats": { "striking": 9.0, "grappling": 7.5, "wrestling": 7.0, "cardio": 9.5, "chin": 8.5, "power": 7.8 },
-      "finishes": { "ko": 11, "sub": 3, "dec": 7 },
+      "stats": {
+        "striking": 9,
+        "grappling": 7.5,
+        "wrestling": 7,
+        "cardio": 9.5,
+        "chin": 8.5,
+        "power": 7.8
+      },
+      "finishes": {
+        "ko": 11,
+        "sub": 3,
+        "dec": 7
+      },
       "recentFights": [
-        { "opponent": "Jung Kanghyun","result": "W", "method": "KO",  "round": 4, "time": "2:07", "event": "ODFC 11" },
-        { "opponent": "Yoo Jaewon",   "result": "W", "method": "DEC", "round": 3, "time": "—",    "event": "ODFC 9" },
-        { "opponent": "Baek Seungmin","result": "W", "method": "SUB", "round": 2, "time": "3:55", "event": "ODFC 7" },
-        { "opponent": "Lim Donghyun", "result": "W", "method": "KO",  "round": 1, "time": "0:42", "event": "ODFC 5" },
-        { "opponent": "Kwon Minjun",  "result": "W", "method": "DEC", "round": 3, "time": "—",    "event": "ODFC 3" }
+        {
+          "opponent": "Jung Kanghyun",
+          "result": "W",
+          "method": "KO",
+          "round": 4,
+          "time": "2:07",
+          "event": "ODFC 11"
+        },
+        {
+          "opponent": "Yoo Jaewon",
+          "result": "W",
+          "method": "DEC",
+          "round": 3,
+          "time": "—",
+          "event": "ODFC 9"
+        },
+        {
+          "opponent": "Baek Seungmin",
+          "result": "W",
+          "method": "SUB",
+          "round": 2,
+          "time": "3:55",
+          "event": "ODFC 7"
+        },
+        {
+          "opponent": "Lim Donghyun",
+          "result": "W",
+          "method": "KO",
+          "round": 1,
+          "time": "0:42",
+          "event": "ODFC 5"
+        },
+        {
+          "opponent": "Kwon Minjun",
+          "result": "W",
+          "method": "DEC",
+          "round": 3,
+          "time": "—",
+          "event": "ODFC 3"
+        }
       ],
       "career": [
-        { "year": "2022~",    "org": "Outlaw Dogs FC",       "role": "플라이급 챔피언 (무패)" },
-        { "year": "2019–2022","org": "아마추어 무에타이 서킷","role": "선수" }
+        {
+          "year": "2022~",
+          "org": "Outlaw Dogs FC",
+          "role": "플라이급 챔피언 (무패)"
+        },
+        {
+          "year": "2019–2022",
+          "org": "아마추어 무에타이 서킷",
+          "role": "선수"
+        }
       ],
-      "titles": ["ODFC 플라이급 챔피언 (2022~현재)", "프로 무패 기록 21-0"]
+      "titles": [
+        "ODFC 플라이급 챔피언 (2022~현재)",
+        "프로 무패 기록 21-0"
+      ]
     }
   ],
   "events": [
@@ -326,7 +795,12 @@ const DEFAULT_DATA = {
           "titleFight": false,
           "weightClass": "lightweight",
           "rounds": 3,
-          "result": { "winnerId": "phantom", "method": "KO", "round": 3, "time": "2:41" }
+          "result": {
+            "winnerId": "phantom",
+            "method": "KO",
+            "round": 3,
+            "time": "2:41"
+          }
         },
         {
           "type": "co-main",
@@ -337,7 +811,12 @@ const DEFAULT_DATA = {
           "titleFight": true,
           "weightClass": "welterweight",
           "rounds": 5,
-          "result": { "winnerId": "reaper", "method": "KO", "round": 1, "time": "0:54" }
+          "result": {
+            "winnerId": "reaper",
+            "method": "KO",
+            "round": 1,
+            "time": "0:54"
+          }
         },
         {
           "type": "main",
@@ -348,7 +827,12 @@ const DEFAULT_DATA = {
           "titleFight": true,
           "weightClass": "heavyweight",
           "rounds": 5,
-          "result": { "winnerId": "thewall", "method": "KO", "round": 2, "time": "3:18" }
+          "result": {
+            "winnerId": "thewall",
+            "method": "KO",
+            "round": 2,
+            "time": "3:18"
+          }
         },
         {
           "type": "prelim",
@@ -359,7 +843,12 @@ const DEFAULT_DATA = {
           "titleFight": false,
           "weightClass": "flyweight",
           "rounds": 3,
-          "result": { "winnerId": "ghost", "method": "KO", "round": 4, "time": "2:07" }
+          "result": {
+            "winnerId": "ghost",
+            "method": "KO",
+            "round": 4,
+            "time": "2:07"
+          }
         }
       ]
     },
@@ -383,7 +872,12 @@ const DEFAULT_DATA = {
           "titleFight": true,
           "weightClass": "middleweight",
           "rounds": 5,
-          "result": { "winnerId": "viper", "method": "SUB", "round": 3, "time": "2:11" }
+          "result": {
+            "winnerId": "viper",
+            "method": "SUB",
+            "round": 3,
+            "time": "2:11"
+          }
         },
         {
           "type": "co-main",
@@ -394,28 +888,77 @@ const DEFAULT_DATA = {
           "titleFight": false,
           "weightClass": "lightweight",
           "rounds": 3,
-          "result": { "winnerId": "phantom", "method": "SUB", "round": 2, "time": "3:08" }
+          "result": {
+            "winnerId": "phantom",
+            "method": "SUB",
+            "round": 2,
+            "time": "3:08"
+          }
         }
       ]
     }
   ],
-  "rankings": ["ghost", "phantom", "ironjaw", "reaper", "rampage", "viper", "thewall"],
+  "rankings": [],
   "sponsors": [
-    { "name": "AXPEX Gaming", "logo": "assets/images/sponsors/axpex.svg",      "url": "#" },
-    { "name": "Red Wulf",     "logo": "assets/images/sponsors/redwulf.svg",    "url": "#" },
-    { "name": "HyperZ",       "logo": "assets/images/sponsors/hyperz.svg",     "url": "#" },
-    { "name": "SteelForce",   "logo": "assets/images/sponsors/steelforce.svg", "url": "#" },
-    { "name": "Razyr",        "logo": "assets/images/sponsors/razyr.svg",      "url": "#" },
-    { "name": "Intek",        "logo": "assets/images/sponsors/intek.svg",      "url": "#" }
+    {
+      "name": "AXPEX Gaming",
+      "logo": "assets/images/sponsors/axpex.svg",
+      "url": "#"
+    },
+    {
+      "name": "Red Wulf",
+      "logo": "assets/images/sponsors/redwulf.svg",
+      "url": "#"
+    },
+    {
+      "name": "HyperZ",
+      "logo": "assets/images/sponsors/hyperz.svg",
+      "url": "#"
+    },
+    {
+      "name": "SteelForce",
+      "logo": "assets/images/sponsors/steelforce.svg",
+      "url": "#"
+    },
+    {
+      "name": "Razyr",
+      "logo": "assets/images/sponsors/razyr.svg",
+      "url": "#"
+    },
+    {
+      "name": "Intek",
+      "logo": "assets/images/sponsors/intek.svg",
+      "url": "#"
+    }
   ],
   "banners": [
-    { "image": "", "video": "", "caption": "" }
+    {
+      "image": "",
+      "video": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/0gQB5OgcMLI?si=QOMg4--hPlnBhAGB\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+      "caption": ""
+    }
   ],
   "mediakit": {
-    "logo":       { "file": "", "label": "ODFC 로고 패키지",    "desc": "PNG · SVG · 흰색/컬러/모노 버전" },
-    "photos":     { "file": "", "label": "파이터 공식 사진",    "desc": "고해상도 JPG · 선수별 개인 컷" },
-    "presskit":   { "file": "", "label": "보도자료 PDF",        "desc": "ODFC 소개 · 파이터 프로필 · 이벤트 정보" },
-    "brandguide": { "file": "", "label": "브랜드 가이드라인",   "desc": "컬러 코드 · 폰트 · 사용 규정" }
+    "logo": {
+      "label": "ODFC 로고 패키지",
+      "desc": "PNG · SVG · 흰색/컬러/모노 버전",
+      "file": ""
+    },
+    "photos": {
+      "label": "파이터 공식 사진",
+      "desc": "고해상도 JPG · 선수별 개인 컷",
+      "file": ""
+    },
+    "presskit": {
+      "label": "보도자료 PDF",
+      "desc": "ODFC 소개 · 파이터 프로필 · 이벤트 정보",
+      "file": ""
+    },
+    "brandguide": {
+      "label": "브랜드 가이드라인",
+      "desc": "컬러 코드 · 폰트 · 사용 규정",
+      "file": ""
+    }
   },
   "live": {
     "active": false,
@@ -429,8 +972,7 @@ const DEFAULT_DATA = {
   "announcement": {
     "active": false,
     "message": "",
-    "link": "",
+    "link": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/0gQB5OgcMLI?si=y8nx63xVeFHptcvz\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
     "linkText": ""
   }
 };
-                                                                                                                  
