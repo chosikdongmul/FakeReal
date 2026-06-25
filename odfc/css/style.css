@@ -53,7 +53,11 @@ input, textarea, select { font-family: inherit; }
   --red-glow:     rgba(196,30,30,0.10);
 }
 [data-theme="light"] .hero { background: var(--bg2); }
-[data-theme="light"] .hero-title { color: var(--text); }
+[data-theme="light"] .hero-title { color: #fff; }
+[data-theme="light"] .hero-slogan { color: rgba(255,255,255,0.65); }
+[data-theme="light"] .hero-bg-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0.05) 100%);
+}
 [data-theme="light"] .nav { background: rgba(240,242,245,0.95); border-bottom-color: var(--border); }
 [data-theme="light"] .fighter-photo-wrap img { filter: none; }
 [data-theme="light"] .fighter-photo-wrap::after { display: none; }

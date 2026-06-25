@@ -232,6 +232,12 @@
           <div class="form-group"><label>창단 연도</label><input id="org-founded" placeholder="2021"></div>
         </div>
         <div class="form-row">
+          <div class="form-group" style="flex:1">
+            <label>히어로 타이틀 줄바꿈 <span style="color:var(--muted);font-weight:400">(Enter로 줄바꿈 위치 지정)</span></label>
+            <textarea id="org-herotitle" rows="3" placeholder="OUTLAW DOGS&#10;FIGHT CLUB" style="resize:vertical;line-height:1.5"></textarea>
+          </div>
+        </div>
+        <div class="form-row">
           <div class="form-group"><label>도시</label><input id="org-city" placeholder="Seoul"></div>
           <div class="form-group"><label>연락처 이메일</label><input id="org-contact" type="email" placeholder="booking@odfc.gg"></div>
         </div>
@@ -436,6 +442,7 @@ function buildOrgEditor() {
   sv('org-fullname', org.fullName);
   sv('org-slogan', org.slogan);
   sv('org-founded', org.founded);
+  sv('org-herotitle', org.heroTitle || '');
   sv('org-city', org.city);
   sv('org-contact', org.contact);
   const s = org.social || {};
@@ -681,6 +688,7 @@ function collectData() {
     ...d.org,
     abbr: gv('org-abbr'),
     fullName: gv('org-fullname'),
+    heroTitle: gv('org-herotitle') || undefined,
     slogan: gv('org-slogan'),
     founded: gv('org-founded'),
     city: gv('org-city'),

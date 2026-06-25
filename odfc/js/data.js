@@ -5,6 +5,7 @@ const DEFAULT_DATA = {
     "name": "Outlaw Dogs FC",
     "abbr": "ODFC",
     "fullName": "Outlaw Dogs Fight Club",
+    "heroTitle": "OUTLAW DOGS\nFIGHT CLUB",
     "slogan": "Every dog has their day.",
     "founded": "2026",
     "city": "Seoul",
@@ -901,33 +902,33 @@ const DEFAULT_DATA = {
   "rankings": [],
   "sponsors": [
     {
-      "name": "AXPEX Gaming",
-      "logo": "assets/images/sponsors/axpex.svg",
+      "name": "Naike",
+      "logo": "assets/images/sponsors/nike.svg",
       "url": "#"
     },
     {
-      "name": "Red Wulf",
-      "logo": "assets/images/sponsors/redwulf.svg",
+      "name": "adadis",
+      "logo": "assets/images/sponsors/adidas.svg",
       "url": "#"
     },
     {
-      "name": "HyperZ",
-      "logo": "assets/images/sponsors/hyperz.svg",
+      "name": "Vennom",
+      "logo": "assets/images/sponsors/venum.svg",
       "url": "#"
     },
     {
-      "name": "SteelForce",
-      "logo": "assets/images/sponsors/steelforce.svg",
+      "name": "Monstar Energy",
+      "logo": "assets/images/sponsors/monster.svg",
       "url": "#"
     },
     {
-      "name": "Razyr",
-      "logo": "assets/images/sponsors/razyr.svg",
+      "name": "Hayabuzz",
+      "logo": "assets/images/sponsors/hayabusa.svg",
       "url": "#"
     },
     {
-      "name": "Intek",
-      "logo": "assets/images/sponsors/intek.svg",
+      "name": "Upper Armour",
+      "logo": "assets/images/sponsors/underarmour.svg",
       "url": "#"
     }
   ],

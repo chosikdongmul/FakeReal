@@ -163,7 +163,13 @@ function renderHero() {
 
   const titleEl = document.getElementById('hero-title');
   if (titleEl) {
-    titleEl.innerHTML = `<span class="red">${esc(org.abbr || 'ODFC')}</span><br>${esc(org.fullName ? org.fullName.replace(org.abbr, '').trim() : 'Fighting Championship')}`;
+    const abbr = esc(org.abbr || 'ODFC');
+    if (org.heroTitle) {
+      const lines = org.heroTitle.split('\n').map(l => esc(l)).join('<br>');
+      titleEl.innerHTML = `<span class="red">${abbr}</span><br>${lines}`;
+    } else {
+      titleEl.innerHTML = `<span class="red">${abbr}</span><br>${esc(org.fullName ? org.fullName.replace(org.abbr, '').trim() : 'Fighting Championship')}`;
+    }
   }
 
   const nextWrap = document.getElementById('hero-next');
