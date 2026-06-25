@@ -525,7 +525,7 @@ function renderSponsors() {
   grid.innerHTML = sponsors.map(s => `
     <a class="sponsor-item" href="${esc(s.url || '#')}" target="_blank" rel="noopener">
       ${s.logo
-        ? `<img src="../${esc(s.logo)}" alt="${esc(s.name)}" loading="lazy">`
+        ? `<img src="${esc(s.logo)}" alt="${esc(s.name)}" loading="lazy">`
         : `<span class="sponsor-name-only">${esc(s.name)}</span>`}
     </a>
   `).join('');
