@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 52" fill="none">
+  <!-- Triangle lightning bolt -->
+  <polygon points="14,6 24,6 30,20 20,20 26,46 8,22 20,22" fill="#000"/>
+  <!-- APEX FUEL wordmark -->
+  <text x="40" y="30" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="20" fill="#000" letter-spacing="-0.5">APEX</text>
+  <text x="40" y="47" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="20" fill="#000" letter-spacing="-0.5">FUEL</text>
+</svg>

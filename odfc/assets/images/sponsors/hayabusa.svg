@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 52">
+  <!-- Wing mark -->
+  <path d="M8 38 Q6 18 20 14 Q16 22 18 30Z" fill="#000"/>
+  <path d="M18 30 Q20 14 30 10 Q28 20 28 30Z" fill="#000"/>
+  <path d="M28 30 Q30 10 40 12 Q36 22 36 30Z" fill="#000"/>
+  <path d="M8 38 L36 30 L36 36 L8 44Z" fill="#000"/>
+  <text x="48" y="34" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="20" fill="#000" letter-spacing="0.5">HAYABUZZ</text>
+  <text x="48" y="47" font-family="Arial, sans-serif" font-weight="400" font-size="8" fill="#000" letter-spacing="3.5">FIGHTWEAR</text>
+</svg>

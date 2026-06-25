@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 52" fill="none">
+  <!-- Fist icon -->
+  <rect x="8" y="14" width="8" height="10" rx="2" fill="#000"/>
+  <rect x="8" y="24" width="22" height="14" rx="3" fill="#000"/>
+  <rect x="16" y="10" width="7" height="14" rx="2" fill="#000"/>
+  <rect x="23" y="12" width="7" height="12" rx="2" fill="#000"/>
+  <rect x="8" y="36" width="14" height="6" rx="1" fill="#000"/>
+  <!-- NOCAOUT wordmark -->
+  <text x="40" y="34" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="22" fill="#000" letter-spacing="-1">NOCAOUT</text>
+  <text x="40" y="46" font-family="Arial, sans-serif" font-weight="400" font-size="7.5" fill="#000" letter-spacing="2.5">SPORTS BETTING</text>
+</svg>

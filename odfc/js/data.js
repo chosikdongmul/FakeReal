@@ -789,190 +789,94 @@ const DEFAULT_DATA = {
         {
           "type": "main",
           "fighter1Id": "phantom",
+                 "type": "main",
+          "fighter1Id": "phantom",
           "fighter2Id": "",
           "fighter1Label": "",
           "fighter2Label": "Seo Minjun",
           "titleFight": false,
           "weightClass": "lightweight",
-          "rounds": 3,
-          "result": {
-            "winnerId": "phantom",
-            "method": "KO",
-            "round": 3,
-            "time": "2:41"
-          }
+          "rounds": 5,
+          "result": { "winnerId": "phantom", "method": "KO", "round": 3, "time": "2:47" }
         },
         {
           "type": "co-main",
-          "fighter1Id": "reaper",
-          "fighter2Id": "",
-          "fighter1Label": "",
-          "fighter2Label": "Jeon Hyunsu",
-          "titleFight": true,
-          "weightClass": "welterweight",
-          "rounds": 5,
-          "result": {
-            "winnerId": "reaper",
-            "method": "KO",
-            "round": 1,
-            "time": "0:54"
-          }
-        },
-        {
-          "type": "main",
-          "fighter1Id": "thewall",
-          "fighter2Id": "",
-          "fighter1Label": "",
-          "fighter2Label": "Kang Chulwon",
-          "titleFight": true,
-          "weightClass": "heavyweight",
-          "rounds": 5,
-          "result": {
-            "winnerId": "thewall",
-            "method": "KO",
-            "round": 2,
-            "time": "3:18"
-          }
-        },
-        {
-          "type": "prelim",
           "fighter1Id": "ghost",
           "fighter2Id": "",
           "fighter1Label": "",
-          "fighter2Label": "Jung Kanghyun",
+          "fighter2Label": "Kim Hyunwoo",
           "titleFight": false,
           "weightClass": "flyweight",
           "rounds": 3,
-          "result": {
-            "winnerId": "ghost",
-            "method": "KO",
-            "round": 4,
-            "time": "2:07"
-          }
+          "result": { "winnerId": "ghost", "method": "SUB", "round": 2, "time": "3:55" }
+        },
+        {
+          "type": "prelim",
+          "fighter1Id": "thewall",
+          "fighter2Id": "",
+          "fighter1Label": "",
+          "fighter2Label": "Park Jiwon",
+          "titleFight": false,
+          "weightClass": "heavyweight",
+          "rounds": 3,
+          "result": { "winnerId": "thewall", "method": "DEC", "round": 3, "time": "5:00" }
         }
       ]
     },
     {
       "id": "odfc-10",
       "name": "ODFC 10",
-      "subtitle": "BLOODLINE",
-      "date": "2026-02-14",
+      "subtitle": "BLOOD OATH",
+      "date": "2026-02-28",
       "time": "18:00",
-      "venue": "잠실실내체육관",
+      "venue": "고척스카이돔 아레나",
       "city": "Seoul, KR",
       "status": "completed",
       "poster": "",
       "card": [
         {
           "type": "main",
-          "fighter1Id": "viper",
+          "fighter1Id": "ironjaw",
           "fighter2Id": "",
           "fighter1Label": "",
-          "fighter2Label": "Kwon Taeho",
-          "titleFight": true,
+          "fighter2Label": "Choi Sungmin",
+          "titleFight": false,
           "weightClass": "middleweight",
           "rounds": 5,
-          "result": {
-            "winnerId": "viper",
-            "method": "SUB",
-            "round": 3,
-            "time": "2:11"
-          }
+          "result": { "winnerId": "ironjaw", "method": "TKO", "round": 4, "time": "1:22" }
         },
         {
           "type": "co-main",
-          "fighter1Id": "phantom",
+          "fighter1Id": "reaper",
           "fighter2Id": "",
           "fighter1Label": "",
-          "fighter2Label": "Lee Sunghoon",
+          "fighter2Label": "Lee Donghyun",
           "titleFight": false,
-          "weightClass": "lightweight",
+          "weightClass": "welterweight",
           "rounds": 3,
-          "result": {
-            "winnerId": "phantom",
-            "method": "SUB",
-            "round": 2,
-            "time": "3:08"
-          }
+          "result": { "winnerId": "reaper", "method": "KO", "round": 1, "time": "0:58" }
         }
       ]
     }
   ],
-  "rankings": [],
+  "rankings": ["ghost", "phantom", "ironjaw", "reaper", "rampage", "viper", "thewall"],
   "sponsors": [
-    {
-      "name": "AXPEX Gaming",
-      "logo": "assets/images/sponsors/axpex.svg",
-      "url": "#"
-    },
-    {
-      "name": "Red Wulf",
-      "logo": "assets/images/sponsors/redwulf.svg",
-      "url": "#"
-    },
-    {
-      "name": "HyperZ",
-      "logo": "assets/images/sponsors/hyperz.svg",
-      "url": "#"
-    },
-    {
-      "name": "SteelForce",
-      "logo": "assets/images/sponsors/steelforce.svg",
-      "url": "#"
-    },
-    {
-      "name": "Razyr",
-      "logo": "assets/images/sponsors/razyr.svg",
-      "url": "#"
-    },
-    {
-      "name": "Intek",
-      "logo": "assets/images/sponsors/intek.svg",
-      "url": "#"
-    }
+    { "name": "Naike", "logo": "assets/images/sponsors/nike.svg", "url": "#" },
+    { "name": "adadis", "logo": "assets/images/sponsors/adidas.svg", "url": "#" },
+    { "name": "Vennom", "logo": "assets/images/sponsors/venum.svg", "url": "#" },
+    { "name": "Monstar Energy", "logo": "assets/images/sponsors/monster.svg", "url": "#" },
+    { "name": "Hayabuzz", "logo": "assets/images/sponsors/hayabusa.svg", "url": "#" },
+    { "name": "Upper Armour", "logo": "assets/images/sponsors/underarmour.svg", "url": "#" }
   ],
   "banners": [
-    {
-      "image": "",
-      "video": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/0gQB5OgcMLI?si=QOMg4--hPlnBhAGB\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-      "caption": ""
-    }
+    { "video": "", "image": "", "caption": "" }
   ],
   "mediakit": {
-    "logo": {
-      "label": "ODFC 로고 패키지",
-      "desc": "PNG · SVG · 흰색/컬러/모노 버전",
-      "file": ""
-    },
-    "photos": {
-      "label": "파이터 공식 사진",
-      "desc": "고해상도 JPG · 선수별 개인 컷",
-      "file": ""
-    },
-    "presskit": {
-      "label": "보도자료 PDF",
-      "desc": "ODFC 소개 · 파이터 프로필 · 이벤트 정보",
-      "file": ""
-    },
-    "brandguide": {
-      "label": "브랜드 가이드라인",
-      "desc": "컬러 코드 · 폰트 · 사용 규정",
-      "file": ""
-    }
+    "logo": { "label": "로고 패키지", "desc": "SVG / PNG / EPS 포함", "file": "#" },
+    "photos": { "label": "공식 선수 사진", "desc": "고해상도 프레스 키트", "file": "#" },
+    "presskit": { "label": "보도자료 PDF", "desc": "최신 이벤트 보도자료", "file": "#" },
+    "brandguide": { "label": "브랜드 가이드라인", "desc": "컬러, 폰트, 사용 규정", "file": "#" }
   },
-  "live": {
-    "active": false,
-    "event": "ODFC 12: IRON NIGHT",
-    "fighter1": "The Phantom",
-    "fighter2": "Iron Jaw",
-    "round": "R3",
-    "time": "2:34",
-    "stream": "https://www.twitch.tv/odfc"
-  },
-  "announcement": {
-    "active": false,
-    "message": "",
-    "link": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/0gQB5OgcMLI?si=y8nx63xVeFHptcvz\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-    "linkText": ""
-  }
+  "live": { "active": false, "event": "", "fighter1": "", "fighter2": "", "round": "", "time": "", "stream": "" },
+  "announcement": { "active": false, "message": "", "link": "", "linkText": "" }
 };

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 52" fill="none">
+  <!-- Dog tag / ID tag shape -->
+  <rect x="6" y="8" width="22" height="28" rx="4" fill="#000"/>
+  <rect x="6" y="8" width="22" height="28" rx="4" fill="none" stroke="#000" stroke-width="1"/>
+  <circle cx="17" cy="40" r="4" fill="#000"/>
+  <line x1="17" y1="36" x2="17" y2="34" stroke="#000" stroke-width="2"/>
+  <!-- Horizontal lines inside tag (dog tag engraving look) -->
+  <rect x="10" y="13" width="14" height="2" rx="1" fill="white"/>
+  <rect x="10" y="17" width="14" height="2" rx="1" fill="white"/>
+  <rect x="10" y="21" width="10" height="2" rx="1" fill="white"/>
+  <!-- DOGMA wordmark -->
+  <text x="38" y="34" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="24" fill="#000" letter-spacing="-0.5">DOGMA</text>
+  <text x="38" y="46" font-family="Arial, sans-serif" font-weight="400" font-size="7.5" fill="#000" letter-spacing="3">APPAREL</text>
+</svg>

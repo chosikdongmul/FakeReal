@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 52">
+  <!-- M claw marks (3 slashes) -->
+  <path d="M8 8 L14 8 L22 44 L16 44Z" fill="#000"/>
+  <path d="M18 8 L24 8 L32 44 L26 44Z" fill="#000"/>
+  <path d="M28 8 L34 8 L42 44 L36 44Z" fill="#000"/>
+  <text x="52" y="32" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="19" fill="#000" letter-spacing="0">MONSTAR</text>
+  <text x="52" y="46" font-family="Arial, sans-serif" font-weight="700" font-size="9" fill="#000" letter-spacing="3">ENERGY</text>
+</svg>

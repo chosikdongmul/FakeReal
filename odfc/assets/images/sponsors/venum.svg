@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 52">
+  <!-- Fang/V shape -->
+  <path d="M10 8 L20 8 L32 40 L44 8 L54 8 L32 52Z" fill="#000"/>
+  <path d="M28 36 L32 52 L36 36 L32 28Z" fill="white"/>
+  <text x="64" y="36" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="26" fill="#000" letter-spacing="0.5">VENNOM</text>
+</svg>

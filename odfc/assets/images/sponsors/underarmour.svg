@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 52">
+  <!-- UA-style overlapping letters -->
+  <path d="M8 10 L16 10 L28 28 L40 10 L48 10 L32 34 L48 52 L40 52 L28 36 L16 52 L8 52 L24 34Z" fill="#000"/>
+  <text x="58" y="30" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="14" fill="#000" letter-spacing="0.5">UPPER ARMOUR</text>
+  <text x="58" y="46" font-family="Arial, sans-serif" font-weight="400" font-size="8.5" fill="#000" letter-spacing="2.5">PERFORMANCE</text>
+</svg>
