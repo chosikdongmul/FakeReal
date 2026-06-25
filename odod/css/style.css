@@ -330,7 +330,6 @@ body.has-announcement .mobile-menu { top: calc(36px + 72px); }
   inset: 0;
   z-index: 1;
   background: linear-gradient(100deg, rgba(33,28,21,0.60) 0%, rgba(33,28,21,0.18) 55%, transparent 100%);
-  pointer-events: none;
 }
 
 .hero-overlay-bottom {
@@ -339,7 +338,6 @@ body.has-announcement .mobile-menu { top: calc(36px + 72px); }
   height: 55%;
   z-index: 1;
   background: linear-gradient(to top, rgba(33,28,21,0.70) 0%, transparent 100%);
-  pointer-events: none;
 }
 
 /* Staff strip */
