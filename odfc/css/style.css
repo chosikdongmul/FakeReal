@@ -416,33 +416,41 @@ body.has-announcement .nav { top: 36px; }
 
 /* ---------- Champion Featured Card ---------- */
 .champ-featured {
-  display: flex; align-items: stretch;
-  background: var(--bg2); border: 0.5px solid var(--border-light);
+  position: relative;
+  background: var(--bg3); border: 0.5px solid var(--border-light);
   border-radius: var(--radius); overflow: hidden;
   cursor: pointer; width: 100%;
-  transition: background var(--transition);
+  aspect-ratio: 21/9;
+  min-height: 320px;
 }
-.champ-featured:hover { background: var(--bg3); }
+.champ-featured:hover .champ-featured-photo img { transform: scale(1.03); }
 .champ-featured-photo {
-  width: 280px; flex-shrink: 0; overflow: hidden;
-  background: var(--bg3); position: relative; min-height: 320px;
+  position: absolute; inset: 0; overflow: hidden;
 }
-.champ-featured-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.champ-featured-photo img {
+  width: 100%; height: 100%; object-fit: cover; object-position: top center;
+  transition: transform 0.5s ease;
+}
+.champ-featured-photo::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(12,16,24,0.88) 0%, rgba(12,16,24,0.5) 45%, rgba(12,16,24,0.1) 100%);
+}
 .champ-featured-info {
-  padding: 32px 28px; display: flex; flex-direction: column; justify-content: center; gap: 8px;
-  min-width: 220px;
+  position: absolute; left: 0; top: 0; bottom: 0;
+  padding: 40px 40px; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;
+  z-index: 2; max-width: 480px;
 }
 .champ-featured-label {
   font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--gold);
 }
 .champ-featured-nickname {
-  font-size: 42px; font-weight: 900; letter-spacing: -0.03em; color: var(--text);
-  text-transform: uppercase; line-height: 0.95;
+  font-size: 52px; font-weight: 900; letter-spacing: -0.03em; color: #fff;
+  text-transform: uppercase; line-height: 0.92;
 }
-.champ-featured-realname { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+.champ-featured-realname { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 6px; }
 .champ-featured-record {
-  font-size: 24px; font-weight: 900; color: var(--text); margin-top: 8px;
+  font-size: 26px; font-weight: 900; color: #fff; margin-top: 8px;
 }
 .champ-finishes {
   display: flex; gap: 20px; margin-top: 4px;
@@ -459,8 +467,11 @@ body.has-announcement .nav { top: 36px; }
 
 /* Champ stats panel */
 .champ-featured-stats {
-  flex: 1; padding: 32px 28px; display: flex; flex-direction: column; justify-content: center; gap: 10px;
-  border-left: 0.5px solid var(--border);
+  position: absolute; right: 0; top: 0; bottom: 0;
+  width: 260px; padding: 40px 32px;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 10px;
+  z-index: 2;
+  background: linear-gradient(to left, rgba(12,16,24,0.85) 0%, rgba(12,16,24,0.4) 70%, transparent 100%);
 }
 .champ-stats-title {
   font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase;
@@ -483,9 +494,9 @@ body.has-announcement .nav { top: 36px; }
   font-size: 12px; font-weight: 700; color: var(--text); width: 26px; text-align: right; flex-shrink: 0;
 }
 @media (max-width: 760px) {
-  .champ-featured { flex-direction: column; }
-  .champ-featured-photo { width: 100%; height: 260px; min-height: 0; }
-  .champ-featured-stats { border-left: none; border-top: 0.5px solid var(--border); }
+  .champ-featured { aspect-ratio: 4/3; }
+  .champ-featured-stats { display: none; }
+  .champ-featured-nickname { font-size: 36px; }
 }
 
 /* ---------- Fighters ---------- */
