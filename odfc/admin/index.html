@@ -693,7 +693,11 @@ function collectData() {
   };
 
   // Fighters
-  d.fig      if (el.type === 'checkbox') return el.checked;
+  d.fighters = (d.fighters || []).map((f, i) => {
+    const g = (ff) => {
+      const el = document.querySelector(`[data-fi="${i}"][data-ff="${ff}"]`);
+      if (!el) return f[ff];
+      if (el.type === 'checkbox') return el.checked;
       return el.value;
     };
     return {
