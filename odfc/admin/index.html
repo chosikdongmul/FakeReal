@@ -617,29 +617,64 @@ function removeSponsor(i) {
 // ---------- BANNERS ----------
 function buildBannersEditor() {
   const el = document.getElementById('banners-editor');
+  el.innerHTML = '';
   const banners = ADMIN_DATA.banners || [];
-  el.innerHTML = banners.map((b, i) => `
-    <div class="form-card">
-      <button class="remove-btn" onclick="removeBanner(${i})">✕</button>
+  banners.forEach((b, i) => {
+    const card = document.createElement('div');
+    card.className = 'form-card';
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <span style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);">배너 ${i + 1}</span>
+        <button class="remove-btn" onclick="removeBanner(${i})">✕ 삭제</button>
+      </div>
       <div class="form-group">
         <label>유튜브 URL (퍼가기)</label>
-        <input data-bni="${i}" data-bnf="video" value="${escHtml(b.video)}" placeholder="https://www.youtube.com/watch?v=XXXXXXX">
-        <div class="hint">YouTube watch URL, youtu.be 링크, 또는 embed URL 모두 가능. 비디오가 우선, 없으면 이미지 표시.</div>
+        <input id="bnr-vid-${i}" placeholder="https://youtu.be/... 또는 iframe 코드 전체">
+        <div class="hint">YouTube watch URL, youtu.be 링크, iframe 코드 전체 모두 가능. 영상 우선, 없으면 이미지 표시.</div>
       </div>
       <div class="form-group">
-        <label>이미지 경로 (유튜브 없을 때 fallback)</label>
-        <input data-bni="${i}" data-bnf="image" value="${escHtml(b.image)}" placeholder="assets/images/banners/bg.jpg">
+        <label>이미지 경로 (유튜브 없을 때 FALLBACK)</label>
+        <input id="bnr-img-${i}" oninput="previewBannerImg(this,'bprev-${i}')" placeholder="assets/images/banners/bg.jpg">
+        <div class="img-preview-wrap" id="bprev-${i}" style="margin-top:8px;"></div>
       </div>
-      <div class="form-group"><label>캡션</label><input data-bni="${i}" data-bnf="caption" value="${escHtml(b.caption)}"></div>
-    </div>
-  `).join('');
+      <div class="form-group">
+        <label>캡션 (선택)</label>
+        <input id="bnr-cap-${i}" placeholder="배너 하단 텍스트">
+      </div>
+    `;
+    el.appendChild(card);
+    card.querySelector(`#bnr-vid-${i}`).value = b.video || '';
+    const imgInp = card.querySelector(`#bnr-img-${i}`);
+    imgInp.value = b.image || '';
+    if (b.image) imgInp.dispatchEvent(new Event('input'));
+    card.querySelector(`#bnr-cap-${i}`).value = b.caption || '';
+  });
+}
+function previewBannerImg(input, previewId) {
+  const wrap = document.getElementById(previewId);
+  if (!wrap) return;
+  const url = input.value.trim();
+  if (!url) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `<img src="${url}" style="max-width:100%;max-height:160px;border-radius:4px;border:0.5px solid var(--border)" onerror="this.parentNode.innerHTML='<span style=\\'color:var(--muted);font-size:12px\\'>이미지를 불러올 수 없습니다</span>'">`;
+}
+function syncBannersToData() {
+  (ADMIN_DATA.banners || []).forEach((b, i) => {
+    const vid = document.getElementById(`bnr-vid-${i}`);
+    const img = document.getElementById(`bnr-img-${i}`);
+    const cap = document.getElementById(`bnr-cap-${i}`);
+    if (vid) b.video   = vid.value;
+    if (img) b.image   = img.value;
+    if (cap) b.caption = cap.value;
+  });
 }
 function addBanner() {
+  syncBannersToData();
   ADMIN_DATA.banners = ADMIN_DATA.banners || [];
   ADMIN_DATA.banners.push({ image: '', video: '', caption: '' });
   buildBannersEditor();
 }
 function removeBanner(i) {
+  syncBannersToData();
   ADMIN_DATA.banners.splice(i, 1);
   buildBannersEditor();
 }
@@ -757,14 +792,9 @@ function collectData() {
     return { ...s, name: g('name'), logo: g('logo'), url: g('url') };
   });
 
-  // Banners
-  d.banners = (d.banners || []).map((b, i) => {
-    const g = (bnf) => {
-      const el = document.querySelector(`[data-bni="${i}"][data-bnf="${bnf}"]`);
-      return el ? el.value : b[bnf];
-    };
-    return { ...b, video: g('video'), image: g('image'), caption: g('caption') };
-  });
+  // Banners — sync DOM first, then read from ADMIN_DATA
+  syncBannersToData();
+  d.banners = ADMIN_DATA.banners || [];
 
   // MediaKit
   const mkKeys = ['logo','photos','presskit','brandguide'];
