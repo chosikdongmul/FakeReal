@@ -461,15 +461,14 @@ function removeEvent(i) {
 // ---------- RANKINGS ----------
 function buildRankingsEditor() {
   const el = document.getElementById('rankings-editor');
-  const rankings = ADMIN_DATA.rankings || {};
-  const wcs = ADMIN_DATA.weightClasses || [];
-  el.innerHTML = wcs.map(wc => `
+  const rankings = Array.isArray(ADMIN_DATA.rankings) ? ADMIN_DATA.rankings : [];
+  el.innerHTML = `
     <div class="form-group">
-      <label>${escHtml(wc.name)} (${escHtml(wc.limit)})</label>
-      <input id="ranking-${escHtml(wc.id)}" value="${escHtml((rankings[wc.id]||[]).join(', '))}" placeholder="fighter_id1, fighter_id2, ...">
-      <div class="hint">파이터 ID를 쉼표로 구분. 챔피언 ID를 첫 번째에.</div>
+      <label>전체 랭킹 순서 (Fighter ID, 쉼표 구분)</label>
+      <textarea id="ranking-all" rows="3" placeholder="ghost, phantom, ironjaw, reaper, ...">${escHtml(rankings.join(', '))}</textarea>
+      <div class="hint">첫 번째 = 챔피언, 두 번째 = #1 컨텐더, 세 번째 = #2 컨텐더 순. 파이터 ID는 어드민 파이터 탭에서 확인.</div>
     </div>
-  `).join('');
+  `;
 }
 
 // ---------- SPONSORS ----------
@@ -504,8 +503,15 @@ function buildBannersEditor() {
   el.innerHTML = banners.map((b, i) => `
     <div class="form-card">
       <button class="remove-btn" onclick="removeBanner(${i})">✕</button>
-      <div class="form-group"><label>이미지 경로</label><input data-bni="${i}" data-bnf="image" value="${escHtml(b.image)}" placeholder="assets/images/banners/bg.jpg"></div>
-      <div class="form-group"><label>비디오 경로</label><input data-bni="${i}" data-bnf="video" value="${escHtml(b.video)}" placeholder="assets/videos/hero.mp4"></div>
+      <div class="form-group">
+        <label>유튜브 URL (퍼가기)</label>
+        <input data-bni="${i}" data-bnf="video" value="${escHtml(b.video)}" placeholder="https://www.youtube.com/watch?v=XXXXXXX">
+        <div class="hint">YouTube watch URL, youtu.be 링크, 또는 embed URL 모두 가능. 비디오가 우선, 없으면 이미지 표시.</div>
+      </div>
+      <div class="form-group">
+        <label>이미지 경로 (유튜브 없을 때 fallback)</label>
+        <input data-bni="${i}" data-bnf="image" value="${escHtml(b.image)}" placeholder="assets/images/banners/bg.jpg">
+      </div>
       <div class="form-group"><label>캡션</label><input data-bni="${i}" data-bnf="caption" value="${escHtml(b.caption)}"></div>
     </div>
   `).join('');
@@ -623,13 +629,11 @@ function collectData() {
     return { ...ev, name: g('name'), subtitle: g('subtitle'), date: g('date'), time: g('time'), venue: g('venue'), city: g('city'), status: g('status') };
   });
 
-  // Rankings
-  const wcs = d.weightClasses || [];
-  d.rankings = {};
-  wcs.forEach(wc => {
-    const el = document.getElementById(`ranking-${wc.id}`);
-    if (el) d.rankings[wc.id] = el.value.split(',').map(s=>s.trim()).filter(Boolean);
-  });
+  // Rankings — 단일 배열
+  {
+    const el = document.getElementById('ranking-all');
+    if (el) d.rankings = el.value.split(',').map(s=>s.trim()).filter(Boolean);
+  }
 
   // Sponsors
   d.sponsors = (d.sponsors || []).map((s, i) => {

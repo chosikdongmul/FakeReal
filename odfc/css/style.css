@@ -157,10 +157,28 @@ body.has-announcement .nav { top: 36px; }
   position: relative; overflow: hidden;
   background: var(--bg2);
 }
+/* 이미지 배경 */
 .hero-bg-video {
   position: absolute; inset: 0; z-index: 0;
   object-fit: cover; width: 100%; height: 100%;
   opacity: 0.35;
+}
+/* 유튜브 배경 — cover 기법 */
+.hero-bg-yt-wrap {
+  position: absolute; inset: 0; z-index: 0;
+  overflow: hidden; pointer-events: none;
+}
+.hero-bg-yt-wrap iframe {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  /* 16:9 커버: 뷰포트 너비 기준 높이 vs 뷰포트 높이 기준 너비 중 큰 쪽 */
+  width: 177.78vh;   /* 100/56.25 */
+  height: 100vh;
+  min-width: 100vw;
+  min-height: 56.25vw;
+  opacity: 0.4;
+  border: none;
 }
 .hero-bg-overlay {
   position: absolute; inset: 0; z-index: 1;
@@ -388,7 +406,41 @@ body.has-announcement .nav { top: 36px; }
   font-size: 12px; font-weight: 600; color: var(--text-faint); letter-spacing: 0.06em;
 }
 
-/* ---------- Fighters (Weight Class Tabs) ---------- */
+/* ---------- Champion Featured Card ---------- */
+.champ-featured {
+  display: flex; align-items: stretch;
+  background: var(--bg2); border: 0.5px solid var(--border-light);
+  border-radius: var(--radius); overflow: hidden;
+  cursor: pointer; max-width: 680px;
+  transition: background var(--transition);
+}
+.champ-featured:hover { background: var(--bg3); }
+.champ-featured-photo {
+  width: 260px; flex-shrink: 0; overflow: hidden;
+  background: var(--bg3); position: relative;
+}
+.champ-featured-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.champ-featured-info {
+  padding: 32px 28px; display: flex; flex-direction: column; justify-content: center; gap: 6px;
+}
+.champ-featured-label {
+  font-size: 12px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold);
+}
+.champ-featured-nickname {
+  font-size: 32px; font-weight: 900; letter-spacing: -0.02em; color: var(--text);
+  text-transform: uppercase; line-height: 1;
+}
+.champ-featured-realname { font-size: 14px; color: var(--text-muted); }
+.champ-featured-record {
+  font-size: 22px; font-weight: 900; color: var(--text); margin-top: 4px;
+}
+@media (max-width: 600px) {
+  .champ-featured { flex-direction: column; max-width: 100%; }
+  .champ-featured-photo { width: 100%; height: 280px; }
+}
+
+/* ---------- Fighters ---------- */
 #fighters { background: var(--bg); }
 .wc-tabs {
   display: flex; gap: 0;

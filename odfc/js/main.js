@@ -49,6 +49,46 @@ function getMainFight(event) {
   return event.card.find(c => c.type === 'main') || event.card[0];
 }
 
+// ---------- Hero Banner ----------
+function youtubeId(url) {
+  if (!url) return null;
+  // 이미 embed URL이면 ID 추출
+  let m = url.match(/youtube\.com\/embed\/([^?&]+)/);
+  if (m) return m[1];
+  // watch?v=
+  m = url.match(/[?&]v=([^&]+)/);
+  if (m) return m[1];
+  // youtu.be/
+  m = url.match(/youtu\.be\/([^?&]+)/);
+  if (m) return m[1];
+  return null;
+}
+
+function renderHeroBanner() {
+  const slot = document.getElementById('hero-bg-media');
+  if (!slot) return;
+  const banner = (DATA.banners || [])[0];
+  if (!banner) return;
+
+  if (banner.video) {
+    const vid = youtubeId(banner.video);
+    if (vid) {
+      slot.innerHTML = `
+        <div class="hero-bg-yt-wrap">
+          <iframe
+            src="https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&loop=1&playlist=${vid}&controls=0&disablekb=1&modestbranding=1&playsinline=1"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+          ></iframe>
+        </div>`;
+      return;
+    }
+  }
+  if (banner.image) {
+    slot.innerHTML = `<img class="hero-bg-video" src="../${esc(banner.image)}" alt="" loading="eager">`;
+  }
+}
+
 // ---------- Countdown ----------
 function startCountdown(targetDate) {
   const el = document.getElementById('hero-countdown');
@@ -246,36 +286,45 @@ function renderFightCard() {
   grid.innerHTML = rows.join('');
 }
 
-// ---------- Champions ----------
+// ---------- Champion (단일) ----------
 function renderChampions() {
-  const grid = document.getElementById('champs-grid');
-  if (!grid) return;
-  const wcs = DATA.weightClasses || [];
-  const fighters = DATA.fighters || [];
+  const wrap = document.getElementById('champs-grid');
+  if (!wrap) return;
+  const champ = (DATA.fighters || []).find(f => f.isChampion);
 
-  grid.innerHTML = wcs.map(wc => {
-    const champ = fighters.find(f => f.weightClass === wc.id && f.isChampion);
-    const photoHtml = champ && champ.photo
-      ? `<img src="../${esc(champ.photo)}" alt="${esc(champ.nickname)}" loading="lazy">`
-      : '';
+  if (!champ) {
+    wrap.innerHTML = `<div style="padding:32px;color:var(--text-faint);font-size:14px">챔피언 공석</div>`;
+    return;
+  }
 
-    return `
-      <div class="champ-card" ${champ ? `onclick="openFighterPopup('${champ.id}')"` : ''}>
-        <span class="champ-belt">🏆</span>
-        <span class="champ-class">${esc(wc.name)}</span>
-        <span class="champ-limit">${esc(wc.limit)}</span>
-        <div class="champ-photo">${photoHtml || '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:28px">🥊</div>'}</div>
-        ${champ
-          ? `<div class="champ-nickname">${esc(champ.nickname)}</div>
-             <div class="champ-record">${recordStr(champ.record)}</div>`
-          : `<div class="champ-vacant">VACANT</div>`
-        }
+  const photoHtml = champ.photo
+    ? `<img src="../${esc(champ.photo)}" alt="${esc(champ.nickname)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top">`
+    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:64px;background:var(--bg3)">🥊</div>`;
+
+  const finHtml = champ.finishes
+    ? `<div style="display:flex;gap:16px;margin-top:8px">
+        <div style="text-align:center"><div style="font-size:20px;font-weight:900;color:var(--text)">${champ.finishes.ko}</div><div style="font-size:12px;color:var(--text-faint);letter-spacing:0.08em">KO/TKO</div></div>
+        <div style="text-align:center"><div style="font-size:20px;font-weight:900;color:var(--text)">${champ.finishes.sub}</div><div style="font-size:12px;color:var(--text-faint);letter-spacing:0.08em">서브미션</div></div>
+        <div style="text-align:center"><div style="font-size:20px;font-weight:900;color:var(--text)">${champ.finishes.dec}</div><div style="font-size:12px;color:var(--text-faint);letter-spacing:0.08em">판정</div></div>
+      </div>`
+    : '';
+
+  wrap.innerHTML = `
+    <div class="champ-featured" onclick="openFighterPopup('${champ.id}')">
+      <div class="champ-featured-photo">${photoHtml}</div>
+      <div class="champ-featured-info">
+        <div class="champ-featured-label">🏆 CHAMPION</div>
+        <div class="champ-featured-nickname">${esc(champ.nickname)}</div>
+        <div class="champ-featured-realname">${esc(champ.nameKo || champ.name)}</div>
+        <div class="champ-featured-record">${recordStr(champ.record)}</div>
+        ${finHtml}
+        ${champ.titles && champ.titles.length ? `<div style="margin-top:16px;font-size:12px;color:var(--text-faint)">${champ.titles.map(t => esc(t)).join('<br>')}</div>` : ''}
       </div>
-    `;
-  }).join('');
+    </div>
+  `;
 }
 
-// ---------- 대표선수 (챔피언 우선, 랭킹 순) ----------
+// ---------- 대표선수 (챔피언 → #1 → #2 … 전체 랭킹 순) ----------
 function renderFighters() {
   const tabsEl = document.getElementById('wc-tabs');
   if (tabsEl) tabsEl.style.display = 'none';
@@ -284,40 +333,44 @@ function renderFighters() {
   if (!grid) return;
 
   const fighters = DATA.fighters || [];
-  const rankings = DATA.rankings || {};
-  const wcs = DATA.weightClasses || [];
+  const rankings = Array.isArray(DATA.rankings) ? DATA.rankings : [];
 
-  const wcOrder = wcs.map(w => w.id);
-
-  // 체급 순서 → 체급 내에서 챔피언 먼저, 그 다음 랭킹 순
+  // 챔피언 먼저, 그 다음 rankings 배열 순서
   const sorted = [...fighters].sort((a, b) => {
-    const awci = wcOrder.indexOf(a.weightClass);
-    const bwci = wcOrder.indexOf(b.weightClass);
-    if (awci !== bwci) return awci - bwci;
     if (a.isChampion && !b.isChampion) return -1;
     if (!a.isChampion && b.isChampion) return 1;
-    const aRank = (rankings[a.weightClass] || []).indexOf(a.id);
-    const bRank = (rankings[b.weightClass] || []).indexOf(b.id);
+    const aRank = rankings.indexOf(a.id);
+    const bRank = rankings.indexOf(b.id);
     if (aRank === -1 && bRank === -1) return 0;
     if (aRank === -1) return 1;
     if (bRank === -1) return -1;
     return aRank - bRank;
   });
 
-  grid.innerHTML = sorted.map(f => {
-    const wcRankings = rankings[f.weightClass] || [];
-    const rank = wcRankings.indexOf(f.id);
-    const wc = weightClassById(f.weightClass);
+  grid.innerHTML = sorted.map((f, i) => {
+    // rankings에서 순위 산정: champion은 C, 나머지는 #1, #2…
+    const rankIdx = rankings.indexOf(f.id);
+    // champion이 rankings[0]이면 다음부터 #1
+    const champIdx = rankings.findIndex(id => {
+      const fnd = getFighter(id);
+      return fnd && fnd.isChampion;
+    });
+    let rankLabel = '';
+    if (f.isChampion) {
+      rankLabel = 'C';
+    } else if (rankIdx >= 0) {
+      // champion 제외한 순번
+      const contenderRank = champIdx >= 0 && rankIdx > champIdx
+        ? rankIdx - (champIdx + 1) + 1
+        : rankIdx + 1;
+      rankLabel = `#${contenderRank}`;
+    }
 
     const badgeHtml = f.isChampion
       ? `<span class="fighter-champ-badge">CHAMPION</span>`
-      : rank >= 0
-        ? `<span class="fighter-rank-badge">#${rank + 1}</span>`
+      : rankLabel
+        ? `<span class="fighter-rank-badge">${rankLabel}</span>`
         : '';
-
-    const wcBadge = wc
-      ? `<span style="position:absolute;bottom:44px;right:10px;z-index:3;font-size:12px;font-weight:600;color:var(--text-faint);letter-spacing:0.05em">${esc(wc.name)}</span>`
-      : '';
 
     const photoHtml = f.photo
       ? `<img src="../${esc(f.photo)}" alt="${esc(f.nickname)}" loading="lazy">`
@@ -327,7 +380,6 @@ function renderFighters() {
       <div class="fighter-card" onclick="openFighterPopup('${f.id}')">
         <div class="fighter-photo-wrap">${photoHtml}</div>
         ${badgeHtml}
-        ${wcBadge}
         <div class="fighter-card-info">
           <div class="fighter-card-nickname">${esc(f.nickname)}</div>
           <div class="fighter-card-realname">${esc(f.nameKo || f.name)}</div>
@@ -671,6 +723,7 @@ function init() {
   initTheme();
   renderAnnouncementBar();
   renderNav();
+  renderHeroBanner();
   renderHero();
   renderLiveBar();
   renderFightCard();

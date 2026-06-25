@@ -28,7 +28,7 @@ const DEFAULT_DATA = {
       "nameKo": "김준호",
       "nickname": "The Phantom",
       "weightClass": "lightweight",
-      "isChampion": true,
+      "isChampion": false,
       "record": { "w": 18, "l": 2, "d": 0 },
       "age": 28,
       "nationality": "KR",
@@ -93,7 +93,7 @@ const DEFAULT_DATA = {
       "nameKo": "최용석",
       "nickname": "The Reaper",
       "weightClass": "welterweight",
-      "isChampion": true,
+      "isChampion": false,
       "record": { "w": 20, "l": 1, "d": 0 },
       "age": 31,
       "nationality": "KR",
@@ -157,7 +157,7 @@ const DEFAULT_DATA = {
       "nameKo": "이태훈",
       "nickname": "The Viper",
       "weightClass": "middleweight",
-      "isChampion": true,
+      "isChampion": false,
       "record": { "w": 16, "l": 2, "d": 0 },
       "age": 29,
       "nationality": "KR",
@@ -189,7 +189,7 @@ const DEFAULT_DATA = {
       "nameKo": "오동규",
       "nickname": "The Wall",
       "weightClass": "heavyweight",
-      "isChampion": true,
+      "isChampion": false,
       "record": { "w": 12, "l": 1, "d": 0 },
       "age": 32,
       "nationality": "KR",
@@ -399,13 +399,7 @@ const DEFAULT_DATA = {
       ]
     }
   ],
-  "rankings": {
-    "flyweight":    ["ghost"],
-    "lightweight":  ["phantom", "ironjaw"],
-    "welterweight": ["reaper", "rampage"],
-    "middleweight": ["viper"],
-    "heavyweight":  ["thewall"]
-  },
+  "rankings": ["ghost", "phantom", "ironjaw", "reaper", "rampage", "viper", "thewall"],
   "sponsors": [
     { "name": "AXPEX Gaming", "logo": "assets/images/sponsors/axpex.svg",      "url": "#" },
     { "name": "Red Wulf",     "logo": "assets/images/sponsors/redwulf.svg",    "url": "#" },
@@ -439,3 +433,4 @@ const DEFAULT_DATA = {
     "linkText": ""
   }
 };
+                                                                                                                  
