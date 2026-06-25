@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ODFC Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0c1018; --bg2: #131923; --bg3: #1a2232; --bg4: #222d3d;
+      --red: #c41e1e; --text: #eef2f7; --text-muted: #7d8fa3; --text-faint: #4a5768;
+      --border: rgba(255,255,255,0.07); --border-light: rgba(255,255,255,0.13);
+      --gold: #c8992a; --radius: 4px;
+    }
+    body { font-family: 'Inter','Noto Sans KR',system-ui,sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { color: var(--text-muted); text-decoration: none; }
+    button { cursor: pointer; font-family: inherit; }
+    input, textarea, select { font-family: inherit; background: var(--bg3); border: 0.5px solid var(--border-light); border-radius: var(--radius); color: var(--text); padding: 8px 12px; font-size: 13px; width: 100%; outline: none; }
+    input:focus, textarea:focus, select:focus { border-color: var(--red); }
+    textarea { resize: vertical; min-height: 80px; }
+    label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); display: block; margin-bottom: 5px; }
+
+    /* Auth Screen */
+    #auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .auth-box { background: var(--bg2); border: 0.5px solid var(--border-light); border-radius: var(--radius); padding: 40px; width: 320px; }
+    .auth-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .auth-title span { color: var(--red); }
+    .auth-sub { font-size: 12px; color: var(--text-faint); margin-bottom: 24px; }
+    .auth-error { font-size: 12px; color: var(--red); margin-top: 8px; display: none; }
+
+    /* Admin Layout */
+    #admin-screen { display: none; }
+    .admin-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--bg2); border-bottom: 0.5px solid var(--border);
+      padding: 0 24px; height: 56px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .admin-logo { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: 0.06em; }
+    .admin-logo span { color: var(--red); }
+    .admin-badge { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; background: var(--red); color: #fff; padding: 2px 8px; border-radius: 2px; }
+    .view-btn { margin-left: auto; padding: 7px 16px; border-radius: var(--radius); background: var(--bg3); border: 0.5px solid var(--border-light); color: var(--text-muted); font-size: 11px; font-weight: 600; }
+    .view-btn:hover { color: var(--text); }
+    .save-btn { padding: 7px 20px; border-radius: var(--radius); background: var(--red); border: none; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
+    .save-btn:hover { opacity: 0.9; }
+    .reset-btn { padding: 7px 14px; border-radius: var(--radius); background: var(--bg3); border: 0.5px solid var(--border); color: var(--text-faint); font-size: 11px; }
+    .reset-btn:hover { color: var(--red); border-color: var(--red); }
+
+    /* Save toast */
+    #save-toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: var(--bg3); border: 0.5px solid var(--border-light); color: var(--text); padding: 12px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none; transform: translateY(8px); transition: all 0.3s ease; }
+    #save-toast.show { opacity: 1; transform: none; }
+
+    /* Sidebar + Content */
+    .admin-body { display: flex; padding-top: 56px; min-height: 100vh; }
+    .admin-sidebar {
+      width: 200px; flex-shrink: 0; position: fixed; top: 56px; bottom: 0; left: 0;
+      background: var(--bg2); border-right: 0.5px solid var(--border);
+      overflow-y: auto; padding: 16px 0;
+    }
+    .sidebar-group { padding: 8px 16px 4px; font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); }
+    .sidebar-link {
+      display: block; padding: 8px 20px; font-size: 12px; font-weight: 600; color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent;
+    }
+    .sidebar-link:hover { color: var(--text); background: var(--bg3); }
+    .sidebar-link.active { color: var(--text); background: var(--bg3); border-left-color: var(--red); }
+    .admin-content { margin-left: 200px; flex: 1; padding: 32px; max-width: 900px; }
+
+    /* Panels */
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .panel-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .panel-sub { font-size: 12px; color: var(--text-faint); margin-bottom: 28px; }
+    .form-group { margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .section-sep { border: none; border-top: 0.5px solid var(--border); margin: 24px 0; }
+    .form-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; position: relative; }
+    .form-card-title { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
+    .add-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius); background: var(--bg3); border: 0.5px solid var(--border-light); color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+    .add-btn:hover { color: var(--text); border-color: var(--border-light); }
+    .remove-btn { position: absolute; top: 14px; right: 14px; background: none; border: none; color: var(--text-faint); font-size: 16px; cursor: pointer; }
+    .remove-btn:hover { color: var(--red); }
+    .toggle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .toggle-label { font-size: 13px; font-weight: 600; color: var(--text); }
+    input[type="checkbox"] { width: auto; accent-color: var(--red); }
+    .checkbox-wrap { display: flex; align-items: center; gap: 8px; }
+    .checkbox-wrap label { margin: 0; font-size: 13px; font-weight: 600; color: var(--text); text-transform: none; letter-spacing: 0; }
+    select { background: var(--bg3); }
+    .hint { font-size: 10px; color: var(--text-faint); margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- Auth Screen -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-title"><span>ODFC</span> Admin</div>
+    <div class="auth-sub">관리자 비밀번호를 입력하세요.</div>
+    <label>비밀번호</label>
+    <input type="password" id="auth-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkAuth()">
+    <div class="auth-error" id="auth-error">비밀번호가 틀렸습니다.</div>
+    <button class="save-btn" style="margin-top:16px;width:100%;padding:10px" onclick="checkAuth()">로그인</button>
+  </div>
+</div>
+
+<!-- Admin Screen -->
+<div id="admin-screen">
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-logo"><span>ODFC</span></div>
+    <span class="admin-badge">ADMIN</span>
+    <a class="view-btn" href="../" target="_blank">사이트 보기 →</a>
+    <button class="reset-btn" onclick="resetData()">초기화</button>
+    <button class="save-btn" onclick="saveData()">저장 (LocalStorage)</button>
+  </header>
+
+  <div class="admin-body">
+    <!-- Sidebar -->
+    <nav class="admin-sidebar">
+      <div class="sidebar-group">조직</div>
+      <div class="sidebar-link active" onclick="switchTab('org')">기본 정보</div>
+      <div class="sidebar-link" onclick="switchTab('announcement')">공지 배너</div>
+      <div class="sidebar-group">콘텐츠</div>
+      <div class="sidebar-link" onclick="switchTab('fighters')">파이터</div>
+      <div class="sidebar-link" onclick="switchTab('events')">이벤트</div>
+      <div class="sidebar-link" onclick="switchTab('rankings')">랭킹</div>
+      <div class="sidebar-group">파트너</div>
+      <div class="sidebar-link" onclick="switchTab('sponsors')">스폰서</div>
+      <div class="sidebar-group">미디어</div>
+      <div class="sidebar-link" onclick="switchTab('banners')">배너</div>
+      <div class="sidebar-link" onclick="switchTab('mediakit')">미디어 킷</div>
+      <div class="sidebar-group">운영</div>
+      <div class="sidebar-link" onclick="switchTab('live')">라이브 방송</div>
+    </nav>
+
+    <!-- Content -->
+    <main class="admin-content">
+
+      <!-- ORG -->
+      <div class="panel active" id="panel-org">
+        <div class="panel-title">기본 정보</div>
+        <div class="panel-sub">조직 이름, 슬로건, 연락처, SNS 링크</div>
+        <div class="form-row">
+          <div class="form-group"><label>약자 (Abbr)</label><input id="org-abbr" placeholder="ODFC"></div>
+          <div class="form-group"><label>정식 명칭</label><input id="org-fullname" placeholder="Outlaw Dogs Fighting Championship"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>슬로건</label><input id="org-slogan" placeholder="Every dog has their day."></div>
+          <div class="form-group"><label>창단 연도</label><input id="org-founded" placeholder="2021"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>도시</label><input id="org-city" placeholder="Seoul"></div>
+          <div class="form-group"><label>연락처 이메일</label><input id="org-contact" type="email" placeholder="booking@odfc.gg"></div>
+        </div>
+        <hr class="section-sep">
+        <div class="form-card-title">SNS</div>
+        <div class="form-row">
+          <div class="form-group"><label>Twitter</label><input id="org-twitter" placeholder="https://twitter.com/..."></div>
+          <div class="form-group"><label>Instagram</label><input id="org-instagram" placeholder="https://instagram.com/..."></div>
+        </div>
+        <div class="form-group"><label>YouTube</label><input id="org-youtube" placeholder="https://youtube.com/..."></div>
+      </div>
+
+      <!-- ANNOUNCEMENT -->
+      <div class="panel" id="panel-announcement">
+        <div class="panel-title">공지 배너</div>
+        <div class="panel-sub">페이지 최상단에 표시되는 빨간 배너</div>
+        <div class="form-group">
+          <div class="checkbox-wrap"><input type="checkbox" id="ann-active"><label for="ann-active">배너 활성화</label></div>
+        </div>
+        <div class="form-group"><label>메시지</label><textarea id="ann-message" rows="2" placeholder="공지 내용 입력..."></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>링크 URL</label><input id="ann-link" placeholder="https://..."></div>
+          <div class="form-group"><label>링크 텍스트</label><input id="ann-linktext" placeholder="티켓 예매"></div>
+        </div>
+      </div>
+
+      <!-- FIGHTERS -->
+      <div class="panel" id="panel-fighters">
+        <div class="panel-title">파이터</div>
+        <div class="panel-sub">파이터 정보 수정. 사진 경로: assets/images/fighters/{id}.jpg</div>
+        <div id="fighters-editor"></div>
+        <button class="add-btn" onclick="addFighter()">+ 파이터 추가</button>
+      </div>
+
+      <!-- EVENTS -->
+      <div class="panel" id="panel-events">
+        <div class="panel-title">이벤트</div>
+        <div class="panel-sub">예정/완료 이벤트 관리</div>
+        <div id="events-editor"></div>
+        <button class="add-btn" onclick="addEvent()">+ 이벤트 추가</button>
+      </div>
+
+      <!-- RANKINGS -->
+      <div class="panel" id="panel-rankings">
+        <div class="panel-title">랭킹</div>
+        <div class="panel-sub">체급별 랭킹 순서 (fighter ID, 쉼표 구분). 챔피언은 첫 번째.</div>
+        <div id="rankings-editor"></div>
+      </div>
+
+      <!-- SPONSORS -->
+      <div class="panel" id="panel-sponsors">
+        <div class="panel-title">스폰서</div>
+        <div class="panel-sub">파트너사 로고 및 링크</div>
+        <div id="sponsors-editor"></div>
+        <button class="add-btn" onclick="addSponsor()">+ 스폰서 추가</button>
+      </div>
+
+      <!-- BANNERS -->
+      <div class="panel" id="panel-banners">
+        <div class="panel-title">배너</div>
+        <div class="panel-sub">히어로 배경 이미지/영상</div>
+        <div id="banners-editor"></div>
+        <button class="add-btn" onclick="addBanner()">+ 배너 추가</button>
+      </div>
+
+      <!-- MEDIAKIT -->
+      <div class="panel" id="panel-mediakit">
+        <div class="panel-title">미디어 킷</div>
+        <div class="panel-sub">다운로드 파일 경로 및 설명</div>
+        <div id="mediakit-editor"></div>
+      </div>
+
+      <!-- LIVE -->
+      <div class="panel" id="panel-live">
+        <div class="panel-title">라이브 방송</div>
+        <div class="panel-sub">이벤트 진행 중 라이브 바 표시</div>
+        <div class="form-group">
+          <div class="checkbox-wrap"><input type="checkbox" id="live-active"><label for="live-active">라이브 활성화</label></div>
+        </div>
+        <div class="form-group"><label>이벤트명</label><input id="live-event" placeholder="ODFC 12: IRON NIGHT"></div>
+        <div class="form-row">
+          <div class="form-group"><label>파이터 1</label><input id="live-fighter1" placeholder="The Phantom"></div>
+          <div class="form-group"><label>파이터 2</label><input id="live-fighter2" placeholder="Iron Jaw"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>라운드</label><input id="live-round" placeholder="R3"></div>
+          <div class="form-group"><label>시간</label><input id="live-time" placeholder="2:34"></div>
+        </div>
+        <div class="form-group"><label>스트리밍 URL</label><input id="live-stream" placeholder="https://twitch.tv/odfc"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div id="save-toast">✓ 저장 완료</div>
+
+<script src="../js/data.js"></script>
+<script>
+/* ========================
+   ODFC Admin JS
+   ======================== */
+const ADMIN_PW = 'ODFC2025';
+let ADMIN_DATA = null;
+
+// ---------- Auth ----------
+function checkAuth() {
+  const pw = document.getElementById('auth-pw').value;
+  if (pw === ADMIN_PW) {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = '';
+    initAdmin();
+  } else {
+    document.getElementById('auth-error').style.display = '';
+  }
+}
+document.getElementById('auth-pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkAuth(); });
+
+// Auto-open if URL has ?admin=ODFC2025
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('admin') === ADMIN_PW) {
+    document.getElementById('auth-pw').value = ADMIN_PW;
+    checkAuth();
+  }
+})();
+
+// ---------- Tab ----------
+const tabs = ['org','announcement','fighters','events','rankings','sponsors','banners','mediakit','live'];
+function switchTab(name) {
+  tabs.forEach(t => {
+    document.getElementById('panel-' + t)?.classList.toggle('active', t === name);
+  });
+  document.querySelectorAll('.sidebar-link').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('onclick')?.includes(`'${name}'`));
+  });
+}
+
+// ---------- Helpers ----------
+function sv(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.type === 'checkbox') el.checked = !!val;
+  else el.value = val != null ? val : '';
+}
+function gv(id, fallback = '') {
+  const el = document.getElementById(id);
+  if (!el) return fallback;
+  if (el.type === 'checkbox') return el.checked;
+  return el.value;
+}
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ---------- Init ----------
+function initAdmin() {
+  try {
+    const saved = localStorage.getItem('odfc_data');
+    ADMIN_DATA = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_DATA));
+  } catch(e) {
+    ADMIN_DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+  buildOrgEditor();
+  buildAnnouncementEditor();
+  buildFightersEditor();
+  buildEventsEditor();
+  buildRankingsEditor();
+  buildSponsorsEditor();
+  buildBannersEditor();
+  buildMediaKitEditor();
+  buildLiveEditor();
+}
+
+// ---------- ORG ----------
+function buildOrgEditor() {
+  const org = ADMIN_DATA.org || {};
+  sv('org-abbr', org.abbr);
+  sv('org-fullname', org.fullName);
+  sv('org-slogan', org.slogan);
+  sv('org-founded', org.founded);
+  sv('org-city', org.city);
+  sv('org-contact', org.contact);
+  const s = org.social || {};
+  sv('org-twitter', s.twitter);
+  sv('org-instagram', s.instagram);
+  sv('org-youtube', s.youtube);
+}
+
+// ---------- ANNOUNCEMENT ----------
+function buildAnnouncementEditor() {
+  const ann = ADMIN_DATA.announcement || {};
+  sv('ann-active', ann.active);
+  sv('ann-message', ann.message);
+  sv('ann-link', ann.link);
+  sv('ann-linktext', ann.linkText);
+}
+
+// ---------- FIGHTERS ----------
+function buildFightersEditor() {
+  const el = document.getElementById('fighters-editor');
+  const fighters = ADMIN_DATA.fighters || [];
+  el.innerHTML = fighters.map((f, i) => buildFighterCard(f, i)).join('');
+}
+function buildFighterCard(f, i) {
+  const wcs = (ADMIN_DATA.weightClasses || []).map(w =>
+    `<option value="${escHtml(w.id)}" ${f.weightClass === w.id ? 'selected' : ''}>${escHtml(w.name)}</option>`
+  ).join('');
+  return `
+    <div class="form-card" id="fighter-card-${i}">
+      <button class="remove-btn" onclick="removeFighter(${i})">✕</button>
+      <div class="form-card-title">파이터 #${i+1}</div>
+      <div class="form-row">
+        <div class="form-group"><label>ID (영문, 소문자)</label><input data-fi="${i}" data-ff="id" value="${escHtml(f.id)}"></div>
+        <div class="form-group"><label>닉네임</label><input data-fi="${i}" data-ff="nickname" value="${escHtml(f.nickname)}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>영문 실명</label><input data-fi="${i}" data-ff="name" value="${escHtml(f.name)}"></div>
+        <div class="form-group"><label>한국 이름</label><input data-fi="${i}" data-ff="nameKo" value="${escHtml(f.nameKo)}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>체급</label><select data-fi="${i}" data-ff="weightClass">${wcs}</select></div>
+        <div class="form-group"><label>나이</label><input type="number" data-fi="${i}" data-ff="age" value="${escHtml(f.age)}"></div>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group"><label>승</label><input type="number" data-fi="${i}" data-ff="record_w" value="${f.record?.w ?? 0}"></div>
+        <div class="form-group"><label>패</label><input type="number" data-fi="${i}" data-ff="record_l" value="${f.record?.l ?? 0}"></div>
+        <div class="form-group"><label>무</label><input type="number" data-fi="${i}" data-ff="record_d" value="${f.record?.d ?? 0}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>사진 경로</label><input data-fi="${i}" data-ff="photo" value="${escHtml(f.photo)}" placeholder="assets/images/fighters/id.jpg"></div>
+        <div class="form-group"><label>하이라이트 URL</label><input data-fi="${i}" data-ff="highlight" value="${escHtml(f.highlight)}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>신장</label><input data-fi="${i}" data-ff="height" value="${escHtml(f.height)}"></div>
+        <div class="form-group"><label>리치</label><input data-fi="${i}" data-ff="reach" value="${escHtml(f.reach)}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>스탠스</label><input data-fi="${i}" data-ff="stance" value="${escHtml(f.stance)}"></div>
+        <div class="form-group"><label>국적</label><input data-fi="${i}" data-ff="nationality" value="${escHtml(f.nationality)}"></div>
+      </div>
+      <div class="form-group"><label>파이팅 스타일 (쉼표 구분)</label><input data-fi="${i}" data-ff="style" value="${escHtml((f.style||[]).join(', '))}"></div>
+      <div class="form-group">
+        <div class="checkbox-wrap">
+          <input type="checkbox" data-fi="${i}" data-ff="isChampion" id="fi-champ-${i}" ${f.isChampion ? 'checked' : ''}>
+          <label for="fi-champ-${i}">현 챔피언</label>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function addFighter() {
+  ADMIN_DATA.fighters = ADMIN_DATA.fighters || [];
+  ADMIN_DATA.fighters.push({ id: '', nickname: '', name: '', nameKo: '', weightClass: ADMIN_DATA.weightClasses?.[0]?.id || '', age: 25, isChampion: false, record: {w:0,l:0,d:0}, photo: '', highlight: '', height: '', reach: '', stance: 'Orthodox', nationality: 'KR', style: [], stats: {striking:7,grappling:7,wrestling:7,cardio:7,chin:7,power:7}, finishes:{ko:0,sub:0,dec:0}, recentFights: [], career: [], titles: [] });
+  buildFightersEditor();
+}
+function removeFighter(i) {
+  if (!confirm('파이터를 삭제하시겠습니까?')) return;
+  ADMIN_DATA.fighters.splice(i, 1);
+  buildFightersEditor();
+}
+
+// ---------- EVENTS ----------
+function buildEventsEditor() {
+  const el = document.getElementById('events-editor');
+  const events = ADMIN_DATA.events || [];
+  el.innerHTML = events.map((ev, i) => buildEventCard(ev, i)).join('');
+}
+function buildEventCard(ev, i) {
+  return `
+    <div class="form-card" id="event-card-${i}">
+      <button class="remove-btn" onclick="removeEvent(${i})">✕</button>
+      <div class="form-card-title">이벤트 #${i+1}</div>
+      <div class="form-row">
+        <div class="form-group"><label>이벤트 이름</label><input data-ei="${i}" data-ef="name" value="${escHtml(ev.name)}" placeholder="ODFC 12"></div>
+        <div class="form-group"><label>서브타이틀</label><input data-ei="${i}" data-ef="subtitle" value="${escHtml(ev.subtitle)}" placeholder="IRON NIGHT"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>날짜</label><input type="date" data-ei="${i}" data-ef="date" value="${escHtml(ev.date)}"></div>
+        <div class="form-group"><label>시간</label><input data-ei="${i}" data-ef="time" value="${escHtml(ev.time)}" placeholder="18:00"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>장소</label><input data-ei="${i}" data-ef="venue" value="${escHtml(ev.venue)}"></div>
+        <div class="form-group"><label>도시</label><input data-ei="${i}" data-ef="city" value="${escHtml(ev.city)}"></div>
+      </div>
+      <div class="form-group">
+        <label>상태</label>
+        <select data-ei="${i}" data-ef="status">
+          <option value="upcoming" ${ev.status === 'upcoming' ? 'selected' : ''}>예정 (upcoming)</option>
+          <option value="completed" ${ev.status === 'completed' ? 'selected' : ''}>완료 (completed)</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+function addEvent() {
+  ADMIN_DATA.events = ADMIN_DATA.events || [];
+  ADMIN_DATA.events.unshift({ id: 'odfc-new', name: '', subtitle: '', date: '', time: '18:00', venue: '', city: 'Seoul, KR', status: 'upcoming', card: [] });
+  buildEventsEditor();
+}
+function removeEvent(i) {
+  if (!confirm('이벤트를 삭제하시겠습니까?')) return;
+  ADMIN_DATA.events.splice(i, 1);
+  buildEventsEditor();
+}
+
+// ---------- RANKINGS ----------
+function buildRankingsEditor() {
+  const el = document.getElementById('rankings-editor');
+  const rankings = ADMIN_DATA.rankings || {};
+  const wcs = ADMIN_DATA.weightClasses || [];
+  el.innerHTML = wcs.map(wc => `
+    <div class="form-group">
+      <label>${escHtml(wc.name)} (${escHtml(wc.limit)})</label>
+      <input id="ranking-${escHtml(wc.id)}" value="${escHtml((rankings[wc.id]||[]).join(', '))}" placeholder="fighter_id1, fighter_id2, ...">
+      <div class="hint">파이터 ID를 쉼표로 구분. 챔피언 ID를 첫 번째에.</div>
+    </div>
+  `).join('');
+}
+
+// ---------- SPONSORS ----------
+function buildSponsorsEditor() {
+  const el = document.getElementById('sponsors-editor');
+  const sponsors = ADMIN_DATA.sponsors || [];
+  el.innerHTML = sponsors.map((s, i) => `
+    <div class="form-card">
+      <button class="remove-btn" onclick="removeSponsor(${i})">✕</button>
+      <div class="form-row">
+        <div class="form-group"><label>스폰서명</label><input data-si="${i}" data-sf="name" value="${escHtml(s.name)}"></div>
+        <div class="form-group"><label>URL</label><input data-si="${i}" data-sf="url" value="${escHtml(s.url)}"></div>
+      </div>
+      <div class="form-group"><label>로고 경로</label><input data-si="${i}" data-sf="logo" value="${escHtml(s.logo)}" placeholder="assets/images/sponsors/name.svg"></div>
+    </div>
+  `).join('');
+}
+function addSponsor() {
+  ADMIN_DATA.sponsors = ADMIN_DATA.sponsors || [];
+  ADMIN_DATA.sponsors.push({ name: '', logo: '', url: '#' });
+  buildSponsorsEditor();
+}
+function removeSponsor(i) {
+  ADMIN_DATA.sponsors.splice(i, 1);
+  buildSponsorsEditor();
+}
+
+// ---------- BANNERS ----------
+function buildBannersEditor() {
+  const el = document.getElementById('banners-editor');
+  const banners = ADMIN_DATA.banners || [];
+  el.innerHTML = banners.map((b, i) => `
+    <div class="form-card">
+      <button class="remove-btn" onclick="removeBanner(${i})">✕</button>
+      <div class="form-group"><label>이미지 경로</label><input data-bni="${i}" data-bnf="image" value="${escHtml(b.image)}" placeholder="assets/images/banners/bg.jpg"></div>
+      <div class="form-group"><label>비디오 경로</label><input data-bni="${i}" data-bnf="video" value="${escHtml(b.video)}" placeholder="assets/videos/hero.mp4"></div>
+      <div class="form-group"><label>캡션</label><input data-bni="${i}" data-bnf="caption" value="${escHtml(b.caption)}"></div>
+    </div>
+  `).join('');
+}
+function addBanner() {
+  ADMIN_DATA.banners = ADMIN_DATA.banners || [];
+  ADMIN_DATA.banners.push({ image: '', video: '', caption: '' });
+  buildBannersEditor();
+}
+function removeBanner(i) {
+  ADMIN_DATA.banners.splice(i, 1);
+  buildBannersEditor();
+}
+
+// ---------- MEDIAKIT ----------
+function buildMediaKitEditor() {
+  const el = document.getElementById('mediakit-editor');
+  const mk = ADMIN_DATA.mediakit || {};
+  const items = [
+    { key: 'logo',       label: '로고 패키지' },
+    { key: 'photos',     label: '파이터 공식 사진' },
+    { key: 'presskit',   label: '보도자료 PDF' },
+    { key: 'brandguide', label: '브랜드 가이드라인' },
+  ];
+  el.innerHTML = items.map(({ key, label }) => {
+    const item = mk[key] || {};
+    return `
+      <div class="form-card">
+        <div class="form-card-title">${label}</div>
+        <div class="form-group"><label>레이블</label><input id="mk-${escHtml(key)}-label" value="${escHtml(item.label || label)}"></div>
+        <div class="form-group"><label>설명</label><input id="mk-${escHtml(key)}-desc" value="${escHtml(item.desc)}"></div>
+        <div class="form-group"><label>파일 경로 / URL</label><input id="mk-${escHtml(key)}-file" value="${escHtml(item.file)}" placeholder="assets/files/..."></div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ---------- LIVE ----------
+function buildLiveEditor() {
+  const live = ADMIN_DATA.live || {};
+  sv('live-active', live.active);
+  sv('live-event', live.event);
+  sv('live-fighter1', live.fighter1);
+  sv('live-fighter2', live.fighter2);
+  sv('live-round', live.round);
+  sv('live-time', live.time);
+  sv('live-stream', live.stream);
+}
+
+// ---------- Collect ----------
+function collectData() {
+  const d = JSON.parse(JSON.stringify(ADMIN_DATA));
+
+  // Org
+  d.org = {
+    ...d.org,
+    abbr: gv('org-abbr'),
+    fullName: gv('org-fullname'),
+    slogan: gv('org-slogan'),
+    founded: gv('org-founded'),
+    city: gv('org-city'),
+    contact: gv('org-contact'),
+    social: {
+      twitter: gv('org-twitter'),
+      instagram: gv('org-instagram'),
+      youtube: gv('org-youtube'),
+    }
+  };
+
+  // Announcement
+  d.announcement = {
+    active: gv('ann-active'),
+    message: gv('ann-message'),
+    link: gv('ann-link'),
+    linkText: gv('ann-linktext'),
+  };
+
+  // Fighters
+  d.fighters = (d.fighters || []).map((f, i) => {
+    const g = (ff) => {
+      const el = document.querySelector(`[data-fi="${i}"][data-ff="${ff}"]`);
+      if (!el) return f[ff];
+      return el.type === 'checkbox' ? el.checked : el.value;
+    };
+    return {
+      ...f,
+      id: g('id'),
+      nickname: g('nickname'),
+      name: g('name'),
+      nameKo: g('nameKo'),
+      weightClass: g('weightClass'),
+      age: parseInt(g('age')) || 0,
+      isChampion: g('isChampion'),
+      record: {
+        w: parseInt(g('record_w')) || 0,
+        l: parseInt(g('record_l')) || 0,
+        d: parseInt(g('record_d')) || 0,
+      },
+      photo: g('photo'),
+      highlight: g('highlight'),
+      height: g('height'),
+      reach: g('reach'),
+      stance: g('stance'),
+      nationality: g('nationality'),
+      style: g('style').split(',').map(s=>s.trim()).filter(Boolean),
+    };
+  });
+
+  // Events
+  d.events = (d.events || []).map((ev, i) => {
+    const g = (ef) => {
+      const el = document.querySelector(`[data-ei="${i}"][data-ef="${ef}"]`);
+      return el ? el.value : ev[ef];
+    };
+    return { ...ev, name: g('name'), subtitle: g('subtitle'), date: g('date'), time: g('time'), venue: g('venue'), city: g('city'), status: g('status') };
+  });
+
+  // Rankings
+  const wcs = d.weightClasses || [];
+  d.rankings = {};
+  wcs.forEach(wc => {
+    const el = document.getElementById(`ranking-${wc.id}`);
+    if (el) d.rankings[wc.id] = el.value.split(',').map(s=>s.trim()).filter(Boolean);
+  });
+
+  // Sponsors
+  d.sponsors = (d.sponsors || []).map((s, i) => {
+    const g = (sf) => { const el = document.querySelector(`[data-si="${i}"][data-sf="${sf}"]`); return el ? el.value : s[sf]; };
+    return { ...s, name: g('name'), url: g('url'), logo: g('logo') };
+  });
+
+  // Banners
+  d.banners = (d.banners || []).map((b, i) => {
+    const g = (bf) => { const el = document.querySelector(`[data-bni="${i}"][data-bnf="${bf}"]`); return el ? el.value : b[bf]; };
+    return { ...b, image: g('image'), video: g('video'), caption: g('caption') };
+  });
+
+  // MediaKit
+  const mkKeys = ['logo','photos','presskit','brandguide'];
+  d.mediakit = d.mediakit || {};
+  mkKeys.forEach(key => {
+    d.mediakit[key] = {
+      label: document.getElementById(`mk-${key}-label`)?.value || '',
+      desc:  document.getElementById(`mk-${key}-desc`)?.value || '',
+      file:  document.getElementById(`mk-${key}-file`)?.value || '',
+    };
+  });
+
+  // Live
+  d.live = {
+    active: gv('live-active'),
+    event: gv('live-event'),
+    fighter1: gv('live-fighter1'),
+    fighter2: gv('live-fighter2'),
+    round: gv('live-round'),
+    time: gv('live-time'),
+    stream: gv('live-stream'),
+  };
+
+  return d;
+}
+
+// ---------- Save ----------
+function saveData() {
+  const data = collectData();
+  localStorage.setItem('odfc_data', JSON.stringify(data));
+  ADMIN_DATA = data;
+  const toast = document.getElementById('save-toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+function resetData() {
+  if (!confirm('모든 변경사항을 초기화하시겠습니까? (DEFAULT_DATA로 복원)')) return;
+  localStorage.removeItem('odfc_data');
+  ADMIN_DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  buildOrgEditor();
+  buildAnnouncementEditor();
+  buildFightersEditor();
+  buildEventsEditor();
+  buildRankingsEditor();
+  buildSponsorsEditor();
+  buildBannersEditor();
+  buildMediaKitEditor();
+  buildLiveEditor();
+  const toast = document.getElementById('save-toast');
+  toast.textContent = '✓ 초기화 완료';
+  toast.classList.add('show');
+  setTimeout(() => { toast.classList.remove('show'); toast.textContent = '✓ 저장 완료'; }, 2200);
+}
+</script>
+</body>
+</html>

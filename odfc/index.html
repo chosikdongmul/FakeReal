@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ODFC — Outlaw Dogs Fighting Championship</title>
+  <meta name="description" content="Outlaw Dogs Fighting Championship. Every dog has their day.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Announcement Bar -->
+<div id="announcement-bar" class="hidden"></div>
+
+<!-- Nav -->
+<nav class="nav">
+  <a href="#" class="nav-logo">
+    <span class="accent" id="nav-logo">ODFC</span>
+  </a>
+  <div class="nav-links">
+    <a href="#fightcard">Fight Card</a>
+    <a href="#champions">Champions</a>
+    <a href="#fighters">Fighters</a>
+    <a href="#rankings">Rankings</a>
+    <a href="#past-events">Events</a>
+    <a href="#sponsors">Partners</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="테마 전환">☀️</button>
+    <a class="nav-tickets" href="#fightcard">티켓 구매</a>
+  </div>
+</nav>
+
+<!-- Live Bar -->
+<div id="live-bar">
+  <div class="live-bar-inner">
+    <div class="live-dot"></div>
+    <span class="live-label">LIVE</span>
+    <span class="live-match" id="live-match"></span>
+    <span class="live-event" id="live-event" style="color:rgba(255,255,255,0.65);font-size:11px"></span>
+    <span class="live-round" id="live-round"></span>
+    <a class="live-watch" id="live-watch-btn" href="#" target="_blank" rel="noopener">지금 시청 →</a>
+  </div>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<section id="hero" class="hero">
+  <div class="hero-bg-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Outlaw Dogs Fighting Championship</div>
+    <h1 class="hero-title" id="hero-title">
+      <span class="red">ODFC</span>
+    </h1>
+    <p class="hero-slogan" id="hero-slogan">Every dog has their day.</p>
+
+    <div class="hero-next" id="hero-next">
+      <span class="hero-next-label">NEXT EVENT</span>
+      <div class="hero-next-event">
+        <div class="hero-next-name" id="hero-next-name"></div>
+        <div class="hero-next-meta" id="hero-next-meta"></div>
+      </div>
+      <div class="hero-countdown" id="hero-countdown">
+        <div class="countdown-block"><span class="countdown-val">--</span><span class="countdown-lbl">Days</span></div>
+        <div class="countdown-block"><span class="countdown-val">--</span><span class="countdown-lbl">Hrs</span></div>
+        <div class="countdown-block"><span class="countdown-val">--</span><span class="countdown-lbl">Min</span></div>
+        <div class="countdown-block"><span class="countdown-val">--</span><span class="countdown-lbl">Sec</span></div>
+      </div>
+    </div>
+
+    <div class="hero-cta">
+      <a class="btn-primary" href="#fightcard">파이트 카드 보기</a>
+      <a class="btn-outline" href="#fighters">파이터 보기</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FIGHT CARD ===================== -->
+<section id="fightcard" style="padding:80px 0; background:var(--bg)">
+  <div style="max-width:1200px;margin:0 auto;padding:0 40px">
+    <div class="section-head reveal">
+      <span class="section-title">Fight Card</span>
+      <span class="section-sub" id="fightcard-event-name">ODFC —</span>
+      <span style="font-size:13px;color:var(--text-muted);margin-top:4px" id="fightcard-event-meta"></span>
+    </div>
+    <div class="fightcard-wrap reveal" id="fightcard-grid"></div>
+    <div style="margin-top:32px" class="reveal">
+      <a class="btn-primary" href="#">티켓 예매 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAMPIONS ===================== -->
+<section id="champions" style="padding:80px 0;background:var(--bg2)">
+  <div style="max-width:1200px;margin:0 auto;padding:0 40px">
+    <div class="section-head reveal">
+      <span class="section-title">Champions</span>
+      <span class="section-sub">현 챔피언</span>
+    </div>
+    <div class="champs-grid reveal" id="champs-grid"></div>
+  </div>
+</section>
+
+<!-- ===================== FIGHTERS ===================== -->
+<section id="fighters" style="padding:80px 0;background:var(--bg)">
+  <div style="max-width:1200px;margin:0 auto;padding:0 40px">
+    <div class="section-head reveal">
+      <span class="section-title">Fighters</span>
+      <span class="section-sub">선수단</span>
+    </div>
+    <div class="wc-tabs reveal" id="wc-tabs"></div>
+    <div class="fighters-grid reveal" id="fighters-grid"></div>
+  </div>
+</section>
+
+<!-- ===================== RANKINGS ===================== -->
+<section id="rankings" style="padding:80px 0;background:var(--bg2)">
+  <div style="max-width:1200px;margin:0 auto;padding:0 40px">
+    <div class="section-head reveal">
+      <span class="section-title">Rankings</span>
+      <span class="section-sub">체급별 랭킹</span>
+    </div>
+    <div class="rankings-grid reveal" id="rankings-grid"></div>
+  </div>
+</section>
+
+<!-- ===================== PAST EVENTS ===================== -->
+<section id="past-events" style="padding:80px 0;background:var(--bg)">
+  <div style="max-width:1200px;margin:0 auto;padding:0 40px">
+    <div class="section-head reveal">
+      <span class="section-title">Events</span>
+      <span class="section-sub">이전 이벤트</span>
+    </div>
+    <div class="events-list reveal" id="events-list"></div>
+  </div>
+</section>
+
+<!-- ===================== SPONSORS ===================== -->
+<section id="sponsors" style="padding:80px 0;background:var(--bg2)">
+  <div style="max-width:1200px;margin:0 auto;padding:0 40px">
+    <div class="section-head reveal">
+      <span class="section-title">Partners</span>
+      <span class="section-sub">공식 파트너</span>
+    </div>
+    <div class="sponsors-grid reveal" id="sponsors-grid"></div>
+  </div>
+</section>
+
+<!-- ===================== MEDIA KIT ===================== -->
+<section id="mediakit" style="padding:80px 0;background:var(--bg)">
+  <div style="max-width:1200px;margin:0 auto;padding:0 40px">
+    <div class="section-head reveal">
+      <span class="section-title">Media</span>
+      <span class="section-sub">미디어 킷</span>
+    </div>
+    <div class="mediakit-grid reveal" id="mediakit-grid"></div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo" id="footer-logo-text"><span class="accent">ODFC</span></div>
+      <div class="footer-slogan" id="footer-slogan">Every dog has their day.</div>
+      <div style="margin-top:12px;font-size:12px;color:var(--text-faint)" id="footer-contact"></div>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigation</div>
+      <div class="footer-links">
+        <a class="footer-link" href="#fightcard">Fight Card</a>
+        <a class="footer-link" href="#champions">Champions</a>
+        <a class="footer-link" href="#fighters">Fighters</a>
+        <a class="footer-link" href="#rankings">Rankings</a>
+        <a class="footer-link" href="#past-events">Events</a>
+        <a class="footer-link" href="#mediakit">Media Kit</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Follow</div>
+      <div class="footer-social" id="footer-social"></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Outlaw Dogs FC. All rights reserved.</span>
+    <span style="color:var(--text-faint);font-size:10px">This is a fictional promotion created for creative purposes.</span>
+  </div>
+</footer>
+
+<!-- ===================== FIGHTER POPUP ===================== -->
+<div class="popup-overlay" id="popup-overlay" onclick="if(event.target===this)closePopup()">
+  <div class="popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+
+    <!-- Left: Photo / Video -->
+    <div class="popup-left">
+      <div class="popup-media-wrap">
+        <iframe class="popup-highlight-iframe" id="popup-highlight-iframe" allowfullscreen></iframe>
+        <img class="popup-fighter-photo" id="popup-fighter-photo" alt="" style="display:none">
+        <div class="popup-photo-placeholder" id="popup-photo-placeholder" style="display:none">🥊</div>
+      </div>
+    </div>
+
+    <!-- Right: Info -->
+    <div class="popup-right">
+      <!-- Header -->
+      <div>
+        <div class="popup-champ-badge" id="popup-champ-badge" style="display:none">🏆 Champion</div>
+        <div class="popup-nickname" id="popup-nickname"></div>
+        <div class="popup-realname" id="popup-realname"></div>
+        <div class="popup-class" id="popup-class"></div>
+      </div>
+
+      <div class="popup-record" id="popup-record"></div>
+
+      <hr class="popup-divider">
+
+      <!-- Bio -->
+      <div>
+        <div class="popup-section-title">기본 정보</div>
+        <div class="popup-bio-grid">
+          <div class="popup-bio-item"><span class="popup-bio-label">나이</span><span class="popup-bio-val" id="popup-age">—</span></div>
+          <div class="popup-bio-item"><span class="popup-bio-label">국적</span><span class="popup-bio-val" id="popup-nationality">—</span></div>
+          <div class="popup-bio-item"><span class="popup-bio-label">신장</span><span class="popup-bio-val" id="popup-height">—</span></div>
+          <div class="popup-bio-item"><span class="popup-bio-label">리치</span><span class="popup-bio-val" id="popup-reach">—</span></div>
+          <div class="popup-bio-item"><span class="popup-bio-label">스탠스</span><span class="popup-bio-val" id="popup-stance">—</span></div>
+        </div>
+      </div>
+
+      <!-- Style Tags -->
+      <div>
+        <div class="popup-section-title">파이팅 스타일</div>
+        <div class="popup-style-tags" id="popup-style-tags"></div>
+      </div>
+
+      <hr class="popup-divider">
+
+      <!-- Stats -->
+      <div>
+        <div class="popup-section-title">능력치</div>
+        <div class="popup-stats-grid" id="popup-stats-grid"></div>
+      </div>
+
+      <!-- Finishes -->
+      <div>
+        <div class="popup-section-title">피니시 방식</div>
+        <div class="popup-finishes">
+          <div class="popup-finish-item">
+            <div class="popup-finish-val" id="popup-ko">0</div>
+            <div class="popup-finish-lbl">KO/TKO</div>
+          </div>
+          <div class="popup-finish-item">
+            <div class="popup-finish-val" id="popup-sub">0</div>
+            <div class="popup-finish-lbl">서브미션</div>
+          </div>
+          <div class="popup-finish-item">
+            <div class="popup-finish-val" id="popup-dec">0</div>
+            <div class="popup-finish-lbl">판정</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="popup-divider">
+
+      <!-- Recent Fights -->
+      <div>
+        <div class="popup-section-title">최근 전적</div>
+        <table class="popup-fights-table">
+          <thead>
+            <tr>
+              <th>상대</th><th>결과</th><th>방식</th><th>라운드</th><th>이벤트</th>
+            </tr>
+          </thead>
+          <tbody id="popup-fights-body"></tbody>
+        </table>
+      </div>
+
+      <!-- Career -->
+      <div>
+        <div class="popup-section-title">커리어</div>
+        <div class="popup-career-list" id="popup-career"></div>
+      </div>
+
+      <!-- Titles -->
+      <div id="popup-titles-wrap" style="display:none">
+        <div class="popup-section-title">타이틀</div>
+        <div class="popup-titles-list" id="popup-titles"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin bar -->
+<div id="admin-bar">
+  🔐 어드민 모드 &nbsp;|&nbsp; <a href="admin/?admin=ODFC2025">어드민 패널 열기 →</a>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
