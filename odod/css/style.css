@@ -1,46 +1,44 @@
 /* ════════════════════════════════════════════════
    ODOD — OverDrive Outlaw Dogs
-   Style System: Warm Dark / Orange Restrained
+   Style System: Scarlet Black / Pro Gaming
    ════════════════════════════════════════════════ */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:          #211c15;
-  --bg2:         #2a2419;
-  --bg3:         #332d21;
-  --orange:      #d4714e;
-  --orange-dim:  rgba(212, 113, 78, 0.18);
-  --text:        #f5f0e8;
-  --text-muted:  #a89f94;
-  --text-dim:    #6b6358;
-  --border:      rgba(245, 240, 232, 0.08);
-  --border-light:rgba(245, 240, 232, 0.15);
-  --pop-bg:      #241f18;
+  --bg:          #0c0c0c;
+  --bg2:         #141414;
+  --bg3:         #1c1c1c;
+  --orange:      #e8192c;
+  --orange-dim:  rgba(232, 25, 44, 0.15);
+  --text:        #ffffff;
+  --text-muted:  #999999;
+  --text-dim:    #555555;
+  --border:      rgba(255, 255, 255, 0.08);
+  --border-light:rgba(255, 255, 255, 0.16);
+  --pop-bg:      #0f0f0f;
 }
 
 [data-theme="light"] {
-  --bg:          #f5f0e8;
-  --bg2:         #ece7de;
-  --bg3:         #e2ddd4;
-  --orange:      #c45e38;
-  --orange-dim:  rgba(196, 94, 56, 0.14);
-  --text:        #1a1610;
-  --text-muted:  #5c5248;
-  --text-dim:    #9c958c;
-  --border:      rgba(26, 22, 16, 0.1);
-  --border-light:rgba(26, 22, 16, 0.18);
-  --pop-bg:      #ece7de;
+  --bg:          #f7f7f7;
+  --bg2:         #eeeeee;
+  --bg3:         #e4e4e4;
+  --orange:      #cc0f22;
+  --orange-dim:  rgba(204, 15, 34, 0.12);
+  --text:        #111111;
+  --text-muted:  #555555;
+  --text-dim:    #999999;
+  --border:      rgba(0, 0, 0, 0.1);
+  --border-light:rgba(0, 0, 0, 0.18);
+  --pop-bg:      #eeeeee;
 }
 
 [data-theme="light"] body {
-  background:
-    radial-gradient(ellipse 55% 100% at 50% 50%, transparent 10%, rgba(0,0,0,0.03) 100%),
-    var(--bg);
+  background: var(--bg);
 }
 
 [data-theme="light"] #nav.scrolled {
-  background: rgba(245, 240, 232, 0.92);
+  background: rgba(247, 247, 247, 0.95);
 }
 
 [data-theme="light"] .photo-placeholder span { color: rgba(26,22,16,0.08); }
@@ -606,7 +604,7 @@ body.has-announcement .mobile-menu { top: calc(36px + 72px); }
 }
 .staff-roster-card:hover {
   background: #3d3628;
-  border-color: rgba(245,240,232,0.22);
+  border-color: rgba(255,255,255,0.22);
 }
 
 .staff-roster-photo {
