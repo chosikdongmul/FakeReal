@@ -13,7 +13,9 @@
 
 <!-- NAV -->
 <nav class="nav" id="nav">
-  <a href="#" class="nav-logo">오들오들 교수<span>와 이상한 마을</span></a>
+  <a href="#" class="nav-logo">
+    <span id="nav-logo-main">오들오들 교수</span><span id="nav-logo-sub">와 이상한 마을</span>
+  </a>
   <div class="nav-links">
     <a href="#about">소개</a>
     <a href="#characters">등장인물</a>
@@ -39,24 +41,16 @@
   <div id="hero-bg-media"></div>
   <div class="hero-overlay"></div>
   <div class="hero-overlay-left"></div>
-  <div class="banner-progress" id="banner-progress"></div>
 
   <div class="hero-content reveal">
-    <div class="hero-eyebrow">A Mystery Adventure Fan Site</div>
-    <h1 class="hero-title">
-      <span class="gold">오들오들 교수</span>와<br>이상한 마을
-    </h1>
-    <p class="hero-subtitle">
-      신사라면 어떤 수수께끼도 피하지 않는 법이지.<br>
-      교수와 함께 마을의 비밀을 풀어보세요.
-    </p>
+    <div class="hero-eyebrow" id="hero-eyebrow"></div>
+    <h1 class="hero-title" id="hero-title"></h1>
+    <p class="hero-subtitle" id="hero-subtitle"></p>
     <div class="hero-cta">
-      <a class="btn-gold" href="#puzzles">수수께끼 도전하기</a>
-      <a class="btn-outline" href="#gallery">갤러리 보기</a>
+      <a class="btn-gold"    href="#puzzles" id="hero-cta-primary"></a>
+      <a class="btn-outline" href="#gallery" id="hero-cta-secondary"></a>
     </div>
   </div>
-
-  <div class="hero-dots" id="hero-dots"></div>
 </section>
 
 <div class="section-divider"></div>
@@ -65,28 +59,14 @@
 <section class="section" id="about">
   <div class="section-inner">
     <div class="section-head reveal">
-      <div class="section-label">About</div>
-      <h2 class="section-title">이상한 마을의<br>이야기</h2>
+      <div class="section-label" id="about-label"></div>
+      <h2 class="section-title" id="about-title"></h2>
     </div>
     <div class="about-grid reveal">
-      <div class="about-text">
-        <p>
-          <strong>오들오들 교수</strong>는 고고학자이자 신사, 그리고 세상에서 가장 탁월한 수수께끼 풀이사입니다.
-          그의 조수 루크와 함께, 그는 어디서든 수수께끼가 있는 곳이라면 반드시 찾아갑니다.
-        </p>
-        <p>
-          이 사이트는 레이튼 교수 시리즈를 사랑하는 팬과 코스플레이어가 함께 만든 공간입니다.
-          게임 속 세계관을 현실로 옮겨온 다양한 작업물들을 만나보세요.
-        </p>
-        <p>
-          수수께끼 섹션에서는 레이튼 스타일의 퍼즐 미니게임도 준비 중입니다.
-        </p>
-      </div>
+      <div class="about-text" id="about-text"></div>
       <div class="about-quote">
-        <div class="about-quote-text">
-          "신사라면 어떤 수수께끼도 피하지 않는 법이지."
-        </div>
-        <div class="about-quote-author">— 오들오들 교수</div>
+        <div class="about-quote-text"  id="about-quote-text"></div>
+        <div class="about-quote-author" id="about-quote-author"></div>
       </div>
     </div>
   </div>
@@ -103,9 +83,7 @@
       <p class="section-desc">코스플레이어와 함께 재현한 레이튼 교수 시리즈의 등장인물들.</p>
     </div>
   </div>
-  <div class="char-grid reveal" id="char-grid">
-    <!-- JS 렌더 -->
-  </div>
+  <div class="char-grid reveal" id="char-grid"></div>
 </section>
 
 <div class="section-divider"></div>
@@ -114,9 +92,9 @@
 <section class="section" id="gallery">
   <div class="section-inner">
     <div class="section-head reveal">
-      <div class="section-label">Gallery</div>
-      <h2 class="section-title">갤러리</h2>
-      <p class="section-desc">촬영 현장의 비하인드, 완성된 코스프레 사진들을 모았습니다.</p>
+      <div class="section-label" id="gallery-label"></div>
+      <h2 class="section-title" id="gallery-title"></h2>
+      <p class="section-desc" id="gallery-desc"></p>
     </div>
     <div class="gallery-filter reveal" id="gallery-filter">
       <button class="gallery-filter-btn active" data-filter="all">전체</button>
@@ -124,9 +102,7 @@
       <button class="gallery-filter-btn" data-filter="scene">장면</button>
       <button class="gallery-filter-btn" data-filter="behind">비하인드</button>
     </div>
-    <div class="gallery-grid reveal" id="gallery-grid">
-      <!-- JS 렌더 -->
-    </div>
+    <div class="gallery-grid reveal" id="gallery-grid"></div>
   </div>
 </section>
 
@@ -136,13 +112,11 @@
 <section class="section" id="puzzles" style="background:var(--bg2)">
   <div class="section-inner">
     <div class="section-head reveal">
-      <div class="section-label">Puzzles</div>
-      <h2 class="section-title">수수께끼</h2>
-      <p class="section-desc">레이튼 교수 스타일의 퍼즐 미니게임들. 순차적으로 공개됩니다.</p>
+      <div class="section-label" id="puzzles-label"></div>
+      <h2 class="section-title" id="puzzles-title"></h2>
+      <p class="section-desc" id="puzzles-desc"></p>
     </div>
-    <div class="puzzle-cards reveal" id="puzzle-cards">
-      <!-- JS 렌더 -->
-    </div>
+    <div class="puzzle-cards reveal" id="puzzle-cards"></div>
   </div>
 </section>
 
@@ -150,11 +124,8 @@
 <footer>
   <div class="footer-inner">
     <div>
-      <div class="footer-logo">오들오들 교수<span>와 이상한 마을</span></div>
-      <div class="footer-tagline">
-        레이튼 교수 시리즈 팬사이트.<br>
-        Level-5 및 레이튼 교수 시리즈와 공식적인 관련이 없습니다.
-      </div>
+      <div class="footer-logo" id="footer-logo"></div>
+      <div class="footer-tagline" id="footer-tagline"></div>
     </div>
     <div class="footer-links">
       <a href="#about">소개</a>
@@ -165,7 +136,7 @@
   </div>
   <div class="footer-bottom">
     <div class="footer-copy">© 2026 오들오들 교수와 이상한 마을. Fan-made.</div>
-    <div class="footer-disclaimer">Professor Layton is a trademark of Level-5 Inc.</div>
+    <div class="footer-disclaimer" id="footer-disclaimer"></div>
   </div>
 </footer>
 
@@ -173,6 +144,11 @@
 <div id="lightbox">
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
   <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- ADMIN BAR -->
+<div id="admin-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1a1208;border-top:1px solid rgba(200,150,10,0.4);padding:10px 24px;font-size:12px;color:#a09070;z-index:200;">
+  🔐 어드민 모드 &nbsp;|&nbsp; <a href="admin/?admin=LAYTON2025" style="color:#c8960a">어드민 패널 열기 →</a>
 </div>
 
 <script src="js/data.js"></script>

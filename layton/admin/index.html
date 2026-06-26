@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>어드민 — 오들오들 교수</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0905;--bg2:#141009;--bg3:#1e170c;--bg4:#261e10;
+  --gold:#c8960a;--gold-dim:rgba(200,150,10,0.12);
+  --text:#ede0c0;--text-muted:#9a8a68;--text-faint:#5a4e36;
+  --border:rgba(200,150,10,0.18);--border-mid:rgba(200,150,10,0.38);
+  --green:#2a6b3a;--red:#8b1a10;
+}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* 로그인 */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+.login-box{width:100%;max-width:360px;background:var(--bg2);border:0.5px solid var(--border-mid);padding:40px 36px;text-align:center;}
+.login-title{font-size:18px;font-weight:700;color:var(--gold);margin-bottom:6px;}
+.login-sub{font-size:12px;color:var(--text-faint);margin-bottom:28px;}
+.login-box input{width:100%;background:var(--bg3);border:0.5px solid var(--border);color:var(--text);font-size:14px;padding:11px 14px;outline:none;margin-bottom:12px;}
+.login-box input:focus{border-color:var(--gold);}
+.login-box button{width:100%;padding:12px;background:var(--gold);color:#1a1208;font-size:13px;font-weight:700;border:none;cursor:pointer;}
+.login-box button:hover{background:#e0aa12;}
+.login-err{font-size:12px;color:#c0392b;margin-top:10px;display:none;}
+
+/* 어드민 레이아웃 */
+#admin{display:none;}
+.admin-header{background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:50;}
+.admin-header-title{font-size:13px;font-weight:700;color:var(--gold);}
+.admin-header-right{display:flex;gap:10px;align-items:center;}
+.btn-save{padding:8px 20px;background:var(--gold);color:#1a1208;font-size:12px;font-weight:700;border:none;cursor:pointer;letter-spacing:0.06em;}
+.btn-save:hover{background:#e0aa12;}
+.btn-export{padding:8px 14px;background:none;border:0.5px solid var(--border-mid);color:var(--text-faint);font-size:12px;cursor:pointer;}
+.btn-export:hover{border-color:var(--gold);color:var(--gold);}
+.btn-reset{padding:8px 14px;background:none;border:0.5px solid rgba(139,26,16,0.5);color:#c0392b;font-size:12px;cursor:pointer;}
+.btn-reset:hover{background:rgba(139,26,16,0.12);}
+.save-msg{font-size:12px;color:var(--gold);opacity:0;transition:opacity 0.3s;}
+
+.admin-body{display:flex;min-height:calc(100vh - 52px);}
+
+/* 사이드 탭 */
+.admin-tabs{width:180px;flex-shrink:0;background:var(--bg);border-right:1px solid var(--border);padding:20px 0;}
+.admin-tab{display:block;width:100%;padding:11px 20px;background:none;border:none;color:var(--text-muted);font-size:12px;text-align:left;cursor:pointer;letter-spacing:0.04em;transition:background 0.15s,color 0.15s;border-left:2px solid transparent;}
+.admin-tab:hover{background:var(--bg2);color:var(--text);}
+.admin-tab.active{background:var(--gold-dim);color:var(--gold);border-left-color:var(--gold);}
+
+/* 패널 */
+.admin-panel{flex:1;padding:32px 40px;overflow-y:auto;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* 폼 */
+.field-group{margin-bottom:24px;}
+.field-sep{border:none;border-top:1px solid var(--border);margin:28px 0;}
+.field-label{font-size:11px;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;display:block;}
+.field-hint{font-size:11px;color:var(--text-faint);margin-bottom:8px;}
+.admin-input,.admin-textarea,.admin-select{
+  width:100%;background:var(--bg2);border:0.5px solid var(--border);
+  color:var(--text);font-size:13px;padding:10px 12px;
+  font-family:'Noto Sans KR',sans-serif;outline:none;
+}
+.admin-input:focus,.admin-textarea:focus,.admin-select:focus{border-color:var(--gold);}
+.admin-textarea{resize:vertical;min-height:80px;line-height:1.6;}
+.admin-select{cursor:pointer;}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.input-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+/* 카드 리스트 */
+.card-list{display:flex;flex-direction:column;gap:2px;margin-bottom:12px;}
+.card-item{background:var(--bg2);border:0.5px solid var(--border);}
+.card-item-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;}
+.card-item-title{font-size:13px;font-weight:700;color:var(--text);}
+.card-item-body{display:none;padding:0 16px 16px;}
+.card-item-body.open{display:block;}
+.btn-add{padding:10px 20px;background:none;border:0.5px solid var(--border-mid);color:var(--text-muted);font-size:12px;cursor:pointer;letter-spacing:0.06em;transition:all 0.15s;}
+.btn-add:hover{border-color:var(--gold);color:var(--gold);}
+.btn-del{padding:4px 10px;background:none;border:0.5px solid rgba(139,26,16,0.4);color:#c0392b;font-size:11px;cursor:pointer;}
+.btn-del:hover{background:rgba(139,26,16,0.15);}
+.toggle-icon{font-size:16px;color:var(--text-faint);background:none;border:none;cursor:pointer;padding:0 4px;}
+
+/* 이미지 프리뷰 */
+.img-preview{width:100%;max-height:120px;object-fit:cover;margin-top:8px;border:0.5px solid var(--border);display:none;}
+.img-preview.show{display:block;}
+
+/* 타이밍 행 */
+.timing-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.timing-row label{font-size:12px;color:var(--text-muted);white-space:nowrap;}
+.timing-row .admin-input{width:90px;}
+
+/* 내보내기 모달 */
+.export-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;padding:24px;}
+.export-modal.open{display:flex;}
+.export-box{width:100%;max-width:700px;background:var(--bg2);border:1px solid var(--border-mid);display:flex;flex-direction:column;max-height:80vh;}
+.export-box-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.export-box-title{font-size:13px;font-weight:700;color:var(--gold);}
+.export-box-body{flex:1;overflow:auto;padding:0;}
+.export-box textarea{width:100%;height:400px;background:var(--bg3);color:#a0c080;font-family:monospace;font-size:11px;border:none;padding:16px;resize:none;outline:none;line-height:1.6;}
+.export-box-footer{padding:12px 20px;display:flex;gap:10px;border-top:1px solid var(--border);}
+.btn-copy{padding:8px 18px;background:var(--gold);color:#1a1208;font-size:12px;font-weight:700;border:none;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-title">🎩 어드민 패널</div>
+    <div class="login-sub">오들오들 교수와 이상한 마을</div>
+    <input type="password" id="pw-input" placeholder="패스워드" onkeydown="if(event.key==='Enter')tryLogin()">
+    <button onclick="tryLogin()">입장</button>
+    <div class="login-err" id="login-err">패스워드가 틀렸습니다.</div>
+  </div>
+</div>
+
+<!-- 어드민 -->
+<div id="admin">
+  <div class="admin-header">
+    <div class="admin-header-title">🎩 오들오들 교수 — 어드민</div>
+    <div class="admin-header-right">
+      <span class="save-msg" id="save-msg">✓ 저장됨</span>
+      <button class="btn-export" onclick="openExport()">data.js 복사</button>
+      <button class="btn-reset" onclick="resetData()">초기화</button>
+      <button class="btn-save" onclick="saveData()">저장 & 적용</button>
+      <a href="../" style="font-size:12px;color:var(--text-faint);text-decoration:none;" target="_blank">사이트 보기 →</a>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('site')">🌐 사이트 정보</button>
+      <button class="admin-tab" onclick="switchTab('hero')">🖼 히어로</button>
+      <button class="admin-tab" onclick="switchTab('about')">📖 About</button>
+      <button class="admin-tab" onclick="switchTab('characters')">🎭 등장인물</button>
+      <button class="admin-tab" onclick="switchTab('gallery')">📸 갤러리</button>
+      <button class="admin-tab" onclick="switchTab('puzzles')">🧩 수수께끼</button>
+    </div>
+
+    <div class="admin-panel">
+
+      <!-- ── 사이트 정보 ── -->
+      <div class="panel active" id="panel-site">
+        <div class="field-group">
+          <label class="field-label">사이트 제목 (한국어)</label>
+          <input class="admin-input" id="site-title">
+        </div>
+        <div class="field-group">
+          <label class="field-label">사이트 제목 (영어)</label>
+          <input class="admin-input" id="site-titleEn">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Nav 로고 — 강조 부분</label>
+          <input class="admin-input" id="site-navLabel">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Nav 로고 — 나머지</label>
+          <input class="admin-input" id="site-navSub">
+        </div>
+        <div class="field-group">
+          <label class="field-label">푸터 태그라인</label>
+          <div class="field-hint">줄바꿈: Enter</div>
+          <textarea class="admin-textarea" id="site-tagline" rows="3"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">푸터 면책조항</label>
+          <input class="admin-input" id="site-disclaimer">
+        </div>
+      </div>
+
+      <!-- ── 히어로 ── -->
+      <div class="panel" id="panel-hero">
+        <div class="field-group">
+          <label class="field-label">Eyebrow (소제목)</label>
+          <input class="admin-input" id="hero-eyebrow">
+        </div>
+        <div class="field-group">
+          <label class="field-label">메인 제목</label>
+          <div class="field-hint">첫 번째 줄이 금색. 줄바꿈: Enter</div>
+          <textarea class="admin-textarea" id="hero-title" rows="3"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">부제목</label>
+          <div class="field-hint">줄바꿈: Enter</div>
+          <textarea class="admin-textarea" id="hero-subtitle" rows="3"></textarea>
+        </div>
+        <div class="input-row field-group">
+          <div>
+            <label class="field-label">CTA 버튼 (금색)</label>
+            <input class="admin-input" id="hero-ctaPrimary">
+          </div>
+          <div>
+            <label class="field-label">CTA 버튼 (아웃라인)</label>
+            <input class="admin-input" id="hero-ctaSecondary">
+          </div>
+        </div>
+        <hr class="field-sep">
+        <div class="field-group">
+          <label class="field-label">배경 이미지 경로</label>
+          <div class="field-hint">예: assets/images/hero-bg.jpg</div>
+          <input class="admin-input" id="hero-bgImage" oninput="previewSrc(this.value,'hero-bg-prev','../')">
+          <img class="img-preview" id="hero-bg-prev" src="" alt="">
+        </div>
+        <hr class="field-sep">
+        <div class="field-group">
+          <label class="field-label">PNG 인트로 (순서대로 페이드인→아웃, 마지막은 고정)</label>
+          <div class="field-hint">투명 배경 PNG 경로. 예: assets/images/intro1.png</div>
+          <div id="hero-pngs-list"></div>
+          <button class="btn-add" style="margin-top:8px" onclick="addPng()">+ PNG 추가</button>
+        </div>
+        <div class="field-group">
+          <label class="field-label">타이밍</label>
+          <div class="timing-row">
+            <label>표시 시간</label>
+            <input class="admin-input" id="hero-pngDuration" type="number" min="300" step="100"> ms
+            <label style="margin-left:12px">페이드 시간</label>
+            <input class="admin-input" id="hero-pngFade" type="number" min="100" step="100"> ms
+          </div>
+        </div>
+      </div>
+
+      <!-- ── About ── -->
+      <div class="panel" id="panel-about">
+        <div class="field-group">
+          <label class="field-label">섹션 레이블</label>
+          <input class="admin-input" id="about-label">
+        </div>
+        <div class="field-group">
+          <label class="field-label">섹션 제목</label>
+          <div class="field-hint">줄바꿈: Enter</div>
+          <textarea class="admin-textarea" id="about-title" rows="2"></textarea>
+        </div>
+        <hr class="field-sep">
+        <div class="field-group">
+          <label class="field-label">본문 단락</label>
+          <div class="field-hint">**굵게** 사용 가능</div>
+          <div class="card-list" id="about-para-list"></div>
+          <button class="btn-add" onclick="addPara()">+ 단락 추가</button>
+        </div>
+        <hr class="field-sep">
+        <div class="field-group">
+          <label class="field-label">인용구</label>
+          <textarea class="admin-textarea" id="about-quote" rows="2"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">인용구 출처</label>
+          <input class="admin-input" id="about-quoteAuthor">
+        </div>
+      </div>
+
+      <!-- ── 등장인물 ── -->
+      <div class="panel" id="panel-characters">
+        <div class="field-hint" style="margin-bottom:16px">첫 번째 캐릭터가 메인(넓은) 카드로 표시됩니다.</div>
+        <div class="card-list" id="char-list"></div>
+        <button class="btn-add" onclick="addChar()">+ 캐릭터 추가</button>
+      </div>
+
+      <!-- ── 갤러리 ── -->
+      <div class="panel" id="panel-gallery">
+        <div class="field-group">
+          <label class="field-label">섹션 레이블</label>
+          <input class="admin-input" id="gallery-label">
+        </div>
+        <div class="field-group">
+          <label class="field-label">섹션 제목</label>
+          <input class="admin-input" id="gallery-title">
+        </div>
+        <div class="field-group">
+          <label class="field-label">섹션 설명</label>
+          <textarea class="admin-textarea" id="gallery-desc" rows="2"></textarea>
+        </div>
+        <hr class="field-sep">
+        <div class="field-group">
+          <label class="field-label">사진 목록</label>
+          <div class="card-list" id="gallery-list"></div>
+          <button class="btn-add" onclick="addGallery()">+ 사진 추가</button>
+        </div>
+      </div>
+
+      <!-- ── 수수께끼 ── -->
+      <div class="panel" id="panel-puzzles">
+        <div class="field-group">
+          <label class="field-label">섹션 레이블</label>
+          <input class="admin-input" id="puzzles-label">
+        </div>
+        <div class="field-group">
+          <label class="field-label">섹션 제목</label>
+          <input class="admin-input" id="puzzles-title">
+        </div>
+        <div class="field-group">
+          <label class="field-label">섹션 설명</label>
+          <textarea class="admin-textarea" id="puzzles-desc" rows="2"></textarea>
+        </div>
+        <hr class="field-sep">
+        <div class="field-group">
+          <label class="field-label">수수께끼 카드</label>
+          <div class="card-list" id="puzzle-list"></div>
+          <button class="btn-add" onclick="addPuzzle()">+ 카드 추가</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 내보내기 모달 -->
+<div class="export-modal" id="export-modal">
+  <div class="export-box">
+    <div class="export-box-header">
+      <span class="export-box-title">data.js 내보내기 — 복사해서 data.js에 붙여넣기</span>
+      <button class="toggle-icon" onclick="closeExport()">✕</button>
+    </div>
+    <div class="export-box-body">
+      <textarea id="export-ta" readonly></textarea>
+    </div>
+    <div class="export-box-footer">
+      <button class="btn-copy" onclick="copyExport()">클립보드 복사</button>
+      <button class="btn-export" onclick="closeExport()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/data.js"></script>
+<script>
+// ══════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════
+const ADMIN_PW = 'LAYTON2025';
+
+function tryLogin() {
+  if (document.getElementById('pw-input').value === ADMIN_PW) {
+    sessionStorage.setItem('layton_admin', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin').style.display = 'block';
+    initAdmin();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+
+(function autoAuth() {
+  const p = new URLSearchParams(location.search);
+  if (p.get('admin') === ADMIN_PW || sessionStorage.getItem('layton_admin') === '1') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin').style.display = 'block';
+    initAdmin();
+  }
+})();
+
+
+// ══════════════════════════════════════════
+//  STATE  (메모리 캐시 — 저장할 때는 DOM에서 직접 읽음)
+// ══════════════════════════════════════════
+let AD = {};
+
+function initAdmin() {
+  try {
+    const saved = localStorage.getItem('layton_data');
+    AD = saved ? JSON.parse(saved) : deepCopy(DEFAULT_DATA);
+  } catch(e) {
+    AD = deepCopy(DEFAULT_DATA);
+  }
+  buildForms();
+}
+
+function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
+
+
+// ══════════════════════════════════════════
+//  SAVE  ← 저장 전 항상 DOM에서 전부 읽어서 AD를 재구성
+// ══════════════════════════════════════════
+function saveData() {
+  AD = collectAllFromDOM();
+  localStorage.setItem('layton_data', JSON.stringify(AD));
+  flashMsg('✓ 저장됨');
+}
+
+function resetData() {
+  if (!confirm('모든 수정사항이 초기화됩니다. 계속하시겠습니까?')) return;
+  localStorage.removeItem('layton_data');
+  AD = deepCopy(DEFAULT_DATA);
+  buildForms();
+  flashMsg('↺ 초기화됨');
+}
+
+function flashMsg(txt) {
+  const el = document.getElementById('save-msg');
+  el.textContent = txt;
+  el.style.opacity = '1';
+  setTimeout(() => el.style.opacity = '0', 2000);
+}
+
+
+// ══════════════════════════════════════════
+//  collectAllFromDOM  — 저장의 핵심
+//  DOM을 읽어서 완전한 DATA 객체 반환
+//  메모리 상태(AD)를 전혀 믿지 않음
+// ══════════════════════════════════════════
+function collectAllFromDOM() {
+  const data = {};
+
+  // ── 사이트 ──
+  data.site = {
+    title:      gv('site-title'),
+    titleEn:    gv('site-titleEn'),
+    navLabel:   gv('site-navLabel'),
+    navSub:     gv('site-navSub'),
+    tagline:    gv('site-tagline'),
+    disclaimer: gv('site-disclaimer'),
+  };
+
+  // ── 히어로 ──
+  // PNG 경로: #hero-pngs-list 안의 input들
+  const pngInputs = document.querySelectorAll('#hero-pngs-list input[data-png]');
+  const pngs = Array.from(pngInputs).map(el => el.value.trim()).filter(Boolean);
+
+  data.hero = {
+    eyebrow:      gv('hero-eyebrow'),
+    title:        gv('hero-title'),
+    subtitle:     gv('hero-subtitle'),
+    ctaPrimary:   gv('hero-ctaPrimary'),
+    ctaSecondary: gv('hero-ctaSecondary'),
+    bgImage:      gv('hero-bgImage'),
+    pngs,
+    pngDuration:  Number(gv('hero-pngDuration')) || 1200,
+    pngFade:      Number(gv('hero-pngFade'))     || 600,
+  };
+
+  // ── About ──
+  const paraEls = document.querySelectorAll('#about-para-list textarea[data-para]');
+  data.about = {
+    label:       gv('about-label'),
+    title:       gv('about-title'),
+    paragraphs:  Array.from(paraEls).map(el => el.value),
+    quote:       gv('about-quote'),
+    quoteAuthor: gv('about-quoteAuthor'),
+  };
+
+  // ── 등장인물 ──
+  // 각 카드의 data-char-id 기준으로 읽음
+  const charCards = document.querySelectorAll('#char-list .card-item');
+  data.characters = Array.from(charCards).map(card => ({
+    id:        card.dataset.charId || ('char_' + Date.now() + Math.random()),
+    name:      qv(card, '[data-field="name"]'),
+    role:      qv(card, '[data-field="role"]'),
+    desc:      qv(card, '[data-field="desc"]'),
+    photo:     qv(card, '[data-field="photo"]'),
+    cosplayer: qv(card, '[data-field="cosplayer"]'),
+  }));
+
+  // ── 갤러리 섹션 ──
+  const galCards = document.querySelectorAll('#gallery-list .card-item');
+  data.gallery = {
+    label: gv('gallery-label'),
+    title: gv('gallery-title'),
+    desc:  gv('gallery-desc'),
+    items: Array.from(galCards).map(card => ({
+      id:       card.dataset.galId || ('gal_' + Date.now() + Math.random()),
+      src:      qv(card, '[data-field="src"]'),
+      category: qv(card, '[data-field="category"]'),
+      alt:      qv(card, '[data-field="alt"]'),
+    })),
+  };
+
+  // ── 수수께끼 ──
+  const puzCards = document.querySelectorAll('#puzzle-list .card-item');
+  data.puzzles = {
+    label: gv('puzzles-label'),
+    title: gv('puzzles-title'),
+    desc:  gv('puzzles-desc'),
+    items: Array.from(puzCards).map(card => ({
+      id:     card.dataset.puzId || ('puz_' + Date.now() + Math.random()),
+      num:    qv(card, '[data-field="num"]'),
+      icon:   qv(card, '[data-field="icon"]'),
+      title:  qv(card, '[data-field="title"]'),
+      desc:   qv(card, '[data-field="desc"]'),
+      status: qv(card, '[data-field="status"]'),
+    })),
+  };
+
+  return data;
+}
+
+// 헬퍼
+function gv(id) { return (document.getElementById(id)?.value ?? '').trim(); }
+function qv(parent, sel) { return (parent.querySelector(sel)?.value ?? '').trim(); }
+
+
+// ══════════════════════════════════════════
+//  BUILD FORMS  — AD → DOM
+// ══════════════════════════════════════════
+function buildForms() {
+  buildSite();
+  buildHero();
+  buildAbout();
+  buildChars();
+  buildGallery();
+  buildPuzzles();
+}
+
+// ── 사이트 ──
+function buildSite() {
+  const s = AD.site || {};
+  sv('site-title',      s.title      || '');
+  sv('site-titleEn',    s.titleEn    || '');
+  sv('site-navLabel',   s.navLabel   || '');
+  sv('site-navSub',     s.navSub     || '');
+  sv('site-tagline',    s.tagline    || '');
+  sv('site-disclaimer', s.disclaimer || '');
+}
+
+// ── 히어로 ──
+function buildHero() {
+  const h = AD.hero || {};
+  sv('hero-eyebrow',      h.eyebrow      || '');
+  sv('hero-title',        h.title        || '');
+  sv('hero-subtitle',     h.subtitle     || '');
+  sv('hero-ctaPrimary',   h.ctaPrimary   || '');
+  sv('hero-ctaSecondary', h.ctaSecondary || '');
+  sv('hero-bgImage',      h.bgImage      || '');
+  sv('hero-pngDuration',  h.pngDuration  ?? 1200);
+  sv('hero-pngFade',      h.pngFade      ?? 600);
+  previewSrc(h.bgImage || '', 'hero-bg-prev', '../');
+  renderPngList(h.pngs || []);
+}
+
+function renderPngList(pngs) {
+  const list = document.getElementById('hero-pngs-list');
+  list.innerHTML = '';
+  pngs.forEach((src, i) => {
+    const isLast = (i === pngs.length - 1);
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;';
+    row.innerHTML =
+      `<span style="font-size:11px;color:var(--text-faint);min-width:58px">${isLast ? '🔒 고정' : `#${i+1} 페이드`}</span>` +
+      `<input class="admin-input" data-png="${i}" value="${esc(src)}"
+         placeholder="assets/images/intro${i+1}.png"
+         oninput="previewSrc(this.value,'png-prev-${i}','../')" style="flex:1">` +
+      `<button class="btn-del" onclick="removePng(${i})">삭제</button>`;
+    list.appendChild(row);
+    const prev = document.createElement('img');
+    prev.id = `png-prev-${i}`;
+    prev.className = 'img-preview' + (src ? ' show' : '');
+    prev.style.cssText = 'max-height:70px;object-fit:contain;background:var(--bg3);margin-bottom:6px;';
+    prev.src = src ? '../' + src : '';
+    prev.onerror = () => prev.classList.remove('show');
+    list.appendChild(prev);
+  });
+}
+
+function addPng() {
+  // 저장 후 추가: 현재 DOM 상태 먼저 읽기
+  const cur = Array.from(document.querySelectorAll('#hero-pngs-list input[data-png]'))
+                   .map(el => el.value.trim());
+  cur.push('');
+  renderPngList(cur);
+}
+function removePng(i) {
+  const cur = Array.from(document.querySelectorAll('#hero-pngs-list input[data-png]'))
+                   .map(el => el.value.trim());
+  cur.splice(i, 1);
+  renderPngList(cur);
+}
+
+// ── About ──
+function buildAbout() {
+  const a = AD.about || {};
+  sv('about-label',       a.label       || '');
+  sv('about-title',       a.title       || '');
+  sv('about-quote',       a.quote       || '');
+  sv('about-quoteAuthor', a.quoteAuthor || '');
+  renderParaList(a.paragraphs || []);
+}
+
+function renderParaList(paras) {
+  const list = document.getElementById('about-para-list');
+  list.innerHTML = '';
+  paras.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;';
+    row.innerHTML =
+      `<textarea class="admin-textarea" data-para="${i}" rows="2" style="flex:1">${esc(p)}</textarea>` +
+      `<button class="btn-del" style="align-self:start;margin-top:4px" onclick="removePara(${i})">삭제</button>`;
+    list.appendChild(row);
+  });
+}
+
+function addPara() {
+  const cur = Array.from(document.querySelectorAll('#about-para-list textarea[data-para]'))
+                   .map(el => el.value);
+  cur.push('');
+  renderParaList(cur);
+}
+function removePara(i) {
+  const cur = Array.from(document.querySelectorAll('#about-para-list textarea[data-para]'))
+                   .map(el => el.value);
+  cur.splice(i, 1);
+  renderParaList(cur);
+}
+
+// ── 등장인물 ──
+function buildChars() {
+  const list = document.getElementById('char-list');
+  list.innerHTML = '';
+  (AD.characters || []).forEach((c, i) => appendCharCard(c, i, i === 0));
+}
+
+function appendCharCard(c, i, isFirst) {
+  const item = document.createElement('div');
+  item.className = 'card-item';
+  item.dataset.charId = c.id || ('char_' + Date.now() + Math.random());
+  item.innerHTML = `
+    <div class="card-item-header" onclick="toggleCard(this)">
+      <span class="card-item-title">${isFirst ? '⭐ ' : ''}${esc(c.name || '새 캐릭터')}</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn-del" onclick="event.stopPropagation();removeChar(this)">삭제</button>
+        <button class="toggle-icon">▼</button>
+      </div>
+    </div>
+    <div class="card-item-body ${i === 0 ? 'open' : ''}">
+      <div class="input-row" style="margin-bottom:10px">
+        <div>
+          <label class="field-label">이름</label>
+          <input class="admin-input" data-field="name" value="${esc(c.name||'')}"
+            oninput="updateCardTitle(this,'${isFirst ? '⭐ ' : ''}')">
+        </div>
+        <div>
+          <label class="field-label">역할 (영문)</label>
+          <input class="admin-input" data-field="role" value="${esc(c.role||'')}">
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <label class="field-label">설명</label>
+        <textarea class="admin-textarea" data-field="desc" rows="2">${esc(c.desc||'')}</textarea>
+      </div>
+      <div style="margin-bottom:10px">
+        <label class="field-label">사진 경로</label>
+        <div class="field-hint">예: assets/images/characters/prof.jpg</div>
+        <input class="admin-input" data-field="photo" value="${esc(c.photo||'')}"
+          oninput="previewSrcNear(this,'../')">
+        <img class="img-preview ${c.photo ? 'show' : ''}" src="${c.photo ? '../'+esc(c.photo) : ''}" alt="">
+      </div>
+      <div>
+        <label class="field-label">코스플레이어 이름</label>
+        <input class="admin-input" data-field="cosplayer" value="${esc(c.cosplayer||'')}">
+      </div>
+    </div>`;
+  document.getElementById('char-list').appendChild(item);
+}
+
+function addChar() {
+  const chars = AD.characters || [];
+  chars.push({id:'char_'+Date.now(),name:'새 캐릭터',role:'',desc:'',photo:'',cosplayer:''});
+  AD.characters = chars;
+  appendCharCard(chars[chars.length-1], chars.length-1, false);
+}
+function removeChar(btn) {
+  btn.closest('.card-item').remove();
+}
+
+// ── 갤러리 ──
+function buildGallery() {
+  sv('gallery-label', (AD.gallery || {}).label || '');
+  sv('gallery-title', (AD.gallery || {}).title || '');
+  sv('gallery-desc',  (AD.gallery || {}).desc  || '');
+  const list = document.getElementById('gallery-list');
+  list.innerHTML = '';
+  ((AD.gallery || {}).items || []).forEach(appendGalleryCard);
+}
+
+function appendGalleryCard(item) {
+  const el = document.createElement('div');
+  el.className = 'card-item';
+  el.dataset.galId = item.id || ('gal_'+Date.now()+Math.random());
+  el.innerHTML = `
+    <div class="card-item-header" onclick="toggleCard(this)">
+      <span class="card-item-title">${esc(item.alt || '사진')}</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn-del" onclick="event.stopPropagation();this.closest('.card-item').remove()">삭제</button>
+        <button class="toggle-icon">▼</button>
+      </div>
+    </div>
+    <div class="card-item-body">
+      <div style="margin-bottom:10px">
+        <label class="field-label">이미지 경로</label>
+        <div class="field-hint">예: assets/images/gallery/photo1.jpg</div>
+        <input class="admin-input" data-field="src" value="${esc(item.src||'')}"
+          oninput="previewSrcNear(this,'../')">
+        <img class="img-preview ${item.src ? 'show' : ''}" src="${item.src ? '../'+esc(item.src) : ''}" alt="">
+      </div>
+      <div class="input-row">
+        <div>
+          <label class="field-label">카테고리</label>
+          <select class="admin-select" data-field="category">
+            <option value="portrait" ${item.category==='portrait'?'selected':''}>포트레이트</option>
+            <option value="scene"    ${item.category==='scene'   ?'selected':''}>장면</option>
+            <option value="behind"   ${item.category==='behind'  ?'selected':''}>비하인드</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">설명 (alt)</label>
+          <input class="admin-input" data-field="alt" value="${esc(item.alt||'')}"
+            oninput="updateCardTitle(this,'')">
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('gallery-list').appendChild(el);
+}
+
+function addGallery() {
+  appendGalleryCard({id:'gal_'+Date.now(), src:'', category:'portrait', alt:''});
+}
+
+// ── 수수께끼 ──
+function buildPuzzles() {
+  sv('puzzles-label', (AD.puzzles || {}).label || '');
+  sv('puzzles-title', (AD.puzzles || {}).title || '');
+  sv('puzzles-desc',  (AD.puzzles || {}).desc  || '');
+  const list = document.getElementById('puzzle-list');
+  list.innerHTML = '';
+  ((AD.puzzles || {}).items || []).forEach(appendPuzzleCard);
+}
+
+function appendPuzzleCard(item) {
+  const el = document.createElement('div');
+  el.className = 'card-item';
+  el.dataset.puzId = item.id || ('puz_'+Date.now()+Math.random());
+  el.innerHTML = `
+    <div class="card-item-header" onclick="toggleCard(this)">
+      <span class="card-item-title">#${esc(item.num)} ${esc(item.title)}</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn-del" onclick="event.stopPropagation();this.closest('.card-item').remove()">삭제</button>
+        <button class="toggle-icon">▼</button>
+      </div>
+    </div>
+    <div class="card-item-body">
+      <div class="input-row-3" style="margin-bottom:10px">
+        <div>
+          <label class="field-label">번호</label>
+          <input class="admin-input" data-field="num" value="${esc(item.num||'')}">
+        </div>
+        <div>
+          <label class="field-label">아이콘 (이모지)</label>
+          <input class="admin-input" data-field="icon" value="${esc(item.icon||'🧩')}">
+        </div>
+        <div>
+          <label class="field-label">상태</label>
+          <select class="admin-select" data-field="status">
+            <option value="coming"    ${item.status!=='available'?'selected':''}>준비 중</option>
+            <option value="available" ${item.status==='available'?'selected':''}>도전 가능</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <label class="field-label">제목</label>
+        <input class="admin-input" data-field="title" value="${esc(item.title||'')}"
+          oninput="updateCardTitle(this,'#'+this.closest('.card-item').querySelector('[data-field=num]').value+' ')">
+      </div>
+      <div>
+        <label class="field-label">설명</label>
+        <textarea class="admin-textarea" data-field="desc" rows="2">${esc(item.desc||'')}</textarea>
+      </div>
+    </div>`;
+  document.getElementById('puzzle-list').appendChild(el);
+}
+
+function addPuzzle() {
+  const n = String(document.querySelectorAll('#puzzle-list .card-item').length + 1).padStart(3,'0');
+  appendPuzzleCard({id:'puz_'+Date.now(), num:n, icon:'🧩', title:'새 수수께끼', desc:'', status:'coming'});
+}
+
+
+// ══════════════════════════════════════════
+//  EXPORT — data.js 복붙용
+// ══════════════════════════════════════════
+function openExport() {
+  const data = collectAllFromDOM();
+  const js = `// ═══════════════════════════════════════
+//  오들오들 교수와 이상한 마을 — DEFAULT DATA
+//  어드민에서 수정한 값은 localStorage('layton_data')에 저장
+//  main.js의 loadData()가 localStorage 우선 적용
+// ═══════════════════════════════════════
+
+const DEFAULT_DATA = ${JSON.stringify(data, null, 2)};
+
+// 런타임 DATA (main.js에서 loadData() 호출 시 채워짐)
+let DATA = {};
+`;
+  document.getElementById('export-ta').value = js;
+  document.getElementById('export-modal').classList.add('open');
+}
+function closeExport() {
+  document.getElementById('export-modal').classList.remove('open');
+}
+function copyExport() {
+  const ta = document.getElementById('export-ta');
+  ta.select();
+  document.execCommand('copy');
+  flashMsg('✓ 복사됨');
+}
+
+
+// ══════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+function toggleCard(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+  const btn = header.querySelector('.toggle-icon');
+  if (btn) btn.textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+// 카드 헤더 타이틀을 입력할 때 실시간 반영
+function updateCardTitle(input, prefix) {
+  const header = input.closest('.card-item').querySelector('.card-item-title');
+  if (header) header.textContent = prefix + input.value;
+}
+
+// 이미지 프리뷰: input 옆의 다음 img 태그
+function previewSrcNear(input, base) {
+  const img = input.nextElementSibling;
+  if (!img || img.tagName !== 'IMG') return;
+  const val = input.value.trim();
+  if (val) { img.src = base + val; img.classList.add('show'); }
+  else img.classList.remove('show');
+}
+
+// 이미지 프리뷰: id 지정
+function previewSrc(val, imgId, base) {
+  const img = document.getElementById(imgId);
+  if (!img) return;
+  if (val) { img.src = base + val; img.classList.add('show'); }
+  else img.classList.remove('show');
+}
+
+function sv(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
+function esc(s) {
+  return String(s ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
