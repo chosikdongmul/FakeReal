@@ -386,16 +386,45 @@ function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
 // ══════════════════════════════════════════
 //  SAVE  ← 저장 전 항상 DOM에서 전부 읽어서 AD를 재구성
 // ══════════════════════════════════════════
+var _isDirty = false;
+
+// 저장 안 하고 나가면 경고
+window.addEventListener('beforeunload', function(e) {
+  if (_isDirty) {
+    e.preventDefault();
+    e.returnValue = '저장하지 않은 변경사항이 있습니다.';
+  }
+});
+
+// 폼 변경 감지 — 저장 버튼 강조
+document.addEventListener('input', function() {
+  _isDirty = true;
+  var btn = document.querySelector('.btn-save');
+  if (btn) btn.style.outline = '2px solid #fff';
+});
+
 function saveData() {
   AD = collectAllFromDOM();
-  localStorage.setItem('layton_data', JSON.stringify(AD));
-  flashMsg('✓ 저장됨');
+  var json = JSON.stringify(AD);
+  localStorage.setItem('layton_data', json);
+
+  // 저장 실제 확인
+  var check = localStorage.getItem('layton_data');
+  if (check && check.length > 10) {
+    _isDirty = false;
+    var btn = document.querySelector('.btn-save');
+    if (btn) btn.style.outline = '';
+    flashMsg('✓ 저장됨 (' + Math.round(json.length / 1024 * 10) / 10 + 'KB)');
+  } else {
+    flashMsg('⚠️ 저장 실패 — 브라우저 저장소를 확인하세요');
+  }
 }
 
 function resetData() {
   if (!confirm('모든 수정사항이 초기화됩니다. 계속하시겠습니까?')) return;
   localStorage.removeItem('layton_data');
   AD = deepCopy(DEFAULT_DATA);
+  _isDirty = false;
   buildForms();
   flashMsg('↺ 초기화됨');
 }
@@ -404,7 +433,7 @@ function flashMsg(txt) {
   const el = document.getElementById('save-msg');
   el.textContent = txt;
   el.style.opacity = '1';
-  setTimeout(() => el.style.opacity = '0', 2000);
+  setTimeout(() => el.style.opacity = '0', 3000);
 }
 
 
