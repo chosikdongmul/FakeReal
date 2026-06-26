@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>오들오들 교수와 이상한 마을</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="game">
+  <div id="game-bg"></div>
+
+  <div id="game-frame">
+
+    <!-- ── HUD ── -->
+    <div id="hud">
+      <div id="hud-title">오들오들 교수와 이상한 마을</div>
+      <div id="hud-right">
+        <div class="hud-stat">
+          <span class="hud-stat-icon">🧩</span>
+          <span class="hud-stat-val" id="hud-solved">0</span>
+          <span>/</span>
+          <span class="hud-stat-val" id="hud-total">0</span>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-stat-icon">💡</span>
+          <span class="hud-stat-val" id="hud-hints">3</span>
+        </div>
+        <button id="hud-hint-btn" onclick="showHint()">힌트</button>
+      </div>
+    </div>
+
+    <!-- ── 화면들 ── -->
+    <div id="screens">
+
+      <!-- SCREEN 1: 타이틀 -->
+      <div class="screen active" id="screen-title">
+        <div class="title-art">
+          <div class="title-art-bg"></div>
+          <div class="title-inner">
+            <div class="title-eyebrow">A Mystery Adventure</div>
+            <div class="title-logo">
+              <span class="highlight">오들오들 교수</span>와<br>이상한 마을
+            </div>
+            <div class="title-subtitle">Professor Oddleoddle and the Strange Town</div>
+            <div class="title-divider"><div class="title-divider-gem"></div></div>
+            <button class="title-start-btn" onclick="goToMap()">▶ 게임 시작</button>
+          </div>
+        </div>
+        <div class="title-bottom">
+          <div class="title-bottom-text">탐정과 함께 마을의 비밀을 풀어보세요</div>
+        </div>
+      </div>
+
+      <!-- SCREEN 2: 마을 맵 -->
+      <div class="screen" id="screen-map">
+        <div class="map-header">
+          <div>
+            <div class="map-header-title">🗺 이상한 마을</div>
+            <div class="map-header-sub">장소를 선택해 사건을 조사하세요</div>
+          </div>
+          <div class="map-progress-text" id="map-progress">0 / 0 해결</div>
+        </div>
+
+        <div class="map-area" id="map-area">
+          <!-- JS로 노드 렌더링 -->
+        </div>
+
+        <div class="map-footer">
+          <div class="map-total-puzzles">
+            총 <span id="map-total-count">0</span>개의 수수께끼
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: 씬/대화 -->
+      <div class="screen" id="screen-scene">
+        <div class="scene-illustration" id="scene-illustration">
+          <img id="scene-img" src="" alt="">
+          <div class="scene-illustration-overlay"></div>
+          <div class="scene-location-tag" id="scene-location-tag">장소명</div>
+        </div>
+
+        <div class="scene-dialogue-area" id="scene-dialogue-area">
+          <!-- JS로 대화 렌더링 -->
+        </div>
+
+        <div class="scene-actions">
+          <button class="scene-btn" onclick="goToMap()">← 마을로</button>
+          <button class="scene-btn primary" id="scene-puzzle-btn" onclick="goToPuzzle()">수수께끼 풀기 →</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 4: 퍼즐 -->
+      <div class="screen" id="screen-puzzle">
+        <div class="puzzle-header">
+          <button class="puzzle-back-btn" onclick="goToScene()">←</button>
+          <div class="puzzle-number" id="puzzle-number">수수께끼 #1</div>
+          <div class="puzzle-title" id="puzzle-title">제목</div>
+        </div>
+
+        <div class="puzzle-desc-frame">
+          <div class="puzzle-desc-text" id="puzzle-desc">수수께끼 설명이 여기에 표시됩니다.</div>
+        </div>
+
+        <div class="puzzle-input-area" id="puzzle-input-area">
+          <!-- JS로 입력 렌더링 (객관식 / 주관식) -->
+        </div>
+
+        <div class="puzzle-footer">
+          <div class="puzzle-hint-count">💡 힌트 <span id="puzzle-hint-left">3</span>개 남음</div>
+          <button class="puzzle-submit-btn" id="puzzle-submit-btn" onclick="submitPuzzle()">정답 제출</button>
+        </div>
+      </div>
+
+      <!-- 결과 오버레이 -->
+      <div id="result-overlay">
+        <div class="result-box">
+          <div class="result-icon" id="result-icon">✨</div>
+          <div class="result-label" id="result-label">정답!</div>
+          <div class="result-message" id="result-message">훌륭합니다, 교수님!</div>
+          <button class="result-next-btn" id="result-next-btn" onclick="closeResult()">계속하기</button>
+        </div>
+      </div>
+
+      <!-- 힌트 오버레이 -->
+      <div id="hint-overlay" onclick="if(event.target===this)closeHint()">
+        <div class="hint-drawer">
+          <div class="hint-header">
+            <div class="hint-title">💡 힌트</div>
+            <button class="hint-close" onclick="closeHint()">✕</button>
+          </div>
+          <div class="hint-text" id="hint-text">힌트가 여기에 표시됩니다.</div>
+          <div class="hint-cost">힌트를 사용하면 남은 힌트가 1개 줄어듭니다.</div>
+        </div>
+      </div>
+
+    </div><!-- /screens -->
+
+    <!-- ── 하단 탭 ── -->
+    <div id="bottom-nav">
+      <button class="bottom-nav-tab active" onclick="switchTab('map')">
+        <span class="tab-icon">🗺</span>마을 맵
+      </button>
+      <button class="bottom-nav-tab" onclick="switchTab('journal')">
+        <span class="tab-icon">📓</span>일지
+      </button>
+      <button class="bottom-nav-tab" onclick="switchTab('cosplay')">
+        <span class="tab-icon">📸</span>코스프레
+      </button>
+      <button class="bottom-nav-tab" onclick="switchTab('profile')">
+        <span class="tab-icon">🎩</span>교수
+      </button>
+    </div>
+
+  </div><!-- /game-frame -->
+</div><!-- /game -->
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
