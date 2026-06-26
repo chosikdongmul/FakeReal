@@ -84,6 +84,7 @@ input, textarea, select { font-family: inherit; }
 }
 .ann-dismiss:hover { opacity: 1; }
 body.has-announcement .nav { top: 36px; }
+body.has-announcement .mobile-menu { top: calc(36px + var(--nav-h)); }
 
 /* ---------- Nav ---------- */
 .nav {
@@ -928,10 +929,67 @@ body.has-announcement .nav { top: 36px; }
   .mediakit-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-inner { grid-template-columns: 1fr 1fr; }
 }
+/* ── HAMBURGER ───────────────────────────────────── */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.nav-hamburger span {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  background: var(--text);
+  transition: transform 0.25s, opacity 0.25s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  top: var(--nav-h);
+  left: 0; right: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-light);
+  z-index: 999;
+  padding: 12px 0;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu-link {
+  padding: 14px 24px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+}
+.mobile-menu-link:hover { color: var(--text); background: var(--bg2); }
+.mobile-menu-ticket {
+  margin: 8px 16px 4px;
+  padding: 12px 24px;
+  background: var(--red);
+  color: #fff !important;
+  text-align: center;
+  border-radius: 3px;
+  letter-spacing: 0.08em;
+}
+.mobile-menu-ticket:hover { background: #b30010 !important; }
+
 @media (max-width: 768px) {
   :root { --nav-h: 56px; }
   .nav { padding: 0 20px; gap: 16px; }
   .nav-links { display: none; }
+  .nav-tickets { display: none; }
+  .nav-hamburger { display: flex; }
   .section { padding: 72px 20px; }
   .hero { padding: calc(var(--nav-h) + 24px) 20px 40px; }
   .hero-title { font-size: clamp(40px, 12vw, 64px); }

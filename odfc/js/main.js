@@ -788,6 +788,22 @@ document.addEventListener('keydown', e => {
 });
 
 // ---------- Init ----------
+function initHamburger() {
+  const hamburger = document.getElementById('nav-hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (!hamburger || !mobileMenu) return;
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  mobileMenu.querySelectorAll('.mobile-menu-link').forEach(a => {
+    a.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+}
+
 function init() {
   loadData();
   initTheme();
@@ -804,6 +820,7 @@ function init() {
   renderMediaKit();
   renderFooter();
   initReveal();
+  initHamburger();
   checkAdminBar();
 }
 
