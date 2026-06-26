@@ -999,9 +999,29 @@ body.has-announcement .mobile-menu { top: calc(36px + var(--nav-h)); }
   .fighters-grid { grid-template-columns: repeat(2, 1fr); }
   .rankings-grid { grid-template-columns: 1fr 1fr; }
   .mediakit-grid { grid-template-columns: 1fr 1fr; }
-  .fight-row { flex-wrap: wrap; gap: 12px; }
-  .fight-fighter-photo { width: 52px; height: 52px; }
-  .fight-nickname { font-size: 13px; }
+  /* ── Fight Card mobile ── */
+  .fight-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0;
+    padding: 20px 0;
+  }
+  .fight-row.main-event { padding: 28px 0; }
+  .fight-fighter { gap: 0; }
+  .fight-fighter-photo { display: none; }
+  .fight-fighter.right { flex-direction: row; text-align: left; }
+  .fight-fighter.right .fight-info { text-align: right; width: 100%; }
+  .fight-fighter:not(.right) .fight-info { text-align: left; width: 100%; }
+  .fight-nickname { font-size: 13px; letter-spacing: 0; }
+  .fight-row.main-event .fight-nickname { font-size: 16px; }
+  .fight-realname { font-size: 11px; }
+  .fight-record { font-size: 11px; }
+  .fight-vs { padding: 0 12px; min-width: 48px; }
+  .fight-vs-text { font-size: 18px; }
+  .fight-row.main-event .fight-vs-text { font-size: 22px; }
+  .fight-vs-meta { font-size: 9px; letter-spacing: 0.06em; text-align: center; }
+  .fight-type-badge { font-size: 9px; padding: 3px 10px; }
   .sponsors-grid { flex-direction: column; }
   .sponsor-item { flex: 0 0 100%; }
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
