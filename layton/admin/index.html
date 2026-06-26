@@ -329,12 +329,27 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 // ══════════════════════════════════════════
 const ADMIN_PW = '1';
 
+async function showAdmin() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin').style.display = 'block';
+  // data.js를 항상 최신으로 캐시 버스팅해서 불러와 localStorage 동기화 (ODOD 패턴)
+  try {
+    const resp = await fetch('../js/data.js?_=' + Date.now());
+    if (resp.ok) {
+      const text = await resp.text();
+      const fresh = new Function(text + '; return DEFAULT_DATA;')();
+      if (fresh && fresh.site) {
+        localStorage.setItem('layton_data', JSON.stringify(fresh));
+      }
+    }
+  } catch(e) { /* fetch 실패 시 기존 localStorage 유지 */ }
+  initAdmin();
+}
+
 function tryLogin() {
   if (document.getElementById('pw-input').value === ADMIN_PW) {
     sessionStorage.setItem('layton_admin', '1');
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin').style.display = 'block';
-    initAdmin();
+    showAdmin();
   } else {
     document.getElementById('login-err').style.display = 'block';
   }
@@ -343,9 +358,7 @@ function tryLogin() {
 (function autoAuth() {
   const p = new URLSearchParams(location.search);
   if (p.get('admin') === ADMIN_PW || sessionStorage.getItem('layton_admin') === '1') {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin').style.display = 'block';
-    initAdmin();
+    showAdmin();
   }
 })();
 
