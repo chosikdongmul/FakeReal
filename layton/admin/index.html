@@ -402,7 +402,11 @@ function saveData() {
 function resetData() {
   if (!confirm('모든 수정사항이 초기화됩니다. 계속하시겠습니까?')) return;
   localStorage.removeItem('layton_data');
-  AD = deepCopy(DEFAULT_DATA);
+  if (typeof DEFAULT_DATA === 'undefined') {
+    alert('DEFAULT_DATA를 찾을 수 없습니다. data.js 파일을 확인해주세요.');
+    return;
+  }
+  try { AD = deepCopy(DEFAULT_DATA); } catch(e) { AD = DEFAULT_DATA; }
   buildForms();
   flashMsg('↺ 초기화됨');
 }
