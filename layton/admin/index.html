@@ -386,38 +386,36 @@ function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
 // ══════════════════════════════════════════
 //  SAVE  ← 저장 전 항상 DOM에서 전부 읽어서 AD를 재구성
 // ══════════════════════════════════════════
-var _isDirty = false;
+// ── 자동 저장 (타이핑 멈추고 1.5초 후 자동 저장) ──
+var _autoSaveTimer = null;
 
-// 저장 안 하고 나가면 경고
-window.addEventListener('beforeunload', function(e) {
-  if (_isDirty) {
-    e.preventDefault();
-    e.returnValue = '저장하지 않은 변경사항이 있습니다.';
-  }
-});
-
-// 폼 변경 감지 — 저장 버튼 강조
 document.addEventListener('input', function() {
-  _isDirty = true;
-  var btn = document.querySelector('.btn-save');
-  if (btn) btn.style.outline = '2px solid #fff';
+  clearTimeout(_autoSaveTimer);
+  flashMsg('...');
+  _autoSaveTimer = setTimeout(commitSave, 1500);
 });
 
-function saveData() {
+// 카드 추가/삭제 등 DOM 변경 후 즉시 저장
+function deferSave() {
+  clearTimeout(_autoSaveTimer);
+  _autoSaveTimer = setTimeout(commitSave, 300);
+}
+
+function commitSave() {
   AD = collectAllFromDOM();
   var json = JSON.stringify(AD);
-  localStorage.setItem('layton_data', json);
-
-  // 저장 실제 확인
-  var check = localStorage.getItem('layton_data');
-  if (check && check.length > 10) {
-    _isDirty = false;
-    var btn = document.querySelector('.btn-save');
-    if (btn) btn.style.outline = '';
-    flashMsg('✓ 저장됨 (' + Math.round(json.length / 1024 * 10) / 10 + 'KB)');
-  } else {
-    flashMsg('⚠️ 저장 실패 — 브라우저 저장소를 확인하세요');
+  try {
+    localStorage.setItem('layton_data', json);
+    flashMsg('✓ 자동 저장됨');
+  } catch(e) {
+    flashMsg('⚠️ 저장 실패');
   }
+}
+
+function saveData() {
+  clearTimeout(_autoSaveTimer);
+  commitSave();
+  flashMsg('✓ 저장됨');
 }
 
 function resetData() {
@@ -595,17 +593,18 @@ function renderPngList(pngs) {
 }
 
 function addPng() {
-  // 저장 후 추가: 현재 DOM 상태 먼저 읽기
   const cur = Array.from(document.querySelectorAll('#hero-pngs-list input[data-png]'))
                    .map(el => el.value.trim());
   cur.push('');
   renderPngList(cur);
+  deferSave();
 }
 function removePng(i) {
   const cur = Array.from(document.querySelectorAll('#hero-pngs-list input[data-png]'))
                    .map(el => el.value.trim());
   cur.splice(i, 1);
   renderPngList(cur);
+  deferSave();
 }
 
 // ── About ──
@@ -636,12 +635,14 @@ function addPara() {
                    .map(el => el.value);
   cur.push('');
   renderParaList(cur);
+  deferSave();
 }
 function removePara(i) {
   const cur = Array.from(document.querySelectorAll('#about-para-list textarea[data-para]'))
                    .map(el => el.value);
   cur.splice(i, 1);
   renderParaList(cur);
+  deferSave();
 }
 
 // ── 등장인물 ──
@@ -699,9 +700,11 @@ function addChar() {
   chars.push({id:'char_'+Date.now(),name:'새 캐릭터',role:'',desc:'',photo:'',cosplayer:''});
   AD.characters = chars;
   appendCharCard(chars[chars.length-1], chars.length-1, false);
+  deferSave();
 }
 function removeChar(btn) {
   btn.closest('.card-item').remove();
+  deferSave();
 }
 
 // ── 갤러리 ──
@@ -722,7 +725,7 @@ function appendGalleryCard(item) {
     <div class="card-item-header" onclick="toggleCard(this)">
       <span class="card-item-title">${esc(item.alt || '사진')}</span>
       <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn-del" onclick="event.stopPropagation();this.closest('.card-item').remove()">삭제</button>
+        <button class="btn-del" onclick="event.stopPropagation();this.closest('.card-item').remove();deferSave()">삭제</button>
         <button class="toggle-icon">▼</button>
       </div>
     </div>
@@ -755,6 +758,7 @@ function appendGalleryCard(item) {
 
 function addGallery() {
   appendGalleryCard({id:'gal_'+Date.now(), src:'', category:'portrait', alt:''});
+  deferSave();
 }
 
 // ── 수수께끼 ──
@@ -775,7 +779,7 @@ function appendPuzzleCard(item) {
     <div class="card-item-header" onclick="toggleCard(this)">
       <span class="card-item-title">#${esc(item.num)} ${esc(item.title)}</span>
       <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn-del" onclick="event.stopPropagation();this.closest('.card-item').remove()">삭제</button>
+        <button class="btn-del" onclick="event.stopPropagation();this.closest('.card-item').remove();deferSave()">삭제</button>
         <button class="toggle-icon">▼</button>
       </div>
     </div>
@@ -813,6 +817,7 @@ function appendPuzzleCard(item) {
 function addPuzzle() {
   const n = String(document.querySelectorAll('#puzzle-list .card-item').length + 1).padStart(3,'0');
   appendPuzzleCard({id:'puz_'+Date.now(), num:n, icon:'🧩', title:'새 수수께끼', desc:'', status:'coming'});
+  deferSave();
 }
 
 
