@@ -164,64 +164,6 @@ function renderCharacters() {
 }
 
 
-// ── 갤러리 ─────────────────────────────
-let _galleryFilter = 'all';
-
-function renderGallery(filter) {
-  _galleryFilter = filter || 'all';
-  const grid = document.getElementById('gallery-grid');
-  if (!grid) return;
-  const g = DATA.gallery || {};
-
-  // 섹션 텍스트
-  const labelEl = document.getElementById('gallery-label');
-  if (labelEl) labelEl.textContent = g.label || '';
-  const titleEl = document.getElementById('gallery-title');
-  if (titleEl) titleEl.textContent = g.title || '';
-  const descEl = document.getElementById('gallery-desc');
-  if (descEl) descEl.textContent = g.desc || '';
-
-  const items = (g.items || []).filter(item =>
-    _galleryFilter === 'all' || item.category === _galleryFilter
-  );
-
-  if (!items.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--text-faint);font-size:13px;letter-spacing:0.06em">사진을 준비 중입니다.</div>`;
-    return;
-  }
-
-  grid.innerHTML = items.map(item => `
-    <div class="gallery-item" onclick="openLightbox('${esc(item.src)}','${esc(item.alt)}')">
-      ${item.src
-        ? `<img src="${esc(item.src)}" alt="${esc(item.alt)}" loading="lazy"
-             onerror="this.parentElement.innerHTML='<div class=\\'gallery-placeholder\\'>📷</div>'">`
-        : `<div class="gallery-placeholder">📷</div>`}
-      <div class="gallery-item-overlay"><span class="gallery-item-icon">🔍</span></div>
-    </div>`).join('');
-}
-
-function initGalleryFilter() {
-  document.querySelectorAll('.gallery-filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.gallery-filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderGallery(btn.dataset.filter);
-    });
-  });
-}
-
-function openLightbox(src, alt) {
-  if (!src) return;
-  document.getElementById('lightbox-img').src = src;
-  document.getElementById('lightbox-img').alt = alt || '';
-  document.getElementById('lightbox').classList.add('open');
-}
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-}
-document.addEventListener('keydown', e => { if (e.key==='Escape') closeLightbox(); });
-
-
 // ── 수수께끼 카드 ──────────────────────
 function renderPuzzleCards() {
   const wrap = document.getElementById('puzzle-cards');
@@ -310,8 +252,6 @@ function init() {
   renderHero();
   renderAbout();
   renderCharacters();
-  renderGallery('all');
-  initGalleryFilter();
   renderPuzzleCards();
   renderFooter();
   initNav();

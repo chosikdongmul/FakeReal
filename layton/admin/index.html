@@ -135,7 +135,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
       <button class="admin-tab" onclick="switchTab('hero')">🖼 히어로</button>
       <button class="admin-tab" onclick="switchTab('about')">📖 About</button>
       <button class="admin-tab" onclick="switchTab('characters')">🎭 등장인물</button>
-      <button class="admin-tab" onclick="switchTab('gallery')">📸 갤러리</button>
       <button class="admin-tab" onclick="switchTab('puzzles')">🧩 수수께끼</button>
     </div>
 
@@ -255,28 +254,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
         <div class="field-hint" style="margin-bottom:16px">첫 번째 캐릭터가 메인(넓은) 카드로 표시됩니다.</div>
         <div class="card-list" id="char-list"></div>
         <button class="btn-add" onclick="addChar()">+ 캐릭터 추가</button>
-      </div>
-
-      <!-- ── 갤러리 ── -->
-      <div class="panel" id="panel-gallery">
-        <div class="field-group">
-          <label class="field-label">섹션 레이블</label>
-          <input class="admin-input" id="gallery-label">
-        </div>
-        <div class="field-group">
-          <label class="field-label">섹션 제목</label>
-          <input class="admin-input" id="gallery-title">
-        </div>
-        <div class="field-group">
-          <label class="field-label">섹션 설명</label>
-          <textarea class="admin-textarea" id="gallery-desc" rows="2"></textarea>
-        </div>
-        <hr class="field-sep">
-        <div class="field-group">
-          <label class="field-label">사진 목록</label>
-          <div class="card-list" id="gallery-list"></div>
-          <button class="btn-add" onclick="addGallery()">+ 사진 추가</button>
-        </div>
       </div>
 
       <!-- ── 수수께끼 ── -->
@@ -505,20 +482,6 @@ function collectAllFromDOM() {
     cosplayer: qv(card, '[data-field="cosplayer"]'),
   }));
 
-  // ── 갤러리 섹션 ──
-  const galCards = document.querySelectorAll('#gallery-list .card-item');
-  data.gallery = {
-    label: gv('gallery-label'),
-    title: gv('gallery-title'),
-    desc:  gv('gallery-desc'),
-    items: Array.from(galCards).map(card => ({
-      id:       card.dataset.galId || ('gal_' + Date.now() + Math.random()),
-      src:      qv(card, '[data-field="src"]'),
-      category: qv(card, '[data-field="category"]'),
-      alt:      qv(card, '[data-field="alt"]'),
-    })),
-  };
-
   // ── 수수께끼 ──
   const puzCards = document.querySelectorAll('#puzzle-list .card-item');
   data.puzzles = {
@@ -551,7 +514,6 @@ function buildForms() {
   buildHero();
   buildAbout();
   buildChars();
-  buildGallery();
   buildPuzzles();
 }
 
@@ -717,60 +679,6 @@ function addChar() {
 }
 function removeChar(btn) {
   btn.closest('.card-item').remove();
-  deferSave();
-}
-
-// ── 갤러리 ──
-function buildGallery() {
-  sv('gallery-label', (AD.gallery || {}).label || '');
-  sv('gallery-title', (AD.gallery || {}).title || '');
-  sv('gallery-desc',  (AD.gallery || {}).desc  || '');
-  const list = document.getElementById('gallery-list');
-  list.innerHTML = '';
-  ((AD.gallery || {}).items || []).forEach(appendGalleryCard);
-}
-
-function appendGalleryCard(item) {
-  const el = document.createElement('div');
-  el.className = 'card-item';
-  el.dataset.galId = item.id || ('gal_'+Date.now()+Math.random());
-  el.innerHTML = `
-    <div class="card-item-header" onclick="toggleCard(this)">
-      <span class="card-item-title">${esc(item.alt || '사진')}</span>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn-del" onclick="event.stopPropagation();this.closest('.card-item').remove();deferSave()">삭제</button>
-        <button class="toggle-icon">▼</button>
-      </div>
-    </div>
-    <div class="card-item-body">
-      <div style="margin-bottom:10px">
-        <label class="field-label">이미지 경로</label>
-        <div class="field-hint">예: assets/images/gallery/photo1.jpg</div>
-        <input class="admin-input" data-field="src" value="${esc(item.src||'')}"
-          oninput="previewSrcNear(this,'../')">
-        <img class="img-preview ${item.src ? 'show' : ''}" src="${item.src ? '../'+esc(item.src) : ''}" alt="">
-      </div>
-      <div class="input-row">
-        <div>
-          <label class="field-label">카테고리</label>
-          <select class="admin-select" data-field="category">
-            <option value="portrait" ${item.category==='portrait'?'selected':''}>포트레이트</option>
-            <option value="scene"    ${item.category==='scene'   ?'selected':''}>장면</option>
-            <option value="behind"   ${item.category==='behind'  ?'selected':''}>비하인드</option>
-          </select>
-        </div>
-        <div>
-          <label class="field-label">설명 (alt)</label>
-          <input class="admin-input" data-field="alt" value="${esc(item.alt||'')}"
-            oninput="updateCardTitle(this,'')">
-        </div>
-      </div>
-    </div>`;
-  document.getElementById('gallery-list').appendChild(el);
-}
-
-function addGallery() {
-  appendGalleryCard({id:'gal_'+Date.now(), src:'', category:'portrait', alt:''});
   deferSave();
 }
 

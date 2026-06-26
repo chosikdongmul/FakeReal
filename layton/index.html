@@ -19,7 +19,6 @@
   <div class="nav-links">
     <a href="#about">소개</a>
     <a href="#characters">등장인물</a>
-    <a href="#gallery">갤러리</a>
     <a href="#puzzles">수수께끼</a>
   </div>
   <div class="nav-right">
@@ -32,7 +31,6 @@
 <div class="mobile-menu" id="mobile-menu">
   <a href="#about"      class="mobile-menu-link">소개</a>
   <a href="#characters" class="mobile-menu-link">등장인물</a>
-  <a href="#gallery"    class="mobile-menu-link">갤러리</a>
   <a href="#puzzles"    class="mobile-menu-link">수수께끼</a>
 </div>
 
@@ -48,7 +46,7 @@
     <p class="hero-subtitle" id="hero-subtitle"></p>
     <div class="hero-cta">
       <a class="btn-gold"    href="#puzzles" id="hero-cta-primary"></a>
-      <a class="btn-outline" href="#gallery" id="hero-cta-secondary"></a>
+      <a class="btn-outline" href="#about"   id="hero-cta-secondary"></a>
     </div>
   </div>
 </section>
@@ -88,26 +86,6 @@
 
 <div class="section-divider"></div>
 
-<!-- GALLERY -->
-<section class="section" id="gallery">
-  <div class="section-inner">
-    <div class="section-head reveal">
-      <div class="section-label" id="gallery-label"></div>
-      <h2 class="section-title" id="gallery-title"></h2>
-      <p class="section-desc" id="gallery-desc"></p>
-    </div>
-    <div class="gallery-filter reveal" id="gallery-filter">
-      <button class="gallery-filter-btn active" data-filter="all">전체</button>
-      <button class="gallery-filter-btn" data-filter="portrait">포트레이트</button>
-      <button class="gallery-filter-btn" data-filter="scene">장면</button>
-      <button class="gallery-filter-btn" data-filter="behind">비하인드</button>
-    </div>
-    <div class="gallery-grid reveal" id="gallery-grid"></div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
 <!-- PUZZLES -->
 <section class="section" id="puzzles" style="background:var(--bg2)">
   <div class="section-inner">
@@ -130,7 +108,6 @@
     <div class="footer-links">
       <a href="#about">소개</a>
       <a href="#characters">등장인물</a>
-      <a href="#gallery">갤러리</a>
       <a href="#puzzles">수수께끼</a>
     </div>
   </div>
@@ -139,12 +116,6 @@
     <div class="footer-disclaimer" id="footer-disclaimer"></div>
   </div>
 </footer>
-
-<!-- LIGHTBOX -->
-<div id="lightbox">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-  <img id="lightbox-img" src="" alt="">
-</div>
 
 <!-- ADMIN BAR -->
 <div id="admin-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1a1208;border-top:1px solid rgba(200,150,10,0.4);padding:10px 24px;font-size:12px;color:#a09070;z-index:200;">

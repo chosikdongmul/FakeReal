@@ -64,12 +64,6 @@ const DEFAULT_DATA = {
       cosplayer: "",
     },
   ],
-  gallery: {
-    label: "Gallery",
-    title: "갤러리",
-    desc: "촬영 현장의 비하인드, 완성된 코스프레 사진들을 모았습니다.",
-    items: [],
-  },
   puzzles: {
     label: "Puzzles",
     title: "수수께끼",
