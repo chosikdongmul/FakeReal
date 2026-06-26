@@ -356,22 +356,30 @@ function tryLogin() {
 let AD = {};
 
 function initAdmin() {
-  // 1순위: localStorage
-  var saved = null;
-  try { saved = localStorage.getItem('layton_data'); } catch(e) {}
+  var usedLocal = false;
 
-  if (saved) {
-    try {
+  // 1순위: localStorage — 단, 실제 내용이 있을 때만 사용
+  try {
+    var saved = localStorage.getItem('layton_data');
+    if (saved) {
       var parsed = JSON.parse(saved);
-      if (parsed && typeof parsed === 'object') AD = parsed;
-    } catch(e) { saved = null; }
-  }
-
-  // 2순위: DEFAULT_DATA (localStorage 없거나 파싱 실패)
-  if (!saved) {
-    if (typeof DEFAULT_DATA !== 'undefined' && DEFAULT_DATA) {
-      try { AD = deepCopy(DEFAULT_DATA); } catch(e) { AD = DEFAULT_DATA; }
+      // site.title 또는 hero.title 중 하나라도 값이 있어야 유효한 데이터로 인정
+      var hasContent = parsed
+        && ((parsed.site && parsed.site.title)
+            || (parsed.hero && parsed.hero.title));
+      if (hasContent) {
+        AD = parsed;
+        usedLocal = true;
+      } else {
+        // 빈 값이 저장돼 있는 경우 — localStorage 버리고 DEFAULT_DATA 사용
+        localStorage.removeItem('layton_data');
+      }
     }
+  } catch(e) {}
+
+  // 2순위: DEFAULT_DATA
+  if (!usedLocal && typeof DEFAULT_DATA !== 'undefined' && DEFAULT_DATA) {
+    try { AD = deepCopy(DEFAULT_DATA); } catch(e) { AD = DEFAULT_DATA; }
   }
 
   buildForms();
