@@ -358,7 +358,7 @@
 /* ========================
    ODFC Admin JS
    ======================== */
-const ADMIN_PW = 'ODFC2025';
+const ADMIN_PW = '1';
 let ADMIN_DATA = null;
 
 // ---------- Auth ----------
@@ -850,12 +850,32 @@ function openExport() {
   if (videoOnly.length > 0) {
     warning = `/* ⚠️ 경고: 영상 배너 ${videoOnly.length}개가 이미지 없이 등록됨.\n   YouTube 퍼가기 차단 시 다른 사람 화면에 빈 슬라이드로 표시됩니다. */\n`;
   }
-  const code = warning + 'const DEFAULT_DATA = ' + JSON.stringify(data, null, 2) + ';';
+  const code = warning + 'const DEFAULT_DATA = ' + toJS(data, 0) + ';';
   document.getElementById('export-textarea').value = code;
   document.getElementById('export-modal').classList.add('open');
 }
 function closeExport() {
   document.getElementById('export-modal').classList.remove('open');
+}
+function toJS(val, indent) {
+  const pad  = '  '.repeat(indent);
+  const pad1 = '  '.repeat(indent + 1);
+  if (val === null || val === undefined) return 'null';
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  if (typeof val === 'string') return JSON.stringify(val);
+  if (Array.isArray(val)) {
+    if (!val.length) return '[]';
+    const items = val.map(v => pad1 + toJS(v, indent + 1));
+    return '[\n' + items.join(',\n') + ',\n' + pad + ']';
+  }
+  if (typeof val === 'object') {
+    const entries = Object.entries(val).map(([k, v]) => {
+      const key = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(k) ? k : JSON.stringify(k);
+      return pad1 + key + ': ' + toJS(v, indent + 1);
+    });
+    return '{\n' + entries.join(',\n') + ',\n' + pad + '}';
+  }
+  return JSON.stringify(val);
 }
 function copyExport() {
   const ta = document.getElementById('export-textarea');
