@@ -17,45 +17,12 @@ const DEFAULT_DATA = {
       "youtube": "https://youtube.com/@ODFC"
     }
   },
-  "weightClasses": [
-    {
-      "id": "flyweight",
-      "name": "Flyweight",
-      "nameKo": "플라이급",
-      "limit": "56.7kg"
-    },
-    {
-      "id": "lightweight",
-      "name": "Lightweight",
-      "nameKo": "라이트급",
-      "limit": "70.3kg"
-    },
-    {
-      "id": "welterweight",
-      "name": "Welterweight",
-      "nameKo": "웰터급",
-      "limit": "77.1kg"
-    },
-    {
-      "id": "middleweight",
-      "name": "Middleweight",
-      "nameKo": "미들급",
-      "limit": "83.9kg"
-    },
-    {
-      "id": "heavyweight",
-      "name": "Heavyweight",
-      "nameKo": "헤비급",
-      "limit": "120.2kg"
-    }
-  ],
   "fighters": [
     {
       "id": "phantom",
       "name": "Kim Junho",
       "nameKo": "김준호",
       "nickname": "The Phantom",
-      "weightClass": "lightweight",
       "isChampion": true,
       "record": {
         "w": 18,
@@ -155,7 +122,6 @@ const DEFAULT_DATA = {
       "name": "Park Minsu",
       "nameKo": "박민수",
       "nickname": "Iron Jaw",
-      "weightClass": "lightweight",
       "isChampion": false,
       "record": {
         "w": 15,
@@ -248,8 +214,7 @@ const DEFAULT_DATA = {
       "name": "Choi Yongseok",
       "nameKo": "최용석",
       "nickname": "The Reaper",
-      "weightClass": "welterweight",
-      "isChampion": false,
+      "isChampion": true,
       "record": {
         "w": 20,
         "l": 1,
@@ -343,7 +308,6 @@ const DEFAULT_DATA = {
       "name": "Kim Hyunsoo",
       "nameKo": "김현수",
       "nickname": "Rampage",
-      "weightClass": "welterweight",
       "isChampion": false,
       "record": {
         "w": 14,
@@ -436,8 +400,7 @@ const DEFAULT_DATA = {
       "name": "Lee Taehun",
       "nameKo": "이태훈",
       "nickname": "The Viper",
-      "weightClass": "middleweight",
-      "isChampion": false,
+      "isChampion": true,
       "record": {
         "w": 16,
         "l": 2,
@@ -531,8 +494,7 @@ const DEFAULT_DATA = {
       "name": "Oh Dongkyu",
       "nameKo": "오동규",
       "nickname": "The Wall",
-      "weightClass": "heavyweight",
-      "isChampion": false,
+      "isChampion": true,
       "record": {
         "w": 12,
         "l": 1,
@@ -626,8 +588,7 @@ const DEFAULT_DATA = {
       "name": "Shin Junho",
       "nameKo": "신준호",
       "nickname": "Ghost",
-      "weightClass": "flyweight",
-      "isChampion": false,
+      "isChampion": true,
       "record": {
         "w": 21,
         "l": 0,
@@ -737,7 +698,6 @@ const DEFAULT_DATA = {
           "fighter1Label": "",
           "fighter2Label": "",
           "titleFight": true,
-          "weightClass": "lightweight",
           "rounds": 5,
           "result": null
         },
@@ -748,7 +708,6 @@ const DEFAULT_DATA = {
           "fighter1Label": "",
           "fighter2Label": "",
           "titleFight": true,
-          "weightClass": "welterweight",
           "rounds": 5,
           "result": null
         },
@@ -759,7 +718,6 @@ const DEFAULT_DATA = {
           "fighter1Label": "",
           "fighter2Label": "TBA",
           "titleFight": false,
-          "weightClass": "flyweight",
           "rounds": 3,
           "result": null
         },
@@ -770,7 +728,6 @@ const DEFAULT_DATA = {
           "fighter1Label": "",
           "fighter2Label": "TBA",
           "titleFight": false,
-          "weightClass": "middleweight",
           "rounds": 3,
           "result": null
         }
@@ -794,7 +751,6 @@ const DEFAULT_DATA = {
           "fighter1Label": "",
           "fighter2Label": "Seo Minjun",
           "titleFight": false,
-          "weightClass": "lightweight",
           "rounds": 3,
           "result": {
             "winnerId": "phantom",
@@ -810,7 +766,6 @@ const DEFAULT_DATA = {
           "fighter1Label": "",
           "fighter2Label": "Jeon Hyunsu",
           "titleFight": true,
-          "weightClass": "welterweight",
           "rounds": 5,
           "result": {
             "winnerId": "reaper",
@@ -820,13 +775,12 @@ const DEFAULT_DATA = {
           }
         },
         {
-          "type": "main",
+          "type": "co-main",
           "fighter1Id": "thewall",
           "fighter2Id": "",
           "fighter1Label": "",
           "fighter2Label": "Kang Chulwon",
           "titleFight": true,
-          "weightClass": "heavyweight",
           "rounds": 5,
           "result": {
             "winnerId": "thewall",
@@ -842,7 +796,6 @@ const DEFAULT_DATA = {
           "fighter1Label": "",
           "fighter2Label": "Jung Kanghyun",
           "titleFight": false,
-          "weightClass": "flyweight",
           "rounds": 3,
           "result": {
             "winnerId": "ghost",
@@ -871,7 +824,6 @@ const DEFAULT_DATA = {
           "fighter1Label": "",
           "fighter2Label": "Kwon Taeho",
           "titleFight": true,
-          "weightClass": "middleweight",
           "rounds": 5,
           "result": {
             "winnerId": "viper",
@@ -887,7 +839,6 @@ const DEFAULT_DATA = {
           "fighter1Label": "",
           "fighter2Label": "Lee Sunghoon",
           "titleFight": false,
-          "weightClass": "lightweight",
           "rounds": 3,
           "result": {
             "winnerId": "phantom",
@@ -899,7 +850,6 @@ const DEFAULT_DATA = {
       ]
     }
   ],
-  "rankings": [],
   "sponsors": [
     {
       "name": "Naike",
@@ -973,7 +923,7 @@ const DEFAULT_DATA = {
   "announcement": {
     "active": false,
     "message": "",
-    "link": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/0gQB5OgcMLI?si=y8nx63xVeFHptcvz\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+    "link": "",
     "linkText": ""
   }
 };

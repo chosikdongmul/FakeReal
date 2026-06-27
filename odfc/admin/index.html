@@ -206,7 +206,6 @@
       <div class="sidebar-group">콘텐츠</div>
       <div class="sidebar-link" onclick="switchTab('fighters')">파이터</div>
       <div class="sidebar-link" onclick="switchTab('events')">이벤트</div>
-      <div class="sidebar-link" onclick="switchTab('rankings')">랭킹</div>
       <div class="sidebar-group">파트너</div>
       <div class="sidebar-link" onclick="switchTab('sponsors')">스폰서</div>
       <div class="sidebar-group">미디어</div>
@@ -280,12 +279,6 @@
         <button class="add-btn" onclick="addEvent()">+ 이벤트 추가</button>
       </div>
 
-      <!-- RANKINGS -->
-      <div class="panel" id="panel-rankings">
-        <div class="panel-title">랭킹</div>
-        <div class="panel-sub">체급별 랭킹 순서 (fighter ID, 쉼표 구분). 챔피언은 첫 번째.</div>
-        <div id="rankings-editor"></div>
-      </div>
 
       <!-- SPONSORS -->
       <div class="panel" id="panel-sponsors">
@@ -389,7 +382,7 @@ document.getElementById('auth-pw').addEventListener('keydown', e => { if (e.key 
 })();
 
 // ---------- Tab ----------
-const tabs = ['org','announcement','fighters','events','rankings','sponsors','banners','mediakit','live'];
+const tabs = ['org','announcement','fighters','events','sponsors','banners','mediakit','live'];
 function switchTab(name) {
   tabs.forEach(t => {
     document.getElementById('panel-' + t)?.classList.toggle('active', t === name);
@@ -467,9 +460,6 @@ function buildFightersEditor() {
   el.innerHTML = fighters.map((f, i) => buildFighterCard(f, i)).join('');
 }
 function buildFighterCard(f, i) {
-  const wcs = (ADMIN_DATA.weightClasses || []).map(w =>
-    `<option value="${escHtml(w.id)}" ${f.weightClass === w.id ? 'selected' : ''}>${escHtml(w.name)}</option>`
-  ).join('');
   return `
     <div class="form-card" id="fighter-card-${i}">
       <button class="remove-btn" onclick="removeFighter(${i})">✕</button>
@@ -483,7 +473,6 @@ function buildFighterCard(f, i) {
         <div class="form-group"><label>한국 이름</label><input data-fi="${i}" data-ff="nameKo" value="${escHtml(f.nameKo)}"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>체급</label><select data-fi="${i}" data-ff="weightClass">${wcs}</select></div>
         <div class="form-group"><label>나이</label><input type="number" data-fi="${i}" data-ff="age" value="${escHtml(f.age)}"></div>
       </div>
       <div class="form-row-3">
@@ -523,7 +512,7 @@ function onChampionCheck(el, idx) {
 
 function addFighter() {
   ADMIN_DATA.fighters = ADMIN_DATA.fighters || [];
-  ADMIN_DATA.fighters.push({ id: '', nickname: '', name: '', nameKo: '', weightClass: ADMIN_DATA.weightClasses?.[0]?.id || '', age: 25, isChampion: false, record: {w:0,l:0,d:0}, photo: '', highlight: '', height: '', reach: '', stance: 'Orthodox', nationality: 'KR', style: [], stats: {striking:7,grappling:7,wrestling:7,cardio:7,chin:7,power:7}, finishes:{ko:0,sub:0,dec:0}, recentFights: [], career: [], titles: [] });
+  ADMIN_DATA.fighters.push({ id: '', nickname: '', name: '', nameKo: '', age: 25, isChampion: false, record: {w:0,l:0,d:0}, photo: '', highlight: '', height: '', reach: '', stance: 'Orthodox', nationality: 'KR', style: [], stats: {striking:7,grappling:7,wrestling:7,cardio:7,chin:7,power:7}, finishes:{ko:0,sub:0,dec:0}, recentFights: [], career: [], titles: [] });
   buildFightersEditor();
 }
 function removeFighter(i) {
@@ -576,18 +565,6 @@ function removeEvent(i) {
   buildEventsEditor();
 }
 
-// ---------- RANKINGS ----------
-function buildRankingsEditor() {
-  const el = document.getElementById('rankings-editor');
-  const rankings = Array.isArray(ADMIN_DATA.rankings) ? ADMIN_DATA.rankings : [];
-  el.innerHTML = `
-    <div class="form-group">
-      <label>전체 랭킹 순서 (Fighter ID, 쉼표 구분)</label>
-      <textarea id="ranking-all" rows="3" placeholder="ghost, phantom, ironjaw, reaper, ...">${escHtml(rankings.join(', '))}</textarea>
-      <div class="hint">첫 번째 = 챔피언, 두 번째 = #1 컨텐더, 세 번째 = #2 컨텐더 순. 파이터 ID는 어드민 파이터 탭에서 확인.</div>
-    </div>
-  `;
-}
 
 // ---------- SPONSORS ----------
 function buildSponsorsEditor() {
@@ -757,7 +734,6 @@ function collectData() {
       nickname: g('nickname'),
       name: g('name'),
       nameKo: g('nameKo'),
-      weightClass: g('weightClass'),
       age: Number(g('age')) || f.age,
       isChampion: g('isChampion'),
       photo: g('photo'),
@@ -778,10 +754,6 @@ function collectData() {
     };
     return { ...ev, name: g('name'), subtitle: g('subtitle'), date: g('date'), time: g('time'), venue: g('venue'), city: g('city'), status: g('status') };
   });
-
-  // Rankings
-  const rankEl = document.getElementById('ranking-all');
-  if (rankEl) d.rankings = rankEl.value.split(',').map(s => s.trim()).filter(Boolean);
 
   // Sponsors
   d.sponsors = (d.sponsors || []).map((s, i) => {

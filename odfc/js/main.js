@@ -33,9 +33,6 @@ function getFighter(id) {
   return (DATA.fighters || []).find(f => f.id === id) || null;
 }
 
-function weightClassById(id) {
-  return (DATA.weightClasses || []).find(w => w.id === id) || null;
-}
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -286,7 +283,6 @@ function renderFightCard() {
   ordered.forEach(fight => {
     const f1 = fight.fighter1Id ? getFighter(fight.fighter1Id) : null;
     const f2 = fight.fighter2Id ? getFighter(fight.fighter2Id) : null;
-    const wc = weightClassById(fight.weightClass);
 
     const f1Name = f1 ? `"${f1.nickname}"` : (fight.fighter1Label || 'TBA');
     const f1Real = f1 ? f1.nameKo : '';
@@ -310,8 +306,7 @@ function renderFightCard() {
     const typeBadgeClass = fight.type === 'prelim' ? 'prelim' : '';
     const isMain = fight.type === 'main';
 
-    const titleLine = fight.titleFight ? `${wc ? wc.name + ' ' : ''}타이틀 매치 · ${fight.rounds}R` : `${fight.rounds}R`;
-    const wcLine = wc ? `${wc.nameKo} (${wc.limit})` : '';
+    const titleLine = fight.titleFight ? `타이틀 매치 · ${fight.rounds}R` : `${fight.rounds}R`;
 
     const rowClass = isMain ? 'fight-row main-event' : 'fight-row';
 
@@ -332,7 +327,6 @@ function renderFightCard() {
         <div class="fight-vs">
           <span class="fight-vs-text">VS</span>
           <span class="fight-vs-meta">${esc(titleLine)}</span>
-          ${wcLine ? `<span class="fight-vs-meta" style="color:var(--text-faint);font-size:8px">${esc(wcLine)}</span>` : ''}
         </div>
         <div class="fight-fighter right" ${f2Click} style="${f2 ? 'cursor:pointer' : ''}">
           <div class="fight-fighter-photo${f2ChampClass}">${f2Photo}</div>
@@ -349,49 +343,40 @@ function renderFightCard() {
   grid.innerHTML = rows.join('');
 }
 
-// ---------- Champion (단일) ----------
+// ---------- Champions ----------
 function renderChampions() {
   const wrap = document.getElementById('champs-grid');
   if (!wrap) return;
-  const champ = (DATA.fighters || []).find(f => f.isChampion);
 
-  if (!champ) {
+  const champions = (DATA.fighters || []).filter(f => f.isChampion);
+
+  if (!champions.length) {
     wrap.innerHTML = `<div style="padding:32px;color:var(--text-faint);font-size:14px">챔피언 공석</div>`;
     return;
   }
 
-  const champInitial = (champ.nickname || champ.name || '?')[0].toUpperCase();
-  const photoHtml = champ.photo
-    ? `<img src="${esc(champ.photo)}" alt="${esc(champ.nickname)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="champ-placeholder" style="display:none">${champInitial}</div>`
-    : `<div class="champ-placeholder">${champInitial}</div>`;
+  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1px;background:var(--border);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;';
 
-  const fin = champ.finishes || { ko: 0, sub: 0, dec: 0 };
+  wrap.innerHTML = champions.map(f => {
+    const initial = (f.nickname || f.name || '?')[0].toUpperCase();
+    const photoHtml = f.photo
+      ? `<img src="../${esc(f.photo)}" alt="${esc(f.nickname)}" loading="lazy"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+         <div class="champ-placeholder" style="display:none;font-size:52px">${initial}</div>`
+      : `<div class="champ-placeholder" style="font-size:52px">${initial}</div>`;
 
-  wrap.innerHTML = `
-    <div class="champ-featured" onclick="openFighterPopup('${champ.id}')">
-      <div class="champ-featured-photo">${photoHtml}</div>
-      <div class="champ-featured-overlay">
-        <div class="champ-featured-label">🏆 CHAMPION</div>
-        <div class="champ-featured-nickname">${esc(champ.nickname)}</div>
-        <div class="champ-featured-realname">${esc(champ.nameKo || champ.name)}</div>
-        <div class="champ-featured-bottom">
-          <div class="champ-featured-record">${recordStr(champ.record)}</div>
-          <div class="champ-finishes">
-            <div class="champ-finish-item"><span class="champ-finish-val">${fin.ko}</span><span class="champ-finish-lbl">KO/TKO</span></div>
-            <div class="champ-finish-item"><span class="champ-finish-val">${fin.sub}</span><span class="champ-finish-lbl">서브미션</span></div>
-            <div class="champ-finish-item"><span class="champ-finish-val">${fin.dec}</span><span class="champ-finish-lbl">판정</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
+    return `
+      <div class="champ-card" onclick="openFighterPopup('${f.id}')">
+        <div class="champ-photo">${photoHtml}</div>
+        <div class="champ-belt">🏆</div>
+        <div class="champ-nickname">${esc(f.nickname)}</div>
+        <div class="champ-record">${recordStr(f.record)}</div>
+      </div>`;
+  }).join('');
 }
 
 // ---------- 대표선수 (챔피언 → #1 → #2 … 전체 랭킹 순) ----------
 function renderFighters() {
-  const tabsEl = document.getElementById('wc-tabs');
-  if (tabsEl) tabsEl.style.display = 'none';
-
   const grid = document.getElementById('fighters-grid');
   if (!grid) return;
 
@@ -452,46 +437,6 @@ function renderFighters() {
       </div>
     `;
   }).join('') || `<div style="padding:40px;color:var(--text-faint)">선수 정보가 없습니다.</div>`;
-}
-
-// ---------- Rankings ----------
-function renderRankings() {
-  const grid = document.getElementById('rankings-grid');
-  if (!grid) return;
-
-  const wcs = DATA.weightClasses || [];
-  const rankings = DATA.rankings || {};
-
-  grid.innerHTML = wcs.map(wc => {
-    const list = rankings[wc.id] || [];
-    const rows = list.map((fid, i) => {
-      const f = getFighter(fid);
-      if (!f) return '';
-      const isChamp = f.isChampion;
-      const pos = isChamp ? 'C' : `#${i + 1}`;
-      const photoHtml = f.photo
-        ? `<img src="../${esc(f.photo)}" alt="${esc(f.nickname)}" loading="lazy">`
-        : '';
-
-      return `
-        <div class="ranking-row" onclick="openFighterPopup('${f.id}')">
-          <span class="ranking-pos${isChamp ? ' champ' : ''}">${isChamp ? '🏆' : pos}</span>
-          <div class="ranking-photo">${photoHtml}</div>
-          <div class="ranking-info">
-            <div class="ranking-nickname">${esc(f.nickname)}</div>
-            <div class="ranking-record">${recordStr(f.record)}</div>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    return `
-      <div class="ranking-col">
-        <div class="ranking-col-title">${esc(wc.name)}<span class="ranking-col-limit">${esc(wc.limit)}</span></div>
-        ${rows || '<div style="color:var(--text-faint);font-size:12px;padding:8px">—</div>'}
-      </div>
-    `;
-  }).join('');
 }
 
 // ---------- Past Events ----------
@@ -608,7 +553,6 @@ function renderFooter() {
 function openFighterPopup(fighterId) {
   const f = getFighter(fighterId);
   if (!f) return;
-  const wc = weightClassById(f.weightClass);
 
   const overlay = document.getElementById('popup-overlay');
   overlay.classList.add('open');
