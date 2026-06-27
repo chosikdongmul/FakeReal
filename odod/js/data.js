@@ -165,7 +165,6 @@ const DEFAULT_DATA = {
         "2024 LCK Summer All-Pro Team (3rd)",
       ],
       social: {
-,
       },
       bannerImage: "",
       photoThumb: "assets/images/players/topplayer_small.jpg123",
@@ -230,7 +229,6 @@ const DEFAULT_DATA = {
       ],
       awards: [],
       social: {
-,
       },
       bannerImage: "",
       photoThumb: "",
@@ -295,7 +293,6 @@ const DEFAULT_DATA = {
         "2024 Worlds Quarterfinals",
       ],
       social: {
-,
       },
       bannerImage: "",
       photoThumb: "assets/images/players/midplayer_small.jpg",
@@ -362,7 +359,6 @@ const DEFAULT_DATA = {
         "2024 LCK Spring All-Pro Team (2nd)",
       ],
       social: {
-,
       },
       bannerImage: "",
       photoThumb: "",
@@ -430,7 +426,6 @@ const DEFAULT_DATA = {
         "2024 LCK Summer All-Pro Team (1st)",
       ],
       social: {
-,
       },
       bannerImage: "",
       photoThumb: "",
