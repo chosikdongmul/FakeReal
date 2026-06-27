@@ -348,31 +348,64 @@ function renderChampions() {
   const wrap = document.getElementById('champs-grid');
   if (!wrap) return;
 
-  const champions = (DATA.fighters || []).filter(f => f.isChampion);
+  const f = (DATA.fighters || []).find(f => f.isChampion);
 
-  if (!champions.length) {
-    wrap.innerHTML = `<div style="padding:32px;color:var(--text-faint);font-size:14px">챔피언 공석</div>`;
+  if (!f) {
+    wrap.innerHTML = `<div class="champ-vacant">챔피언 공석</div>`;
     return;
   }
 
-  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1px;background:var(--border);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;';
+  wrap.style.cssText = '';
 
-  wrap.innerHTML = champions.map(f => {
-    const initial = (f.nickname || f.name || '?')[0].toUpperCase();
-    const photoHtml = f.photo
-      ? `<img src="../${esc(f.photo)}" alt="${esc(f.nickname)}" loading="lazy"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-         <div class="champ-placeholder" style="display:none;font-size:52px">${initial}</div>`
-      : `<div class="champ-placeholder" style="font-size:52px">${initial}</div>`;
+  const initial = (f.nickname || f.name || '?')[0].toUpperCase();
+  const photoHtml = f.photo
+    ? `<img src="../${esc(f.photo)}" alt="${esc(f.nickname)}" loading="lazy"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+       <div class="champ-featured-placeholder">${initial}</div>`
+    : `<div class="champ-featured-placeholder">${initial}</div>`;
 
+  const statKeys = ['striking','grappling','wrestling','cardio','chin','power'];
+  const statLabels = { striking:'스트라이킹', grappling:'그래플링', wrestling:'레슬링', cardio:'체력', chin:'턱', power:'파워' };
+  const stats = f.stats || {};
+  const statsHtml = statKeys.map(k => {
+    const val = stats[k] || 0;
     return `
-      <div class="champ-card" onclick="openFighterPopup('${f.id}')">
-        <div class="champ-photo">${photoHtml}</div>
-        <div class="champ-belt">🏆</div>
-        <div class="champ-nickname">${esc(f.nickname)}</div>
-        <div class="champ-record">${recordStr(f.record)}</div>
+      <div class="champ-stat-row">
+        <span class="champ-stat-label">${statLabels[k]}</span>
+        <div class="champ-stat-bar-wrap">
+          <div class="champ-stat-bar" style="width:${val * 10}%"></div>
+        </div>
+        <span class="champ-stat-val">${val}</span>
       </div>`;
   }).join('');
+
+  const styleTags = (f.style || []).map(s => `<span class="champ-style-tag">${esc(s)}</span>`).join('');
+
+  const bio = [
+    f.age ? `<div class="champ-bio-item"><span class="champ-bio-lbl">나이</span><span>${esc(String(f.age))}</span></div>` : '',
+    f.nationality ? `<div class="champ-bio-item"><span class="champ-bio-lbl">국적</span><span>${esc(f.nationality)}</span></div>` : '',
+    f.height ? `<div class="champ-bio-item"><span class="champ-bio-lbl">신장</span><span>${esc(f.height)}</span></div>` : '',
+    f.reach ? `<div class="champ-bio-item"><span class="champ-bio-lbl">리치</span><span>${esc(f.reach)}</span></div>` : '',
+    f.stance ? `<div class="champ-bio-item"><span class="champ-bio-lbl">스탠스</span><span>${esc(f.stance)}</span></div>` : '',
+  ].filter(Boolean).join('');
+
+  wrap.innerHTML = `
+    <div class="champ-featured" onclick="openFighterPopup('${f.id}')">
+      <div class="champ-featured-left">
+        <div class="champ-featured-photo">${photoHtml}</div>
+      </div>
+      <div class="champ-featured-right">
+        <div class="champ-featured-badge">🏆 ODFC CHAMPION</div>
+        <div class="champ-featured-nickname">${esc(f.nickname)}</div>
+        <div class="champ-featured-realname">${esc(f.nameKo || f.name || '')}</div>
+        <div class="champ-featured-record">${recordStr(f.record)}</div>
+        ${styleTags ? `<div class="champ-featured-styles">${styleTags}</div>` : ''}
+        <div class="champ-featured-divider"></div>
+        ${bio ? `<div class="champ-featured-bio">${bio}</div>` : ''}
+        <div class="champ-featured-stats">${statsHtml}</div>
+        <div class="champ-featured-cta">프로필 보기 →</div>
+      </div>
+    </div>`;
 }
 
 // ---------- 대표선수 (챔피언 → #1 → #2 … 전체 랭킹 순) ----------

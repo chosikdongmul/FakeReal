@@ -214,7 +214,7 @@ const DEFAULT_DATA = {
       "name": "Choi Yongseok",
       "nameKo": "최용석",
       "nickname": "The Reaper",
-      "isChampion": true,
+      "isChampion": false,
       "record": {
         "w": 20,
         "l": 1,
@@ -400,7 +400,7 @@ const DEFAULT_DATA = {
       "name": "Lee Taehun",
       "nameKo": "이태훈",
       "nickname": "The Viper",
-      "isChampion": true,
+      "isChampion": false,
       "record": {
         "w": 16,
         "l": 2,
@@ -494,7 +494,7 @@ const DEFAULT_DATA = {
       "name": "Oh Dongkyu",
       "nameKo": "오동규",
       "nickname": "The Wall",
-      "isChampion": true,
+      "isChampion": false,
       "record": {
         "w": 12,
         "l": 1,
@@ -588,7 +588,7 @@ const DEFAULT_DATA = {
       "name": "Shin Junho",
       "nameKo": "신준호",
       "nickname": "Ghost",
-      "isChampion": true,
+      "isChampion": false,
       "record": {
         "w": 21,
         "l": 0,
